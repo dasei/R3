@@ -3,13 +3,15 @@ package r3.window;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Arrays;
 
 import javax.swing.JFrame;
 
 import r3.main.Main;
 
-public class Window extends JFrame implements KeyListener{
+public class Window extends JFrame implements KeyListener, MouseListener{
 	
 	private DrawComp dc;
 	
@@ -72,7 +74,27 @@ public class Window extends JFrame implements KeyListener{
 	}
 	public void keyReleased(KeyEvent e) {
 	}
-	public void keyTyped(KeyEvent e) {		
+	public void keyTyped(KeyEvent e) {
+	}
+	
+	
+	private int mouseXLast = -1;
+	private int mouseYLast = -1;
+	public void mouseClicked(MouseEvent e) {
+		
+	}
+	public void mouseEntered(MouseEvent e) {
+	}
+	public void mouseExited(MouseEvent e) {
+	}
+	public void mousePressed(MouseEvent e) {
+		Main.getCamera().beta += (e.getX()-mouseXLast/200);
+		Main.getCamera().alpha += (e.getY()-mouseXLast/200);
+		mouseXLast = e.getX();
+		mouseYLast = e.getY();
+	}
+	
+	public void mouseReleased(MouseEvent e) {
 	}
 	
 }

@@ -14,12 +14,17 @@ public class Main {
 		mathstuff = new Mathstuff();
 		window = new Window();
 		
-		double[][][] coords = new double[][][] {
-			{{5, 5, 5}, {5, 10, 5}, {5, 5, 10}}
-		};
-		
-		window.repaint(coords);
-				
+		while(true){
+			window.repaint(new double[][][] {
+				{{5, 5, 5}, {5, 10, 5}, {5, 5, 10}}
+			});
+			
+			
+			
+			try{
+				Thread.sleep(50);
+			}catch(Exception e){}
+		}
 	}
 	
 	public static Camera getCamera(){
