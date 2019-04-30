@@ -31,7 +31,7 @@ public class Main {
 					processInputs();
 					
 					window.repaintSynchronous(new double[][][] {
-						{{5, 5, 5}, {5, 10, 5}, {5, 5, 10}}
+						{{10, 10, 10}, {10, 20, 10}, {20, 20, 10}}
 					});
 					
 					try {
@@ -75,15 +75,15 @@ public class Main {
 		camera.beta += mouseMovement[0]/ROTATION_DIVISOR;
 		
 		if(register[KeyEvent.VK_UP] && !register[KeyEvent.VK_DOWN]) {
-			Main.getCamera().alpha+=1/ROTATION_DIVISOR;
+			Main.getCamera().alpha+=10/ROTATION_DIVISOR;
 		} else if(!register[KeyEvent.VK_UP] && register[KeyEvent.VK_DOWN]) {
-			Main.getCamera().alpha-=1/ROTATION_DIVISOR;
+			Main.getCamera().alpha-=10/ROTATION_DIVISOR;
 		}
 		
 		if(register[KeyEvent.VK_LEFT] && !register[KeyEvent.VK_RIGHT]) {
-			Main.getCamera().beta+=1/ROTATION_DIVISOR;
+			Main.getCamera().beta+=10/ROTATION_DIVISOR;
 		} else if(!register[KeyEvent.VK_LEFT] && register[KeyEvent.VK_RIGHT]) {
-			Main.getCamera().beta-=1/ROTATION_DIVISOR;
+			Main.getCamera().beta-=10/ROTATION_DIVISOR;
 		}
 		
 		
