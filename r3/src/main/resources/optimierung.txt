@@ -1,1 +1,10 @@
 Mathstuff.{...}(double[][][] coords) overwrites existing coordinates => buffer syste, buffer should be reusable
+Optimierung alles:
+Keine extra Methoden, alles in Einer Methode
+evtl nicht immer einheitsvektoren
+
+calcR3:
+/
+
+Optimierung Z-Buff:
+Nicht ausrechen ob lambda3>aclength sondern ob lambda(aktuell) > lambda(von Vektor o)
