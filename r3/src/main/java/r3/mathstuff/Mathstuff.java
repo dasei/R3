@@ -42,6 +42,7 @@ public class Mathstuff {
 		}
 		return coords;
 	}
+	
 	public static int[] calcR3Point(double[] coords, double[] forward, double[] camPos,double alpha, double beta,double length,double factor)	//f:forward vector; a:position of camera, alpha:rotation x2, beta:rotation x3, factor: gibt LE -> Pixel Verhältnis an, length gibt die Länge von b an(und speichert es rein)
 	{
 		

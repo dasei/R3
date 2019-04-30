@@ -1,0 +1,1 @@
+Mathstuff.{...}(double[][][] coords) overwrites existing coordinates => buffer syste, buffer should be reusable
