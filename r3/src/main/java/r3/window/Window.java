@@ -35,10 +35,7 @@ public class Window extends JFrame implements KeyListener, MouseListener{
 //		this.dc.repaint();
 //	}
 	
-	public void repaintSynchronous(double[][][] coords){
-		this.dc.setCoords(coords);
-		this.dc.repaintSynchronous();
-	}
+
 	
 	
 	

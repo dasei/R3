@@ -16,6 +16,7 @@ public class Main {
 	public static final double ROTATION_DIVISOR = 500d;	
 	public static final int FPS_MAX = 60;
 	
+	public static int coords[][][];
 	public static final double[][][] coordsDefault = loadCoords();
 	
 	public static void main(String[] args) {
@@ -38,14 +39,14 @@ public class Main {
 					processInputs();
 					
 					
-					double[][][] coords = new double[coordsDefault.length][3][3];
-					for(int t = 0; t < coords.length; t++) {
-						for(int p = 0; p < 3; p++) {
-							for(int v = 0; v < 3; v++) {
-								coords[t][p][v] = coordsDefault[t][p][v];
-							}
-						}
-					}
+//					double[][][] coords = new double[coordsDefault.length][3][3];
+//					for(int t = 0; t < coords.length; t++) {
+//						for(int p = 0; p < 3; p++) {
+//							for(int v = 0; v < 3; v++) {
+//								coords[t][p][v] = coordsDefault[t][p][v];
+//							}
+//						}
+//					}
 					
 //					double[][][] coords = new double[][][] {
 ////						{{-1.10,-0.50,0},{-1.10,0.50,0},{-1.10,0,0.50}}
@@ -54,9 +55,7 @@ public class Main {
 					
 					
 //					System.out.println("-----------------------------");
-					window.repaintSynchronous(
-							coords
-					);
+					window.getDrawComp().repaint();
 					
 					try {
 						Thread.sleep(100);
@@ -142,7 +141,7 @@ public class Main {
 	public static double[][][] loadCoords(){
 		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(new File("H://testactive.raw")));
+			BufferedReader br = new BufferedReader(new FileReader(new File("E:/Bibliotheken/Downloads/Dragon.raw")));
 		
 			int scale = 10;
 			
@@ -163,7 +162,7 @@ public class Main {
 //				p.addVertex(new Point3D(Double.parseDouble(coordinates[6])*scale,Double.parseDouble(coordinates[7])*scale, Double.parseDouble(coordinates[8])*scale));
 			}
 			br.close();
-			
+			coords = new int[triangles.size()][3][2];
 			return triangles.toArray(new double[0][][]);
 			
 		}catch(Exception e) {
