@@ -16,48 +16,70 @@ public class Mathstuff {
 				double[] b = new double[] {coords[x][y][0]-camPos[0],coords[x][y][1]-camPos[1],coords[x][y][2]-camPos[2]}; //b:vector camera to point
 				double bLength = length(b);
 				b = new double[] {b[0]/bLength,b[1]/bLength,b[2]/bLength};	//b0
-				if((forward[0]*b[0]+forward[1]*b[1]+forward[2]*b[2])==0)
-				{
-					y=3;
-					for(int j = 0;j<3;j++)
-					{
-						coords[x][j][0] = 0;	
-						coords[x][j][1] = 0;
-						coords[x][j][2] = 0;
-					}
-					
-					break;
-				}
+				
 				double lambda = -
 				(forward[0]*(camPos[0]-z[0])+forward[1]*(camPos[1]-z[1])+forward[2]*(camPos[2]-z[2]))
 						/
 				(forward[0]*b[0]+forward[1]*b[1]+forward[2]*b[2]);
-				//System.out.println("b;X1: "+b[0]+", bX2: "+b[1]+", bX3: "+b[2]+", lambda: "+lambda);
-				if(lambda < 0)
-				{
-					y=3;
+				
+				if(Double.isInfinite(lambda) || lambda < 0) {
 					for(int j = 0;j<3;j++)
 					{
 						coords[x][j][0] = 0;	
 						coords[x][j][1] = 0;
 						coords[x][j][2] = 0;
 					}
-					
 					break;
 				}
-				else
-				{
-					double[] vecCamPosS = new double[] {lambda * b[0],lambda * b[1],lambda * b[2]};	//jetzt:vektor kamera->schnittpunkt
-					//System.out.println("VecCamPosS: "+Arrays.toString(vecCamPosS));	
-					double[] vecCamPosSX2 = new double[] {Math.cos(-alpha)*vecCamPosS[0] + Math.sin(-alpha)*vecCamPosS[2],vecCamPosS[1],-Math.sin(-alpha)*vecCamPosS[0] + Math.cos(-alpha)*vecCamPosS[2]};
-					//System.out.println("VecCamPosSX2: "+Arrays.toString(vecCamPosSX2));	
-					coords[x][y][0]	= (Math.cos(-beta)*vecCamPosSX2[0] - Math.sin(-beta)*vecCamPosSX2[1])*factor;
-					coords[x][y][1] = (Math.sin(-beta)*vecCamPosSX2[0] + Math.cos(-beta)*vecCamPosSX2[1])*factor;
-			        coords[x][y][2] = (vecCamPosSX2[2])*factor;
+				
+				//System.out.println("b;X1: "+b[0]+", bX2: "+b[1]+", bX3: "+b[2]+", lambda: "+lambda);
+				
+				
+//				double[] vecCamPosS = new double[] {lambda * b[0],lambda * b[1],lambda * b[2]};	//jetzt:vektor kamera->schnittpunkt
+//				//System.out.println("VecCamPosS: "+Arrays.toString(vecCamPosS));	
+//				double[] vecCamPosSX2 = new double[] {Math.cos(-alpha)*vecCamPosS[0] + Math.sin(-alpha)*vecCamPosS[2],vecCamPosS[1],-Math.sin(-alpha)*vecCamPosS[0] + Math.cos(-alpha)*vecCamPosS[2]};
+//				//System.out.println("VecCamPosSX2: "+Arrays.toString(vecCamPosSX2));	
+//				coords[x][y][0]	= (Math.cos(-beta)*vecCamPosSX2[0] - Math.sin(-beta)*vecCamPosSX2[1])*factor;
+//				coords[x][y][1] = (Math.sin(-beta)*vecCamPosSX2[0] + Math.cos(-beta)*vecCamPosSX2[1])*factor;
+//		        coords[x][y][2] = (vecCamPosSX2[2])*factor;
+		        
+		        
+		        
+		        
+		        
+		        
+		        
+		        
+		        double[] vecCamPosS = new double[] {lambda * b[0],lambda * b[1],lambda * b[2]};	//jetzt:vektor kamera->schnittpunkt
+//		        System.out.println("Punkt: " + Arrays.toString(coords[x][y]) + ",  Schnitt: " + Arrays.toString(vecCamPosS));
+				//System.out.println("VecCamPosS: "+Arrays.toString(vecCamPosS));	
+				double[] vecCamPosSX3 = new double[] {(Math.cos(-beta)*vecCamPosS[0] - Math.sin(-beta)*vecCamPosS[1]), Math.sin(-beta)*vecCamPosS[0] + Math.cos(-beta)*vecCamPosS[1], (vecCamPosS[2])};
+						
+						
+						
+				coords[x][y] = new double[] {(Math.cos(-alpha)*vecCamPosSX3[0] + Math.sin(-alpha)*vecCamPosSX3[2])*factor,vecCamPosSX3[1]*factor,(-Math.sin(-alpha)*vecCamPosSX3[0] + Math.cos(-alpha)*vecCamPosSX3[2])*factor};
+				//System.out.println("VecCamPosSX2: "+Arrays.toString(vecCamPosSX2));	
+//				coords[x][y][0]	= (Math.cos(-beta)*vecCamPosSX2[0] - Math.sin(-beta)*vecCamPosSX2[1])*factor;
+//				coords[x][y][1] = (Math.sin(-beta)*vecCamPosSX2[0] + Math.cos(-beta)*vecCamPosSX2[1])*factor;
+//		        coords[x][y][2] = (vecCamPosSX2[2])*factor;
+		        
+		        
+		        
+		        
+		        
+		        
+		        
+		        
+		        
+		        
+		        
+		        
+		        
+		        
 //					System.out.println(coords[x][y][1]);
 //					System.out.println(coords[x][y][2]);
-					//zurückdrehen, jetzt kann x1 ignoriert werden
-				}
+		        //zurückdrehen, jetzt kann x1 ignoriert werden
+				
 			}
 		}
 		return coords;

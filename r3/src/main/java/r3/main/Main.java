@@ -1,7 +1,10 @@
 package r3.main;
 
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.ArrayList;
 
 import r3.mathstuff.Camera;
 import r3.window.Window;
@@ -10,11 +13,14 @@ public class Main {
 	private static Window window;
 	private static Camera camera;
 	
-	public static final double ROTATION_DIVISOR = 1000d;	
+	public static final double ROTATION_DIVISOR = 500d;	
 	public static final int FPS_MAX = 60;
+	
+	public static final double[][][] coordsDefault = loadCoords();
 	
 	public static void main(String[] args) {
 		camera = new Camera();
+		
 		window = new Window();
 		
 		startLoop();		
@@ -30,10 +36,27 @@ public class Main {
 					
 					
 					processInputs();
-					System.out.println("-----------------------------");
-					window.repaintSynchronous(new double[][][] {
-						
-					});
+					
+					
+					double[][][] coords = new double[coordsDefault.length][3][3];
+					for(int t = 0; t < coords.length; t++) {
+						for(int p = 0; p < 3; p++) {
+							for(int v = 0; v < 3; v++) {
+								coords[t][p][v] = coordsDefault[t][p][v];
+							}
+						}
+					}
+					
+//					double[][][] coords = new double[][][] {
+////						{{-1.10,-0.50,0},{-1.10,0.50,0},{-1.10,0,0.50}}
+//						{{-10,-5,0},{-10,5,0},{-10,0,5}}
+//					};					
+					
+					
+//					System.out.println("-----------------------------");
+					window.repaintSynchronous(
+							coords
+					);
 					
 					try {
 						Thread.sleep(100);
@@ -80,8 +103,8 @@ public class Main {
 		
 		//////MOUSE - ROTATION
 		int[] mouseMovement = window.getMouseMovementPixelSinceLastInvoke();
-		camera.alpha += mouseMovement[1]/ROTATION_DIVISOR;
-		camera.beta += mouseMovement[0]/ROTATION_DIVISOR;
+		camera.alpha += -mouseMovement[1]/ROTATION_DIVISOR;
+		camera.beta += -mouseMovement[0]/ROTATION_DIVISOR;
 		
 		if(register[KeyEvent.VK_UP] && !register[KeyEvent.VK_DOWN]) {
 			Main.getCamera().alpha+=10/ROTATION_DIVISOR;
@@ -105,7 +128,7 @@ public class Main {
 		//camera.up      = new double[]{Math.cos(camera.beta)*camera.up[0]-Math.sin(camera.beta)*camera.up[1],Math.sin(camera.beta)*camera.up[0] + Math.cos(-camera.beta)*camera.up[1],camera.up[2]};
 		//System.out.println(Arrays.toString(camera.forward));
 		
-		System.out.println("alpha: " + camera.alpha + ", beta: " + camera.beta);
+//		System.out.println("alpha: " + camera.alpha + ", beta: " + camera.beta);
 		
 	}	
 	
@@ -114,5 +137,39 @@ public class Main {
 	}
 	public static Window getWindow(){
 		return window;
+	}
+	
+	public static double[][][] loadCoords(){
+		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(new File("H://testactive.raw")));
+		
+			int scale = 10;
+			
+			while(br.ready()) {
+				 
+				String s = br.readLine();
+				String[] coordinates = s.split(" ");
+				triangles.add(
+						new double[][] {
+							{Double.parseDouble(coordinates[0])*scale,Double.parseDouble(coordinates[1])*scale,Double.parseDouble(coordinates[2])*scale},
+							{Double.parseDouble(coordinates[3])*scale,Double.parseDouble(coordinates[4])*scale,Double.parseDouble(coordinates[5])*scale},
+							{Double.parseDouble(coordinates[6])*scale,Double.parseDouble(coordinates[7])*scale,Double.parseDouble(coordinates[8])*scale}
+						}
+				);
+				
+//				p.addVertex(new Point3D(Double.parseDouble(coordinates[0])*scale,Double.parseDouble(coordinates[1])*scale, Double.parseDouble(coordinates[2])*scale));
+//				p.addVertex(new Point3D(Double.parseDouble(coordinates[3])*scale,Double.parseDouble(coordinates[4])*scale, Double.parseDouble(coordinates[5])*scale));
+//				p.addVertex(new Point3D(Double.parseDouble(coordinates[6])*scale,Double.parseDouble(coordinates[7])*scale, Double.parseDouble(coordinates[8])*scale));
+			}
+			br.close();
+			
+			return triangles.toArray(new double[0][][]);
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return new double[][][] {};
 	}
 }

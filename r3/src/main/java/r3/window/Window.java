@@ -114,4 +114,8 @@ public class Window extends JFrame implements KeyListener, MouseListener{
 	
 	//////
 	
+	public DrawComp getDrawComp() {
+		return this.dc;
+	}
+	
 }
