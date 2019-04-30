@@ -26,9 +26,9 @@ public class Mathstuff {
 				
 				if(Double.isInfinite(lambda) || lambda < 0) {
 					for(int j = 0;j<3;j++)
-					{	
-						Main.coords[x][j][0] = 0;
-						Main.coords[x][j][1] = 0;
+					{
+						Main.coordsDraw[x][j][0] = 0;
+						Main.coordsDraw[x][j][1] = 0;
 					}
 					break;
 				}
@@ -52,13 +52,13 @@ public class Mathstuff {
 		        
 		        
 		        double[] vecCamPosS = new double[] {lambda * b[0],lambda * b[1],lambda * b[2]};	//jetzt:vektor kamera->schnittpunkt
-		        System.out.println("Punkt: " + Arrays.toString(coords[x][y]) + ",  Schnitt: " + Arrays.toString(vecCamPosS));
+//		        System.out.println("Punkt: " + Arrays.toString(coords[x][y]) + ",  Schnitt: " + Arrays.toString(vecCamPosS));
 				//System.out.println("VecCamPosS: "+Arrays.toString(vecCamPosS));	
 				double[] vecCamPosSX3 = new double[] {(Math.cos(-beta)*vecCamPosS[0] - Math.sin(-beta)*vecCamPosS[1]), Math.sin(-beta)*vecCamPosS[0] + Math.cos(-beta)*vecCamPosS[1], (vecCamPosS[2])};
 						
 						
 						
-				Main.coords[x][y] = new int[] {(int)(vecCamPosSX3[1]*factor),(int)((-Math.sin(-alpha)*vecCamPosSX3[0] + Math.cos(-alpha)*vecCamPosSX3[2])*factor)};
+				Main.coordsDraw[x][y] = new double[] {(vecCamPosSX3[1]*factor),((-Math.sin(-alpha)*vecCamPosSX3[0] + Math.cos(-alpha)*vecCamPosSX3[2])*factor)};
 				//System.out.println("VecCamPosSX2: "+Arrays.toString(vecCamPosSX2));	
 //				coords[x][y][0]	= (Math.cos(-beta)*vecCamPosSX2[0] - Math.sin(-beta)*vecCamPosSX2[1])*factor;
 //				coords[x][y][1] = (Math.sin(-beta)*vecCamPosSX2[0] + Math.cos(-beta)*vecCamPosSX2[1])*factor;

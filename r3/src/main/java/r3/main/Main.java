@@ -16,7 +16,7 @@ public class Main {
 	public static final double ROTATION_DIVISOR = 500d;	
 	public static final int FPS_MAX = 60;
 	
-	public static int coords[][][];
+	public static double[][][] coordsDraw;
 	public static final double[][][] coordsDefault = loadCoords();
 	
 	public static void main(String[] args) {
@@ -58,7 +58,7 @@ public class Main {
 					window.getDrawComp().repaint();
 					
 					try {
-						Thread.sleep(100);
+						Thread.sleep(1);
 					}catch(Exception e) {};
 					
 				}
@@ -162,7 +162,7 @@ public class Main {
 //				p.addVertex(new Point3D(Double.parseDouble(coordinates[6])*scale,Double.parseDouble(coordinates[7])*scale, Double.parseDouble(coordinates[8])*scale));
 			}
 			br.close();
-			coords = new int[triangles.size()][3][2];
+			coordsDraw = new double[triangles.size()][3][2];
 			return triangles.toArray(new double[0][][]);
 			
 		}catch(Exception e) {

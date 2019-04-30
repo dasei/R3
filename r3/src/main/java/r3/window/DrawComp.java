@@ -11,13 +11,13 @@ import r3.mathstuff.Mathstuff;
 
 public class DrawComp extends JComponent {
 	
-	public double[][][] coords = Main.coordsDefault;
+	public double[][][] coords  = Main.coordsDefault;
 	
 	public DrawComp() {
 //		this.setIgnoreRepaint(true);
 	}
 	
-	public void paintComponent(Graphics gOld) {	
+	public void paintComponent(Graphics gOld) {		
 		Graphics2D g = (Graphics2D) gOld;
 		
 		g.clearRect(0, 0, this.getWidth(), this.getHeight());
@@ -30,23 +30,25 @@ public class DrawComp extends JComponent {
 
 		Mathstuff.calcR3(this.coords, camera.forward, camera.pos, camera.alpha, camera.beta, camera.scaleFactor);
 		
-		
+		int screenX = this.getWidth();
+		int screenY = this.getHeight();
 		
 		int screenCenterX = this.getWidth()/2;
 		int screenCenterY = this.getHeight()/2;
 		
-		double fov = 100;
+		double fov = 120;
 		double fovFactor = 0.5 * (1/Math.tan(Math.toRadians(fov/2)));
 		//System.out.println(fovFactor);
-		int[][][] coordsCache = Main.coords;
+		
 //		System.out.println();
-		for(int triangleI = 0; triangleI < coords.length; triangleI++){
+		double[][][] coordsDrawCache = Main.coordsDraw;
+		for(int triangleI = 0; triangleI < coordsDrawCache.length; triangleI++){
 			//0 -> 1
-			g.drawLine(screenCenterX+(int)(coordsCache[triangleI][0][0]*this.getWidth()*fovFactor), screenCenterY-(int)(coordsCache[triangleI][0][1]*this.getHeight()*fovFactor), screenCenterX+(int)(coordsCache[triangleI][1][0]*this.getWidth()*fovFactor), screenCenterY-(int)(coordsCache[triangleI][1][1]*this.getHeight()*fovFactor));
+			g.drawLine(screenCenterX+(int)(coordsDrawCache[triangleI][0][0]*screenX*fovFactor), screenCenterY-(int)(coordsDrawCache[triangleI][0][1]*screenY*fovFactor), screenCenterX+(int)(coordsDrawCache[triangleI][1][0]*screenX*fovFactor), screenCenterY-(int)(coordsDrawCache[triangleI][1][1]*screenY*fovFactor));
 			//1 -> 2
-			g.drawLine(screenCenterX+(int)(coordsCache[triangleI][1][0]*this.getWidth()*fovFactor), screenCenterY-(int)(coordsCache[triangleI][1][1]*this.getHeight()*fovFactor), screenCenterX+(int)(coordsCache[triangleI][2][0]*this.getWidth()*fovFactor), screenCenterY-(int)(coordsCache[triangleI][2][1]*this.getHeight()*fovFactor));
+			g.drawLine(screenCenterX+(int)(coordsDrawCache[triangleI][1][0]*screenX*fovFactor), screenCenterY-(int)(coordsDrawCache[triangleI][1][1]*screenY*fovFactor), screenCenterX+(int)(coordsDrawCache[triangleI][2][0]*screenX*fovFactor), screenCenterY-(int)(coordsDrawCache[triangleI][2][1]*screenY*fovFactor));
 			//2 -> 0
-			g.drawLine(screenCenterX+(int)(coordsCache[triangleI][2][0]*this.getWidth()*fovFactor), screenCenterY-(int)(coordsCache[triangleI][2][1]*this.getHeight()*fovFactor), screenCenterX+(int)(coordsCache[triangleI][0][0]*this.getWidth()*fovFactor), screenCenterY-(int)(coordsCache[triangleI][0][1]*this.getHeight()*fovFactor));
+			g.drawLine(screenCenterX+(int)(coordsDrawCache[triangleI][2][0]*screenX*fovFactor), screenCenterY-(int)(coordsDrawCache[triangleI][2][1]*screenY*fovFactor), screenCenterX+(int)(coordsDrawCache[triangleI][0][0]*screenX*fovFactor), screenCenterY-(int)(coordsDrawCache[triangleI][0][1]*screenY*fovFactor));
 //			g.drawLine(screenCenterX+(int)coords[triangleI][1][1], screenCenterY-(int)coords[triangleI][1][2], screenCenterX+(int)coords[triangleI][2][1], screenCenterY-(int)coords[triangleI][2][2]);
 //			g.drawLine(screenCenterX+(int)coords[triangleI][2][1], screenCenterY-(int)coords[triangleI][2][2], screenCenterX+(int)coords[triangleI][0][1], screenCenterY-(int)coords[triangleI][0][2]);
 			
