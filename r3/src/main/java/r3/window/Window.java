@@ -27,6 +27,7 @@ public class Window extends JFrame implements KeyListener, MouseListener{
 		this.setVisible(true);
 		
 		this.addKeyListener(this);
+		this.addMouseListener(this);
 	}
 	
 //	public void draw() {
@@ -47,25 +48,39 @@ public class Window extends JFrame implements KeyListener, MouseListener{
 		
 		switch(e.getKeyCode()){
 		case KeyEvent.VK_A:
-			Main.getCamera().pos[1]++;
+			Main.getCamera().pos[1]+=0.1;
 			break;
 		case KeyEvent.VK_D:
-			Main.getCamera().pos[1]--;
+			Main.getCamera().pos[1]-=0.1;
 			break;
 			
 		case KeyEvent.VK_W:
-			Main.getCamera().pos[0]++;
+			Main.getCamera().pos[0]+=0.1;
 			break;
 		case KeyEvent.VK_S:
-			Main.getCamera().pos[0]--;
+			Main.getCamera().pos[0]-=0.1;
 			break;
-			
+
 		case KeyEvent.VK_SPACE:
-			Main.getCamera().pos[2]++;
+			Main.getCamera().pos[2]+=0.1;
 			break;
 		case KeyEvent.VK_SHIFT:
-			Main.getCamera().pos[2]--;
+			Main.getCamera().pos[2]-=0.1;
 			break;
+		case KeyEvent.VK_UP:
+			Main.getCamera().alpha+=0.1;
+			break;
+		case KeyEvent.VK_DOWN:
+			Main.getCamera().alpha-=0.1;
+			break;
+		case KeyEvent.VK_RIGHT:
+			Main.getCamera().beta+=0.1;
+			break;
+		case KeyEvent.VK_LEFT:
+			Main.getCamera().beta-=0.1;
+			break;
+		
+			
 		}
 		
 		this.dc.repaint();
@@ -73,6 +88,8 @@ public class Window extends JFrame implements KeyListener, MouseListener{
 		System.out.println(Arrays.toString(Main.getCamera().pos));
 	}
 	public void keyReleased(KeyEvent e) {
+		System.out.println(Main.getCamera().alpha);
+		System.out.println(Main.getCamera().beta);
 	}
 	public void keyTyped(KeyEvent e) {
 	}
@@ -88,8 +105,11 @@ public class Window extends JFrame implements KeyListener, MouseListener{
 	public void mouseExited(MouseEvent e) {
 	}
 	public void mousePressed(MouseEvent e) {
-		Main.getCamera().beta += (e.getX()-mouseXLast/200);
-		Main.getCamera().alpha += (e.getY()-mouseXLast/200);
+		
+		Main.getCamera().beta += ((e.getX()-mouseXLast)/200);
+		Main.getCamera().alpha += ((e.getY()-mouseXLast)/200);
+		System.out.println(Main.getCamera().alpha);
+		System.out.println(Main.getCamera().beta);
 		mouseXLast = e.getX();
 		mouseYLast = e.getY();
 	}

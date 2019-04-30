@@ -22,12 +22,15 @@ public class Main {
 			
 			
 			try{
-				Thread.sleep(50);
+				Thread.sleep(7);
 			}catch(Exception e){}
 		}
 	}
 	
 	public static Camera getCamera(){
 		return camera;
+	}
+	public static Window getWindow(){
+		return window;
 	}
 }

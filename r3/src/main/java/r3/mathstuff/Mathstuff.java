@@ -17,7 +17,7 @@ public class Mathstuff {
 				(forward[0]*(camPos[0]-z[0])+forward[1]*(camPos[1]-z[1])+forward[2]*(camPos[2]-z[2]))
 						/
 				(forward[0]*b[0]+forward[1]*b[1]+forward[2]*b[2]);
-				System.out.println("b;X1: "+b[0]+", bX2: "+b[1]+", bX3: "+b[2]+", lambda: "+lambda);
+				//System.out.println("b;X1: "+b[0]+", bX2: "+b[1]+", bX3: "+b[2]+", lambda: "+lambda);
 				if(lambda < 0)
 				{
 					coords[x][y][0] = 0;	
@@ -44,8 +44,6 @@ public class Mathstuff {
 	}
 	public static int[] calcR3Point(double[] coords, double[] forward, double[] camPos,double alpha, double beta,double length,double factor)	//f:forward vector; a:position of camera, alpha:rotation x2, beta:rotation x3, factor: gibt LE -> Pixel Verhältnis an, length gibt die Länge von b an(und speichert es rein)
 	{
-		
-		
 		//System.out.println("Gegeben: X1"+coords[0]+",X2"+coords[1]+",X3"+coords[2]+",forwardX1"+forward[0]+",camPosX1"+camPos[0]);
 		double[] z = new double[] {forward[0] + camPos[0],forward[1] + camPos[1],forward[2] + camPos[2]};			//z:"angriffspunkt ebene"
 		double[] b = new double[] {coords[0]-camPos[0],coords[1]-camPos[1],coords[2]-camPos[2]}; //b:vector camera to point
