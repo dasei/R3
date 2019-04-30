@@ -8,3 +8,8 @@ calcR3:
 
 Optimierung Z-Buff:
 Nicht ausrechen ob lambda3>aclength sondern ob lambda(aktuell) > lambda(von Vektor o)
+
+LOADING SCREEN:
+Pewdiepie(greenscreen) rennt vor T-Series weg und das Ziel sind 100%/100millionen Subs
+
+Sowas wie wenn man ein Unity Programm startet(Das Logo und so ne Animation) brauchen wir auch.

@@ -2,6 +2,7 @@ package r3.window;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.Arrays;
 
 import javax.swing.JComponent;
 
@@ -48,11 +49,11 @@ public class DrawComp extends JComponent {
 			//2 -> 0
 			g.drawLine(screenCenterX+(int)coords[triangleI][2][1], screenCenterY-(int)coords[triangleI][2][2], screenCenterX+(int)coords[triangleI][0][1], screenCenterY-(int)coords[triangleI][0][2]);
 			
-//			System.out.println("Drawn triangle [" + triangleI + "]: "
-//					+ Arrays.toString(coords[triangleI][0])
-//					+ Arrays.toString(coords[triangleI][1])
-//					+ Arrays.toString(coords[triangleI][2])
-//			);
+			System.out.println("Drawn triangle [" + triangleI + "]: "
+					+ Arrays.toString(coords[triangleI][0])
+					+ Arrays.toString(coords[triangleI][1])
+					+ Arrays.toString(coords[triangleI][2])
+			);
 		}
 //		System.out.println();
 		
