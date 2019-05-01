@@ -56,7 +56,7 @@ public class Mathstuff {
 		//return coords;
 	}
 	
-	public static double calcR3Point(double[] coords, int[] coordsINTCache, double[] forward, double[] camPos,double alpha, double beta,double length,double factor)	//f:forward vector; a:position of camera, alpha:rotation x2, beta:rotation x3, factor: gibt LE -> Pixel Verhältnis an, length gibt die Länge von b an(und speichert es rein)
+	public static double calcR3Point(double[] coords, int[] coordsINTCache2, double[] forward, double[] camPos,double alpha, double beta,double length,double factor)	//f:forward vector; a:position of camera, alpha:rotation x2, beta:rotation x3, factor: gibt LE -> Pixel Verhältnis an, length gibt die Länge von b an(und speichert es rein)
 	{
 		//System.out.println("-----------------1");
 		//System.out.println("Gegeben: X1"+coords[0]+",X2"+coords[1]+",X3"+coords[2]+",forwardX1"+forward[0]+",camPosX1"+camPos[0]);
@@ -87,6 +87,7 @@ public class Mathstuff {
 		//	System.out.println("Vec Cam Pos SX2 : X1:"+vecCamPosSX2[0]+"Vec Cam Pos SX2:"+vecCamPosSX2[1]+"Vec Cam Pos SX2:"+vecCamPosSX2[2]);
 			//return new int[] {(int)((Math.cos(-beta)*vecCamPosSX2[0] - Math.sin(-beta)*vecCamPosSX2[1])*factor),(int)((Math.sin(-beta)*vecCamPosSX2[0] + Math.cos(-beta)*vecCamPosSX2[1])*factor),(int)((vecCamPosSX2[2])*factor)};
 			//System.out.println("-----------------2");
+			//System.out.println(Arrays.toString(new int[] {0,screenCenterX+(int)((vecCamPosSX3[1]*factor)*screenX*fovFactor), screenCenterY-(int)(((-Math.sin(-alpha)*vecCamPosSX3[0] + Math.cos(-alpha)*vecCamPosSX3[2])*factor)*screenY*fovFactor)}));
 			coordsINTCache = new int[] {0,screenCenterX+(int)((vecCamPosSX3[1]*factor)*screenX*fovFactor), screenCenterY-(int)(((-Math.sin(-alpha)*vecCamPosSX3[0] + Math.cos(-alpha)*vecCamPosSX3[2])*factor)*screenY*fovFactor)};
 		    //System.out.println(Arrays.toString(coordsINTCache));
 			
@@ -100,7 +101,7 @@ public class Mathstuff {
 			
 		
 	}
-	
+	private static int[] coordsINTCache;
 	public static double[][] calcR3ZBuff(double[][][] coords, double[] forward, double[] camPos,double alpha, double beta,double factor)
 	{
 		//System.out.println("Start");
@@ -117,7 +118,6 @@ public class Mathstuff {
 		double[] bc;
 		double lambda;
 		double[] o;
-		int[] coordsINTCache = new int[3];
 		//System.out.println(coords.length);
 		for(int x = 0;x<coords.length;x++)
 		{
@@ -151,7 +151,7 @@ public class Mathstuff {
 			double lambda2End = 0;
 			double lambda3 = 0;
 			double lengthB = 0;
-			for(double lambda1 = 1;lambda1<=abLength;lambda1++)
+			for(double lambda1 = 0;lambda1<=abLength;lambda1+=0.1)
 			{
 				//System.out.println("Lambda1: "+lambda1);
 				//lambda2End gibt an, wo sich o*lambda2 und AC schneiden 
@@ -161,6 +161,8 @@ public class Mathstuff {
 					(lambda1*ab[0]*ac[1]-lambda1*ab[1]*ac[0])
 							/
 					(o[1]*ac[0]-o[0]*ac[1]);
+					if(Double.isNaN(lambda2End))
+						lambda2End = 0;
 					lambda3=
 					(lambda2End*o[2]+lambda1*ab[2])
 							/
@@ -174,7 +176,7 @@ public class Mathstuff {
 					//lambda2 gibt die Stelle auf der Geraden o*lambda2 an
 					for(double lambda2 = 0;lambda2<=lambda2End;lambda2++)
 					{
-						System.out.println(Arrays.toString(new double[] {lambda2*o[0] + coords[x][0][0] + lambda1*ab[0],lambda2*o[1] + coords[x][0][1] + lambda1*ab[1],lambda2*o[2] + coords[x][0][2] + lambda1*ab[2]}));
+						//System.out.println(Arrays.toString(new double[] {lambda2*o[0] + coords[x][0][0] + lambda1*ab[0],lambda2*o[1] + coords[x][0][1] + lambda1*ab[1],lambda2*o[2] + coords[x][0][2] + lambda1*ab[2]}));
 						//Gefundener Punkt
 						//double[] point = new double[] {lambda2*o[0] + coords[x][0][0] + lambda1*ab[0],lambda2*o[1] + coords[x][0][1] + lambda1*ab[1],lambda2*o[2] + coords[x][0][2] + lambda1*ab[2]};
 						//System.out.println("ForwardX1:"+forward[0]);
@@ -182,10 +184,10 @@ public class Mathstuff {
 						//System.out.println("Bekommen X:"+R3Point[1]+" ;Y:"+R3Point[2]+" ;Deep:"+R3Point[3]);
 						//System.out.println("Bekommen X:"+(int)R3Point[1]+" ;Y:"+(int)R3Point[2]+" ;Deep:"+(int)R3Point[3]);
 						//System.out.println("X:"+(int)R3Point[1]+" ;Y:"+(int)R3Point[2]+" ;Deep:"+(int)R3Point[3]);
-						if(coordsINTCache[1]>=0&&coordsINTCache[2]>=0&&coordsINTCache[1]<1280&&coordsINTCache[2]<720&&(Buffer2D[coordsINTCache[1]][coordsINTCache[2]] > lengthB||Buffer2D[coordsINTCache[1]][coordsINTCache[2]]==0))
+						if(coordsINTCache[1]>=0&&coordsINTCache[2]>=0&&coordsINTCache[1]<screenX&&coordsINTCache[2]<screenY&&(Buffer2D[coordsINTCache[1]][coordsINTCache[2]] > lengthB||Buffer2D[coordsINTCache[1]][coordsINTCache[2]]==0))
 						{
 							Buffer2D[coordsINTCache[1]][coordsINTCache[2]] = lengthB;
-							System.out.println(Arrays.toString(coordsINTCache)+", length: "+lengthB);
+							//System.out.println(Arrays.toString(coordsINTCache)+", length: "+lengthB);
 								//System.out.println("X:"+R3Point[1]+" ;Y:"+R3Point[2]+" ;Deep:"+R3Point[3]);
 						}
 						if(lambda2+1 > lambda2End)
@@ -193,7 +195,7 @@ public class Mathstuff {
 							//double[] pointEnd = new double[] {lambda2End*o[0] + coords[x][0][0] + lambda1*ab[0],lambda2End*o[1] + coords[x][0][1] + lambda1*ab[1],lambda2End*o[2] + coords[x][0][2] + lambda1*ab[2]};
 							lengthB = calcR3Point(new double[] {lambda2End*o[0] + coords[x][0][0] + lambda1*ab[0],lambda2End*o[1] + coords[x][0][1] + lambda1*ab[1],lambda2End*o[2] + coords[x][0][2] + lambda1*ab[2]},coordsINTCache,forward,camPos,alpha,beta,lengthB,factor);
 							//System.out.println("Bekommen X:"+(int)R3PointEnd[1]+" ;Y:"+(int)R3PointEnd[2]+" ;Deep:"+(int)R3PointEnd[3]+" - Final");
-							if(coordsINTCache[1]>=0&&coordsINTCache[2]>=0&&coordsINTCache[1]<1280&&coordsINTCache[2]<720&&(Buffer2D[coordsINTCache[1]][coordsINTCache[2]] > lengthB||Buffer2D[coordsINTCache[1]][coordsINTCache[2]]==0))
+							if(coordsINTCache[1]>=0&&coordsINTCache[2]>=0&&coordsINTCache[1]<screenX&&coordsINTCache[2]<screenY&&(Buffer2D[coordsINTCache[1]][coordsINTCache[2]] > lengthB||Buffer2D[coordsINTCache[1]][coordsINTCache[2]]==0))
 							{
 								Buffer2D[coordsINTCache[1]][coordsINTCache[2]] = lengthB;
 								//System.out.println("X:"+(int)R3PointEnd[1]+" ;Y:"+(int)R3PointEnd[2]+" ;Deep:"+(int)R3PointEnd[3]+" - Final");
@@ -213,10 +215,10 @@ public class Mathstuff {
 							//double[] point = new double[] {lambda2*o[0] + coords[x][0][0] + abLength*ab[0],lambda2*o[1] + coords[x][0][1] + abLength*ab[1],lambda2*o[2] + coords[x][0][2] + abLength*ab[2]};
 							lengthB = calcR3Point(new double[] {lambda2*o[0] + coords[x][0][0] + abLength*ab[0],lambda2*o[1] + coords[x][0][1] + abLength*ab[1],lambda2*o[2] + coords[x][0][2] + abLength*ab[2]},coordsINTCache,forward,camPos,alpha,beta,lengthB,factor);
 							//System.out.println("Bekommen X:"+(int)R3Point[1]+" ;Y:"+(int)R3Point[2]+" ;Deep:"+(int)R3Point[3]);
-							if(coordsINTCache[1]>=0&&coordsINTCache[2]>=0&&coordsINTCache[1]<1280&&coordsINTCache[2]<720&&(Buffer2D[coordsINTCache[1]][coordsINTCache[2]] > lengthB||Buffer2D[coordsINTCache[1]][coordsINTCache[2]]==0))
+							if(coordsINTCache[1]>=0&&coordsINTCache[2]>=0&&coordsINTCache[1]<screenX&&coordsINTCache[2]<screenY&&(Buffer2D[coordsINTCache[1]][coordsINTCache[2]] > lengthB||Buffer2D[coordsINTCache[1]][coordsINTCache[2]]==0))
 							{
 								Buffer2D[coordsINTCache[1]][coordsINTCache[2]] = lengthB;
-								System.out.println(Arrays.toString(coordsINTCache)+", length: "+lengthB);
+								//System.out.println(Arrays.toString(coordsINTCache)+", length: "+lengthB);
 								//System.out.println("X:"+R3Point[1]+" ;Y:"+R3Point[2]+" ;Deep:"+R3Point[3]);
 							}
 							if(lambda2+1 > lambda2End2)
@@ -224,10 +226,10 @@ public class Mathstuff {
 								//double[] pointEnd = new double[] {lambda2End*o[0] + coords[x][0][0] + abLength*ab[0],lambda2End*o[1] + coords[x][0][1] + abLength*ab[1],lambda2End*o[2] + coords[x][0][2] + abLength*ab[2]};
 								lengthB = calcR3Point(new double[] {lambda2End2*o[0] + coords[x][0][0] + abLength*ab[0],lambda2End2*o[1] + coords[x][0][1] + abLength*ab[1],lambda2End2*o[2] + coords[x][0][2] + abLength*ab[2]},coordsINTCache,forward,camPos,alpha,beta,lengthB,factor);
 								//System.out.println("Bekommen X:"+R3PointEnd[1]+" ;Y:"+R3PointEnd[2]+" ;Deep:"+R3PointEnd[3]+" - Final");
-								if(coordsINTCache[1]>=0&&coordsINTCache[2]>=0&&coordsINTCache[1]<1280&&coordsINTCache[2]<720&&(Buffer2D[coordsINTCache[1]][coordsINTCache[2]] > lengthB||Buffer2D[coordsINTCache[1]][coordsINTCache[2]]==0))
+								if(coordsINTCache[1]>=0&&coordsINTCache[2]>=0&&coordsINTCache[1]<screenX&&coordsINTCache[2]<screenY&&(Buffer2D[coordsINTCache[1]][coordsINTCache[2]] > lengthB||Buffer2D[coordsINTCache[1]][coordsINTCache[2]]==0))
 								{
 									Buffer2D[coordsINTCache[1]][coordsINTCache[2]] = lengthB;
-									System.out.println(Arrays.toString(coordsINTCache)+", length: "+lengthB);
+									//System.out.println(Arrays.toString(coordsINTCache)+", length: "+lengthB);
 									//System.out.println("X:"+(int)R3PointEnd[1]+" ;Y:"+(int)R3PointEnd[2]+" ;Deep:"+(int)R3PointEnd[3]+" - Final");
 								}
 								break;
@@ -252,7 +254,7 @@ public class Mathstuff {
 						//System.out.println("Bekommen X:"+R3Point[1]+" ;Y:"+R3Point[2]+" ;Deep:"+R3Point[3]);
 						//System.out.println("Bekommen X:"+(int)R3Point[1]+" ;Y:"+(int)R3Point[2]+" ;Deep:"+(int)R3Point[3]);
 						//System.out.println("X:"+(int)R3Point[1]+" ;Y:"+(int)R3Point[2]+" ;Deep:"+(int)R3Point[3]);
-						if(coordsINTCache[1]>=0&&coordsINTCache[2]>=0&&coordsINTCache[1]<1280&&coordsINTCache[2]<720&&(Buffer2D[coordsINTCache[1]][coordsINTCache[2]] > lengthB||Buffer2D[coordsINTCache[1]][coordsINTCache[2]]==0))
+						if(coordsINTCache[1]>=0&&coordsINTCache[2]>=0&&coordsINTCache[1]<screenX&&coordsINTCache[2]<screenY&&(Buffer2D[coordsINTCache[1]][coordsINTCache[2]] > lengthB||Buffer2D[coordsINTCache[1]][coordsINTCache[2]]==0))
 						{
 							Buffer2D[coordsINTCache[1]][coordsINTCache[2]] = lengthB;
 							//System.out.println("X:"+R3Point[1]+" ;Y:"+R3Point[2]+" ;Deep:"+R3Point[3]);
@@ -262,10 +264,10 @@ public class Mathstuff {
 							//double[] pointEnd = new double[] {lambda2End*o[0] + coords[x][0][0] + lambda1*ab[0],lambda2End*o[1] + coords[x][0][1] + lambda1*ab[1],lambda2End*o[2] + coords[x][0][2] + lambda1*ab[2]};
 							lengthB = calcR3Point(new double[] {lambda2End*o[0] + coords[x][0][0] + lambda1*ab[0],lambda2End*o[1] + coords[x][0][1] + lambda1*ab[1],lambda2End*o[2] + coords[x][0][2] + lambda1*ab[2]},coordsINTCache,forward,camPos,alpha,beta,lengthB,factor);
 							//System.out.println("Bekommen X:"+R3PointEnd[1]+" ;Y:"+R3PointEnd[2]+" ;Deep:"+R3PointEnd[3]+" - Final");
-							if(coordsINTCache[1]>=0&&coordsINTCache[2]>=0&&coordsINTCache[1]<1280&&coordsINTCache[2]<720&&(Buffer2D[coordsINTCache[1]][coordsINTCache[2]] > lengthB||Buffer2D[coordsINTCache[1]][coordsINTCache[2]]==0))
+							if(coordsINTCache[1]>=0&&coordsINTCache[2]>=0&&coordsINTCache[1]<screenX&&coordsINTCache[2]<screenY&&(Buffer2D[coordsINTCache[1]][coordsINTCache[2]] > lengthB||Buffer2D[coordsINTCache[1]][coordsINTCache[2]]==0))
 							{
 								Buffer2D[coordsINTCache[1]][coordsINTCache[2]] = lengthB;
-								System.out.println(Arrays.toString(coordsINTCache)+", length: "+lengthB);
+								//System.out.println(Arrays.toString(coordsINTCache)+", length: "+lengthB);
 								//System.out.println("X:"+R3PointEnd[1]+" ;Y:"+R3PointEnd[2]+" ;Deep:"+R3PointEnd[3]+" - Final");
 							}
 							break;
@@ -283,10 +285,10 @@ public class Mathstuff {
 							//double[] point = new double[] {lambda2*o[0] + coords[x][0][0] + abLength*ab[0],lambda2*o[1] + coords[x][0][1] + abLength*ab[1],lambda2*o[2] + coords[x][0][2] + abLength*ab[2]};
 							lengthB = calcR3Point(new double[] {lambda2*o[0] + coords[x][0][0] + abLength*ab[0],lambda2*o[1] + coords[x][0][1] + abLength*ab[1],lambda2*o[2] + coords[x][0][2] + abLength*ab[2]},coordsINTCache,forward,camPos,alpha,beta,lengthB,factor);
 							//System.out.println("Bekommen X:"+(int)R3Point[1]+" ;Y:"+(int)R3Point[2]+" ;Deep:"+(int)R3Point[3]);
-							if(coordsINTCache[1]>=0&&coordsINTCache[2]>=0&&coordsINTCache[1]<1280&&coordsINTCache[2]<720&&(Buffer2D[coordsINTCache[1]][coordsINTCache[2]] > lengthB||Buffer2D[coordsINTCache[1]][coordsINTCache[2]]==0))
+							if(coordsINTCache[1]>=0&&coordsINTCache[2]>=0&&coordsINTCache[1]<screenX&&coordsINTCache[2]<screenY&&(Buffer2D[coordsINTCache[1]][coordsINTCache[2]] > lengthB||Buffer2D[coordsINTCache[1]][coordsINTCache[2]]==0))
 							{
 								Buffer2D[coordsINTCache[1]][coordsINTCache[2]] = lengthB;
-								System.out.println(Arrays.toString(coordsINTCache)+", length: "+lengthB);
+								//System.out.println(Arrays.toString(coordsINTCache)+", length: "+lengthB);
 								//System.out.println("X:"+R3Point[1]+" ;Y:"+R3Point[2]+" ;Deep:"+R3Point[3]);
 							}
 							if(lambda2+1 > lambda2End2)
@@ -294,10 +296,10 @@ public class Mathstuff {
 								//double[] pointEnd = new double[] {lambda2End*o[0] + coords[x][0][0] + abLength*ab[0],lambda2End*o[1] + coords[x][0][1] + abLength*ab[1],lambda2End*o[2] + coords[x][0][2] + abLength*ab[2]};
 								lengthB = calcR3Point(new double[] {lambda2End2*o[0] + coords[x][0][0] + abLength*ab[0],lambda2End2*o[1] + coords[x][0][1] + abLength*ab[1],lambda2End2*o[2] + coords[x][0][2] + abLength*ab[2]},coordsINTCache,forward,camPos,alpha,beta,lengthB,factor);
 								//System.out.println("Bekommen X:"+R3PointEnd[1]+" ;Y:"+R3PointEnd[2]+" ;Deep:"+R3PointEnd[3]+" - Final");
-								if(coordsINTCache[1]>=0&&coordsINTCache[2]>=0&&coordsINTCache[1]<1280&&coordsINTCache[2]<720&&(Buffer2D[coordsINTCache[1]][coordsINTCache[2]] > lengthB||Buffer2D[coordsINTCache[1]][coordsINTCache[2]]==0))
+								if(coordsINTCache[1]>=0&&coordsINTCache[2]>=0&&coordsINTCache[1]<screenX&&coordsINTCache[2]<screenY&&(Buffer2D[coordsINTCache[1]][coordsINTCache[2]] > lengthB||Buffer2D[coordsINTCache[1]][coordsINTCache[2]]==0))
 								{
 									Buffer2D[coordsINTCache[1]][coordsINTCache[2]] = lengthB;
-									System.out.println(Arrays.toString(coordsINTCache)+", length: "+lengthB);
+									//System.out.println(Arrays.toString(coordsINTCache)+", length: "+lengthB);
 									//System.out.println("X:"+(int)R3PointEnd[1]+" ;Y:"+(int)R3PointEnd[2]+" ;Deep:"+(int)R3PointEnd[3]+" - Final");
 									}
 									break;

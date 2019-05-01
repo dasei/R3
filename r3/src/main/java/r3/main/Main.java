@@ -44,9 +44,9 @@ public class Main {
 					window.getDrawComp().repaint();
 					fps++;
 					long timeEnd = System.nanoTime();
-//					System.out.println("Time: " + (timeEnd-timeBeginning));
+					//System.out.println("Time: " + (timeEnd-timeBeginning));
 					try {
-						Thread.sleep(100000);
+						Thread.sleep(100000000);
 					}catch(Exception e) {};				
 //					coordsDefault = new double[][][] {
 ////						{{-1.10,-0.50,0},{-1.10,0.50,0},{-1.10,0,0.50}}
@@ -63,12 +63,12 @@ public class Main {
 				
 				while(true) {
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(1000000);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					//System.out.println(fps);
+					System.out.println(fps);
 					fps=0;
 				}
 				

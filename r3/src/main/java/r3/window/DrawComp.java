@@ -51,11 +51,16 @@ public class DrawComp extends JComponent {
 			{
 				if(buffCache[x][y]>0)
 				{
+					//System.out.println(buffCache[x][y]);
 					g2.drawLine(x, y, x, y);
 				}
 			}
 		}
-		
+		int screenX = this.getWidth();
+		int screenY = this.getHeight();
+		g2.drawLine(screenX/2-20, screenY/2-20, screenX/2+20, screenY/2+20);
+		g2.drawLine(screenX/2+20, screenY/2+20, screenX/2-20, screenY/2-20);
+		//g2.drawRect(screenX-screenX/20, screenY-screenY/20, screenX/10, screenY/10);
 //		int[][][] coordsDrawCache = Main.coordsDraw;
 //		for(int triangleI = 0; triangleI < coordsDrawCache.length; triangleI++){
 //			//0 -> 1
