@@ -7,13 +7,11 @@ import java.awt.Graphics2D;
 import javax.swing.JComponent;
 
 import r3.main.Main;
-import r3.mathstuff.Camera;
-import r3.mathstuff.Mathstuff;
 
 public class DrawComp extends JComponent {
 	
-	public double[][][] coords  = Main.coordsDefault;
-	public Graphics2D gg;
+	public double[][][] coords  = Main.coords;
+	public Graphics2D g2;
 	boolean running;
 	int r=255;
 	int g=0;
@@ -23,7 +21,7 @@ public class DrawComp extends JComponent {
 	}
 	
 	public void paintComponent(Graphics gOld) {		
-		gg = (Graphics2D) gOld;			
+		g2 = (Graphics2D) gOld;			
 		if(r > 0 && b == 0){
 			r--;
 		    g++;
@@ -36,25 +34,25 @@ public class DrawComp extends JComponent {
 			r++;
 			b--;
 		}
-		gg.setColor(new Color(r,g,b));
+		g2.setColor(new Color(r,g,b));
 		
 						//Main.getWindow().getDrawComp().repaint();
 				
 		
 	//	g.clearRect(0, 0, this.getWidth(), this.getHeight());
 		
-		Camera camera = Main.getCamera();
+//		Camera camera = Main.getCamera();
 
 
-		Mathstuff.calcR3(this.coords, camera.forward, camera.pos, camera.alpha, camera.beta, camera.scaleFactor);
+		
 		int[][][] coordsDrawCache = Main.coordsDraw;
 		for(int triangleI = 0; triangleI < coordsDrawCache.length; triangleI++){
 			//0 -> 1
-			gg.drawLine(coordsDrawCache[triangleI][0][0], coordsDrawCache[triangleI][0][1], coordsDrawCache[triangleI][1][0], coordsDrawCache[triangleI][1][1]);
+			g2.drawLine(coordsDrawCache[triangleI][0][0], coordsDrawCache[triangleI][0][1], coordsDrawCache[triangleI][1][0], coordsDrawCache[triangleI][1][1]);
 			//1 -> 2
-			gg.drawLine(coordsDrawCache[triangleI][1][0], coordsDrawCache[triangleI][1][1], coordsDrawCache[triangleI][2][0], coordsDrawCache[triangleI][2][1]);
+			g2.drawLine(coordsDrawCache[triangleI][1][0], coordsDrawCache[triangleI][1][1], coordsDrawCache[triangleI][2][0], coordsDrawCache[triangleI][2][1]);
 			//2 -> 0
-			gg.drawLine(coordsDrawCache[triangleI][2][0], coordsDrawCache[triangleI][2][1], coordsDrawCache[triangleI][0][0], coordsDrawCache[triangleI][0][1]);
+			g2.drawLine(coordsDrawCache[triangleI][2][0], coordsDrawCache[triangleI][2][1], coordsDrawCache[triangleI][0][0], coordsDrawCache[triangleI][0][1]);
 //			g.drawLine(screenCenterX+(int)coords[triangleI][1][1], screenCenterY-(int)coords[triangleI][1][2], screenCenterX+(int)coords[triangleI][2][1], screenCenterY-(int)coords[triangleI][2][2]);
 //			g.drawLine(screenCenterX+(int)coords[triangleI][2][1], screenCenterY-(int)coords[triangleI][2][2], screenCenterX+(int)coords[triangleI][0][1], screenCenterY-(int)coords[triangleI][0][2]);
 			

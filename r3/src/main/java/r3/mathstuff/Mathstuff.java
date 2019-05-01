@@ -1,7 +1,5 @@
 package r3.mathstuff;
 
-import java.util.Arrays;
-
 import r3.main.Main;
 
 public class Mathstuff {
@@ -9,8 +7,7 @@ public class Mathstuff {
 
 	public static void calcR3(double[][][] coords, double[] forward, double[] camPos,double alpha, double beta,double factor)	//f:forward vector; a:position of camera, alpha:rotation x2, beta:rotation x3
 	{
-		int[][][] coordsDrawCache = Main.coordsDraw;
-		double fov = 90;
+		double fov = Main.getCamera().fov;
 		double fovFactor = 0.5 * (1/Math.tan(Math.toRadians(fov/2)));
 		int screenX = Main.getWindow().getDrawComp().getWidth();
 		int screenY = Main.getWindow().getDrawComp().getHeight();

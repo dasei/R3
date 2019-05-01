@@ -19,4 +19,6 @@ public class Camera {
 	
 	public final double scaleFactor = 1;
 	
+	public double fov = 90;
+	
 }

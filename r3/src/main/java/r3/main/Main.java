@@ -1,7 +1,5 @@
 package r3.main;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import r3.mathstuff.Camera;
+import r3.mathstuff.Mathstuff;
 import r3.window.Window;
 
 public class Main {
@@ -20,7 +19,7 @@ public class Main {
 	public static final int FPS_MAX = 60;
 	
 	public static int[][][] coordsDraw;
-	public static double[][][] coordsDefault = loadCoords();
+	public static double[][][] coords = loadCoords();
 	
 	public static void main(String[] args) {
 		camera = new Camera();
@@ -38,13 +37,16 @@ public class Main {
 				System.out.println("started main loop");
 				while(true) {
 					processInputs();
+					
+					Mathstuff.calcR3(Main.coords, camera.forward, camera.pos, camera.alpha, camera.beta, camera.scaleFactor);
+					
 //					long timeBeginning = System.nanoTime();
 					window.getDrawComp().repaint();
 //					long timeEnd = System.nanoTime();
 //					System.out.println("Time: " + (timeEnd-timeBeginning));
-					try {
-						Thread.sleep(25);
-					}catch(Exception e) {};				
+//					try {
+//						Thread.sleep(10);
+//					}catch(Exception e) {};				
 //					coordsDefault = new double[][][] {
 ////						{{-1.10,-0.50,0},{-1.10,0.50,0},{-1.10,0,0.50}}
 //						{{-10,-5,0},{-10,5,0},{-10,0,5}}
@@ -154,7 +156,8 @@ public class Main {
 	public static double[][][] loadCoords(){
 		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(new File("E:/Bibliotheken/Downloads/Dragon.raw")));
+//			BufferedReader br = new BufferedReader(new FileReader(new File("E:/Bibliotheken/Downloads/Dragon.raw")));
+			BufferedReader br = new BufferedReader(new FileReader(new File("H://testactive.raw")));
 		
 			int scale = 10;
 			
