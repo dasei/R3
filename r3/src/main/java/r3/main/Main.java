@@ -1,5 +1,7 @@
 package r3.main;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.File;
@@ -66,6 +68,7 @@ public class Main {
 				
 			}
 		}).start();
+		
 	}
 	
 	private static void processInputs() {
