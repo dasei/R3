@@ -17,7 +17,7 @@ public class Main {
 	
 	public static final double ROTATION_DIVISOR = 500d;	
 	public static final int FPS_MAX = 60;
-	
+	public static int fps = 0;
 	public static int[][][] coordsDraw;
 	public static double[][][] coords = loadCoords();
 	
@@ -38,15 +38,16 @@ public class Main {
 				while(true) {
 					processInputs();
 					
-					Mathstuff.calcR3(Main.coords, camera.forward, camera.pos, camera.alpha, camera.beta, camera.scaleFactor);
+					//Mathstuff.calcR3(Main.coords, camera.forward, camera.pos, camera.alpha, camera.beta, camera.scaleFactor);
 					
-//					long timeBeginning = System.nanoTime();
+					long timeBeginning = System.nanoTime();
 					window.getDrawComp().repaint();
-//					long timeEnd = System.nanoTime();
+					fps++;
+					long timeEnd = System.nanoTime();
 //					System.out.println("Time: " + (timeEnd-timeBeginning));
-//					try {
-//						Thread.sleep(10);
-//					}catch(Exception e) {};				
+					try {
+						Thread.sleep(100000);
+					}catch(Exception e) {};				
 //					coordsDefault = new double[][][] {
 ////						{{-1.10,-0.50,0},{-1.10,0.50,0},{-1.10,0,0.50}}
 //						{{-10,-5,0},{-10,5,0},{-10,0,5}}
@@ -55,7 +56,24 @@ public class Main {
 				
 			}
 		}).start();
-		
+		(new Thread() {
+			public void run() {				
+				super.run();
+				
+				
+				while(true) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					//System.out.println(fps);
+					fps=0;
+				}
+				
+			}
+		}).start();
 	}
 	
 	private static void processInputs() {
@@ -154,37 +172,40 @@ public class Main {
 	}
 	
 	public static double[][][] loadCoords(){
-		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
-		try {
+//		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
+//		try {
 //			BufferedReader br = new BufferedReader(new FileReader(new File("E:/Bibliotheken/Downloads/Dragon.raw")));
-			BufferedReader br = new BufferedReader(new FileReader(new File("H://testactive.raw")));
-		
-			int scale = 10;
-			
-			while(br.ready()) {
-				 
-				String s = br.readLine();
-				String[] coordinates = s.split(" ");
-				triangles.add(
-						new double[][] {
-							{Double.parseDouble(coordinates[0])*scale,Double.parseDouble(coordinates[1])*scale,Double.parseDouble(coordinates[2])*scale},
-							{Double.parseDouble(coordinates[3])*scale,Double.parseDouble(coordinates[4])*scale,Double.parseDouble(coordinates[5])*scale},
-							{Double.parseDouble(coordinates[6])*scale,Double.parseDouble(coordinates[7])*scale,Double.parseDouble(coordinates[8])*scale}
-						}
-				);
-				
-//				p.addVertex(new Point3D(Double.parseDouble(coordinates[0])*scale,Double.parseDouble(coordinates[1])*scale, Double.parseDouble(coordinates[2])*scale));
-//				p.addVertex(new Point3D(Double.parseDouble(coordinates[3])*scale,Double.parseDouble(coordinates[4])*scale, Double.parseDouble(coordinates[5])*scale));
-//				p.addVertex(new Point3D(Double.parseDouble(coordinates[6])*scale,Double.parseDouble(coordinates[7])*scale, Double.parseDouble(coordinates[8])*scale));
-			}
-			br.close();
-			coordsDraw = new int[triangles.size()][3][2];
-			return triangles.toArray(new double[0][][]);
-			
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-		
-		return new double[][][] {};
+////			BufferedReader br = new BufferedReader(new FileReader(new File("H://testactive.raw")));
+//		
+//			int scale = 10;
+//			
+//			while(br.ready()) {
+//				 
+//				String s = br.readLine();
+//				String[] coordinates = s.split(" ");
+//				triangles.add(
+//						new double[][] {
+//							{Double.parseDouble(coordinates[0])*scale,Double.parseDouble(coordinates[1])*scale,Double.parseDouble(coordinates[2])*scale},
+//							{Double.parseDouble(coordinates[3])*scale,Double.parseDouble(coordinates[4])*scale,Double.parseDouble(coordinates[5])*scale},
+//							{Double.parseDouble(coordinates[6])*scale,Double.parseDouble(coordinates[7])*scale,Double.parseDouble(coordinates[8])*scale}
+//						}
+//				);
+//				
+////				p.addVertex(new Point3D(Double.parseDouble(coordinates[0])*scale,Double.parseDouble(coordinates[1])*scale, Double.parseDouble(coordinates[2])*scale));
+////				p.addVertex(new Point3D(Double.parseDouble(coordinates[3])*scale,Double.parseDouble(coordinates[4])*scale, Double.parseDouble(coordinates[5])*scale));
+////				p.addVertex(new Point3D(Double.parseDouble(coordinates[6])*scale,Double.parseDouble(coordinates[7])*scale, Double.parseDouble(coordinates[8])*scale));
+//			}
+//			br.close();
+//			coordsDraw = new int[triangles.size()][3][2];
+//			return triangles.toArray(new double[0][][]);
+//			
+//		}catch(Exception e) {
+//			e.printStackTrace();
+//		}
+//		
+//		return new double[][][] {};
+		return new double[][][] {
+		//{{-1.10,-0.50,0},{-1.10,0.50,0},{-1.10,0,0.50}}
+		{{-10,-5,5},{-10,5,5},{-10,5,-5}}};
 	}
 }
