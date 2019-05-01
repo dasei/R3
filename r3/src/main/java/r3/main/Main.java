@@ -59,7 +59,7 @@ public class Main {
 					window.getDrawComp().repaint();
 					
 					try {
-						Thread.sleep(30);
+						Thread.sleep(25);
 					}catch(Exception e) {};
 					
 				}

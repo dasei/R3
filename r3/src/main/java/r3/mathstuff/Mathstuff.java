@@ -7,7 +7,7 @@ import r3.main.Main;
 public class Mathstuff {
 	//Das übergebene Array: double[amount][3(Punkte von einem Dreieck)][3(Komponenten je Punkt)]
 
-	public static double[][][] calcR3(double[][][] coords, double[] forward, double[] camPos,double alpha, double beta,double factor)	//f:forward vector; a:position of camera, alpha:rotation x2, beta:rotation x3
+	public static void calcR3(double[][][] coords, double[] forward, double[] camPos,double alpha, double beta,double factor)	//f:forward vector; a:position of camera, alpha:rotation x2, beta:rotation x3
 	{
 		double fov = 90;
 		double fovFactor = 0.5 * (1/Math.tan(Math.toRadians(fov/2)));
@@ -31,7 +31,7 @@ public class Mathstuff {
 						/
 				(forward[0]*b[0]+forward[1]*b[1]+forward[2]*b[2]);
 				
-				if(Double.isInfinite(lambda) || lambda < 0) {
+				if(lambda < 0) {
 					for(int j = 0;j<3;j++)
 					{
 						Main.coordsDraw[x][j][0] = 0;
@@ -39,54 +39,15 @@ public class Mathstuff {
 					}
 					break;
 				}
-				
-				//System.out.println("b;X1: "+b[0]+", bX2: "+b[1]+", bX3: "+b[2]+", lambda: "+lambda);
-				
-				
-//				double[] vecCamPosS = new double[] {lambda * b[0],lambda * b[1],lambda * b[2]};	//jetzt:vektor kamera->schnittpunkt
-//				//System.out.println("VecCamPosS: "+Arrays.toString(vecCamPosS));	
-//				double[] vecCamPosSX2 = new double[] {Math.cos(-alpha)*vecCamPosS[0] + Math.sin(-alpha)*vecCamPosS[2],vecCamPosS[1],-Math.sin(-alpha)*vecCamPosS[0] + Math.cos(-alpha)*vecCamPosS[2]};
-//				//System.out.println("VecCamPosSX2: "+Arrays.toString(vecCamPosSX2));	
-//				coords[x][y][0]	= (Math.cos(-beta)*vecCamPosSX2[0] - Math.sin(-beta)*vecCamPosSX2[1])*factor;
-//				coords[x][y][1] = (Math.sin(-beta)*vecCamPosSX2[0] + Math.cos(-beta)*vecCamPosSX2[1])*factor;
-//		        coords[x][y][2] = (vecCamPosSX2[2])*factor;
-		        
-		        
-		        
-		        
 		        double[] vecCamPosS = new double[] {lambda * b[0],lambda * b[1],lambda * b[2]};	//jetzt:vektor kamera->schnittpunkt
-//		        System.out.println("Punkt: " + Arrays.toString(coords[x][y]) + ",  Schnitt: " + Arrays.toString(vecCamPosS));
-				//System.out.println("VecCamPosS: "+Arrays.toString(vecCamPosS));	
 				double[] vecCamPosSX3 = new double[] {(Math.cos(-beta)*vecCamPosS[0] - Math.sin(-beta)*vecCamPosS[1]), Math.sin(-beta)*vecCamPosS[0] + Math.cos(-beta)*vecCamPosS[1], (vecCamPosS[2])};
-						
-		
-						
-				Main.coordsDraw[x][y] = new int[] {screenCenterX+(int)((vecCamPosSX3[1]*factor)*screenX*fovFactor)	,		screenCenterY-(int)(((-Math.sin(-alpha)*vecCamPosSX3[0] + Math.cos(-alpha)*vecCamPosSX3[2])*factor)*screenY*fovFactor)};
-				//System.out.println("VecCamPosSX2: "+Arrays.toString(vecCamPosSX2));	
-//				coords[x][y][0]	= (Math.cos(-beta)*vecCamPosSX2[0] - Math.sin(-beta)*vecCamPosSX2[1])*factor;
-//				coords[x][y][1] = (Math.sin(-beta)*vecCamPosSX2[0] + Math.cos(-beta)*vecCamPosSX2[1])*factor;
-//		        coords[x][y][2] = (vecCamPosSX2[2])*factor;
-		        
-		        
-		        
-		        
-		        
-		        
-		        
-		        
-		        
-		        
-		        
-		        
-		        
-		        
-//					System.out.println(coords[x][y][1]);
-//					System.out.println(coords[x][y][2]);
+				Main.coordsDraw[x][y] = new int[] {screenCenterX+(int)((vecCamPosSX3[1]*factor)*screenX*fovFactor), screenCenterY-(int)(((-Math.sin(-alpha)*vecCamPosSX3[0] + Math.cos(-alpha)*vecCamPosSX3[2])*factor)*screenY*fovFactor)};
+				//System.out.println("b;X1: "+b[0]+", bX2: "+b[1]+", bX3: "+b[2]+", lambda: "+lambda);
 		        //zurückdrehen, jetzt kann x1 ignoriert werden
 				
 			}
 		}
-		return coords;
+		//return coords;
 	}
 	
 	public static double calcR3Point(double[] coords, int[] coordsINTCache, double[] forward, double[] camPos,double alpha, double beta,double length,double factor)	//f:forward vector; a:position of camera, alpha:rotation x2, beta:rotation x3, factor: gibt LE -> Pixel Verhältnis an, length gibt die Länge von b an(und speichert es rein)
