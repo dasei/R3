@@ -36,19 +36,18 @@ public class DrawComp extends JComponent {
 		int screenCenterX = this.getWidth()/2;
 		int screenCenterY = this.getHeight()/2;
 		
-		double fov = 120;
-		double fovFactor = 0.5 * (1/Math.tan(Math.toRadians(fov/2)));
+		
 		//System.out.println(fovFactor);
 		
 //		System.out.println();
-		double[][][] coordsDrawCache = Main.coordsDraw;
+		int[][][] coordsDrawCache = Main.coordsDraw;
 		for(int triangleI = 0; triangleI < coordsDrawCache.length; triangleI++){
 			//0 -> 1
-			g.drawLine(screenCenterX+(int)(coordsDrawCache[triangleI][0][0]*screenX*fovFactor), screenCenterY-(int)(coordsDrawCache[triangleI][0][1]*screenY*fovFactor), screenCenterX+(int)(coordsDrawCache[triangleI][1][0]*screenX*fovFactor), screenCenterY-(int)(coordsDrawCache[triangleI][1][1]*screenY*fovFactor));
+			g.drawLine(coordsDrawCache[triangleI][0][0], coordsDrawCache[triangleI][0][1], coordsDrawCache[triangleI][1][0], coordsDrawCache[triangleI][1][1]);
 			//1 -> 2
-			g.drawLine(screenCenterX+(int)(coordsDrawCache[triangleI][1][0]*screenX*fovFactor), screenCenterY-(int)(coordsDrawCache[triangleI][1][1]*screenY*fovFactor), screenCenterX+(int)(coordsDrawCache[triangleI][2][0]*screenX*fovFactor), screenCenterY-(int)(coordsDrawCache[triangleI][2][1]*screenY*fovFactor));
+			g.drawLine(coordsDrawCache[triangleI][1][0], coordsDrawCache[triangleI][1][1], coordsDrawCache[triangleI][2][0], coordsDrawCache[triangleI][2][1]);
 			//2 -> 0
-			g.drawLine(screenCenterX+(int)(coordsDrawCache[triangleI][2][0]*screenX*fovFactor), screenCenterY-(int)(coordsDrawCache[triangleI][2][1]*screenY*fovFactor), screenCenterX+(int)(coordsDrawCache[triangleI][0][0]*screenX*fovFactor), screenCenterY-(int)(coordsDrawCache[triangleI][0][1]*screenY*fovFactor));
+			g.drawLine(coordsDrawCache[triangleI][2][0], coordsDrawCache[triangleI][2][1], coordsDrawCache[triangleI][0][0], coordsDrawCache[triangleI][0][1]);
 //			g.drawLine(screenCenterX+(int)coords[triangleI][1][1], screenCenterY-(int)coords[triangleI][1][2], screenCenterX+(int)coords[triangleI][2][1], screenCenterY-(int)coords[triangleI][2][2]);
 //			g.drawLine(screenCenterX+(int)coords[triangleI][2][1], screenCenterY-(int)coords[triangleI][2][2], screenCenterX+(int)coords[triangleI][0][1], screenCenterY-(int)coords[triangleI][0][2]);
 			
