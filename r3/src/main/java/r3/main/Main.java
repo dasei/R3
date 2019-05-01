@@ -20,7 +20,7 @@ public class Main {
 	public static final int FPS_MAX = 60;
 	
 	public static int[][][] coordsDraw;
-	public static final double[][][] coordsDefault = loadCoords();
+	public static double[][][] coordsDefault = loadCoords();
 	
 	public static void main(String[] args) {
 		camera = new Camera();
@@ -37,33 +37,18 @@ public class Main {
 				
 				System.out.println("started main loop");
 				while(true) {
-					
-					
 					processInputs();
-					
-					
-//					double[][][] coords = new double[coordsDefault.length][3][3];
-//					for(int t = 0; t < coords.length; t++) {
-//						for(int p = 0; p < 3; p++) {
-//							for(int v = 0; v < 3; v++) {
-//								coords[t][p][v] = coordsDefault[t][p][v];
-//							}
-//						}
-//					}
-					
-//					double[][][] coords = new double[][][] {
-////						{{-1.10,-0.50,0},{-1.10,0.50,0},{-1.10,0,0.50}}
-//						{{-10,-5,0},{-10,5,0},{-10,0,5}}
-//					};					
-					
-					
-//					System.out.println("-----------------------------");
+//					long timeBeginning = System.nanoTime();
 					window.getDrawComp().repaint();
-					
+//					long timeEnd = System.nanoTime();
+//					System.out.println("Time: " + (timeEnd-timeBeginning));
 					try {
 						Thread.sleep(25);
-					}catch(Exception e) {};
-					
+					}catch(Exception e) {};				
+//					coordsDefault = new double[][][] {
+////						{{-1.10,-0.50,0},{-1.10,0.50,0},{-1.10,0,0.50}}
+//						{{-10,-5,0},{-10,5,0},{-10,0,5}}
+//					};				
 				}
 				
 			}
