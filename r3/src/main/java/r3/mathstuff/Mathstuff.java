@@ -9,12 +9,13 @@ public class Mathstuff {
 	{
 		double fov = Main.getCamera().fov;
 		double fovFactor = 0.5 * (1/Math.tan(Math.toRadians(fov/2)));
-		int screenX = Main.getWindow().getDrawComp().getWidth();
-		int screenY = Main.getWindow().getDrawComp().getHeight();
+		int screenWidth = Main.getWindow().getDrawComp().getWidth();
+		int screenHeight = Main.getWindow().getDrawComp().getHeight();
 		
-		int screenCenterX = screenX/2;
-		int screenCenterY = screenY/2;
+		int screenCenterX = screenWidth/2;
+		int screenCenterY = screenHeight/2;
 		//System.out.println(Arrays.toString(forward));
+		int screenSizeMinimum = Math.min(screenWidth, screenHeight);
 		double[] z = new double[] {forward[0] + camPos[0],forward[1] + camPos[1],forward[2] + camPos[2]};			//z:"angriffspunkt ebene"
 		for(int x = 0;x<coords.length;x++)
 		{
@@ -39,7 +40,7 @@ public class Mathstuff {
 				}
 		        double[] vecCamPosS = new double[] {lambda * b[0],lambda * b[1],lambda * b[2]};	//jetzt:vektor kamera->schnittpunkt
 				double[] vecCamPosSX3 = new double[] {(Math.cos(-beta)*vecCamPosS[0] - Math.sin(-beta)*vecCamPosS[1]), Math.sin(-beta)*vecCamPosS[0] + Math.cos(-beta)*vecCamPosS[1], (vecCamPosS[2])};
-				Main.coordsDraw[x][y] = new int[] {screenCenterX+(int)((vecCamPosSX3[1]*factor)*screenX*fovFactor), screenCenterY-(int)(((-Math.sin(-alpha)*vecCamPosSX3[0] + Math.cos(-alpha)*vecCamPosSX3[2])*factor)*screenY*fovFactor)};
+				Main.coordsDraw[x][y] = new int[] {screenCenterX+(int)((vecCamPosSX3[1]*factor)*screenSizeMinimum*fovFactor), screenCenterY-(int)(((-Math.sin(-alpha)*vecCamPosSX3[0] + Math.cos(-alpha)*vecCamPosSX3[2])*factor)*screenSizeMinimum*fovFactor)};
 				//System.out.println("b;X1: "+b[0]+", bX2: "+b[1]+", bX3: "+b[2]+", lambda: "+lambda);
 		        //zurückdrehen, jetzt kann x1 ignoriert werden
 				
@@ -47,6 +48,10 @@ public class Mathstuff {
 		}
 		//return coords;
 	}
+	
+//	private double calculateFOVFactor() {
+//		
+//	}
 	
 	public static double calcR3Point(double[] coords, int[] coordsINTCache, double[] forward, double[] camPos,double alpha, double beta,double length,double factor)	//f:forward vector; a:position of camera, alpha:rotation x2, beta:rotation x3, factor: gibt LE -> Pixel Verhältnis an, length gibt die Länge von b an(und speichert es rein)
 	{

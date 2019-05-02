@@ -40,10 +40,10 @@ public class Main {
 					
 					Mathstuff.calcR3(Main.coords, camera.forward, camera.pos, camera.alpha, camera.beta, camera.scaleFactor);
 					
-//					long timeBeginning = System.nanoTime();
+					//long timeBeginning = System.nanoTime();
 					window.getDrawComp().repaint();
-//					long timeEnd = System.nanoTime();
-//					System.out.println("Time: " + (timeEnd-timeBeginning));
+					//long timeEnd = System.nanoTime();
+					//System.out.println("Time: " + (timeEnd-timeBeginning));
 //					try {
 //						Thread.sleep(10);
 //					}catch(Exception e) {};				
@@ -64,23 +64,23 @@ public class Main {
 		boolean[] register = window.getKeyRegister();
 		
 		if(register[KeyEvent.VK_W] && !register[KeyEvent.VK_S]) {
-			Main.getCamera().pos[0]+=Main.getCamera().forward[0];
-			Main.getCamera().pos[1]+=Main.getCamera().forward[1];
-			Main.getCamera().pos[2]+=Main.getCamera().forward[2];
+			Main.getCamera().pos[0]+=Main.getCamera().forward[0]/2;
+			Main.getCamera().pos[1]+=Main.getCamera().forward[1]/2;
+			Main.getCamera().pos[2]+=Main.getCamera().forward[2]/2;
 		} else if(!register[KeyEvent.VK_W] && register[KeyEvent.VK_S]) {
-			Main.getCamera().pos[0]-=Main.getCamera().forward[0];
-			Main.getCamera().pos[1]-=Main.getCamera().forward[1];
-			Main.getCamera().pos[2]-=Main.getCamera().forward[2];
+			Main.getCamera().pos[0]-=Main.getCamera().forward[0]/2;
+			Main.getCamera().pos[1]-=Main.getCamera().forward[1]/2;
+			Main.getCamera().pos[2]-=Main.getCamera().forward[2]/2;
 		}
 		
 		if(register[KeyEvent.VK_A] && !register[KeyEvent.VK_D]) {
-			Main.getCamera().pos[0]+=Main.getCamera().left[0];
-			Main.getCamera().pos[1]+=Main.getCamera().left[1];
-			Main.getCamera().pos[2]+=Main.getCamera().left[2];
+			Main.getCamera().pos[0]+=Main.getCamera().left[0]/2;
+			Main.getCamera().pos[1]+=Main.getCamera().left[1]/2;
+			Main.getCamera().pos[2]+=Main.getCamera().left[2]/2;
 		} else if(!register[KeyEvent.VK_A] && register[KeyEvent.VK_D]) {
-			Main.getCamera().pos[0]-=Main.getCamera().left[0];
-			Main.getCamera().pos[1]-=Main.getCamera().left[1];
-			Main.getCamera().pos[2]-=Main.getCamera().left[2];
+			Main.getCamera().pos[0]-=Main.getCamera().left[0]/2;
+			Main.getCamera().pos[1]-=Main.getCamera().left[1]/2;
+			Main.getCamera().pos[2]-=Main.getCamera().left[2]/2;
 		}
 		
 		if(register[KeyEvent.VK_SPACE] && !register[KeyEvent.VK_SHIFT]) {
@@ -157,7 +157,7 @@ public class Main {
 		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
 		try {
 //			BufferedReader br = new BufferedReader(new FileReader(new File("E:/Bibliotheken/Downloads/Dragon.raw")));
-			BufferedReader br = new BufferedReader(new FileReader(new File("H://testactive.raw")));
+			BufferedReader br = new BufferedReader(new FileReader(new File("G:/Programmieren/Export/3DRender/Dragon.raw")));
 		
 			int scale = 10;
 			
