@@ -46,7 +46,7 @@ public class Main {
 					long timeEnd = System.nanoTime();
 					//System.out.println("Time: " + (timeEnd-timeBeginning));
 					try {
-						Thread.sleep(100000000);
+						Thread.sleep(10);
 					}catch(Exception e) {};				
 //					coordsDefault = new double[][][] {
 ////						{{-1.10,-0.50,0},{-1.10,0.50,0},{-1.10,0,0.50}}
@@ -82,29 +82,29 @@ public class Main {
 		boolean[] register = window.getKeyRegister();
 		
 		if(register[KeyEvent.VK_W] && !register[KeyEvent.VK_S]) {
-			Main.getCamera().pos[0]+=Main.getCamera().forward[0];
-			Main.getCamera().pos[1]+=Main.getCamera().forward[1];
+			Main.getCamera().pos[0]+=Main.getCamera().forward[0]/2;
+			Main.getCamera().pos[1]+=Main.getCamera().forward[1]/2;
 			Main.getCamera().pos[2]+=Main.getCamera().forward[2];
 		} else if(!register[KeyEvent.VK_W] && register[KeyEvent.VK_S]) {
-			Main.getCamera().pos[0]-=Main.getCamera().forward[0];
-			Main.getCamera().pos[1]-=Main.getCamera().forward[1];
-			Main.getCamera().pos[2]-=Main.getCamera().forward[2];
+			Main.getCamera().pos[0]-=Main.getCamera().forward[0]/2;
+			Main.getCamera().pos[1]-=Main.getCamera().forward[1]/2;
+			Main.getCamera().pos[2]-=Main.getCamera().forward[2]/2;
 		}
 		
 		if(register[KeyEvent.VK_A] && !register[KeyEvent.VK_D]) {
-			Main.getCamera().pos[0]+=Main.getCamera().left[0];
-			Main.getCamera().pos[1]+=Main.getCamera().left[1];
-			Main.getCamera().pos[2]+=Main.getCamera().left[2];
+			Main.getCamera().pos[0]+=Main.getCamera().left[0]/2;
+			Main.getCamera().pos[1]+=Main.getCamera().left[1]/2;
+			Main.getCamera().pos[2]+=Main.getCamera().left[2]/2;
 		} else if(!register[KeyEvent.VK_A] && register[KeyEvent.VK_D]) {
-			Main.getCamera().pos[0]-=Main.getCamera().left[0];
-			Main.getCamera().pos[1]-=Main.getCamera().left[1];
-			Main.getCamera().pos[2]-=Main.getCamera().left[2];
+			Main.getCamera().pos[0]-=Main.getCamera().left[0]/2;
+			Main.getCamera().pos[1]-=Main.getCamera().left[1]/2;
+			Main.getCamera().pos[2]-=Main.getCamera().left[2]/2;
 		}
 		
 		if(register[KeyEvent.VK_SPACE] && !register[KeyEvent.VK_SHIFT]) {
-			Main.getCamera().pos[2]+=1;
+			Main.getCamera().pos[2]+=0.5;
 		} else if(!register[KeyEvent.VK_SPACE] && (register[KeyEvent.VK_SHIFT]||register[KeyEvent.VK_E])) {
-			Main.getCamera().pos[2]-=1;
+			Main.getCamera().pos[2]-=0.5;
 		}
 		
 		
@@ -205,7 +205,6 @@ public class Main {
 //		
 //		return new double[][][] {};
 		return new double[][][] {
-		//{{-1.10,-0.50,0},{-1.10,0.50,0},{-1.10,0,0.50}}
-		{{-10,-5,5},{-10,5,5},{-10,5,-5}}};
+		{{-10,-5,5},{-10,5,5},{-15,0,-5}}};
 	}
 }
