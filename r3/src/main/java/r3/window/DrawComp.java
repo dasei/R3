@@ -12,7 +12,6 @@ import r3.mathstuff.Mathstuff;
 public class DrawComp extends JComponent {
 	
 	public double[][][] coords  = Main.coords;
-	boolean running;
 	int r=255;
 	int g=0;
 	int b=0;
@@ -49,7 +48,7 @@ public class DrawComp extends JComponent {
 		int screenWidth = this.getWidth();
 		int screenHeight = this.getHeight();
 		g.drawLine(screenWidth/2-20, screenHeight/2, screenWidth/2+20, screenHeight/2);
-		g.drawLine(screenWidth/2, screenHeight/2-20, screenWidth/2, screenHeight/2+20);		
+		g.drawLine(screenWidth/2, screenHeight/2-20, screenWidth/2, screenHeight/2+20);
 		
 	}
 	
@@ -64,7 +63,7 @@ public class DrawComp extends JComponent {
 		double[][] buffCache = Mathstuff.calcR3ZBuff(coords, camera.forward, camera.pos, camera.alpha, camera.beta, camera.scaleFactor);
 		
 		//TODO time measurement
-		System.out.print("Calculation(ms): "+(System.currentTimeMillis()-timeBeginning) + ", \t");		
+		System.out.print((System.currentTimeMillis()-timeBeginning) + "\t");		
 		timeBeginning = System.currentTimeMillis();
 		//
 		
@@ -78,7 +77,7 @@ public class DrawComp extends JComponent {
 		}
 		
 		//TODO time measurement
-		System.out.println("Drawing(ms): " + (System.currentTimeMillis()-timeBeginning));	
+		System.out.println((System.currentTimeMillis()-timeBeginning));
 	}
 	
 	private void drawMesh(Graphics g, int[][][] frameBuffer, int screenCenterX, int screenCenterY) {		

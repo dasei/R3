@@ -14,7 +14,7 @@ public class Main {
 	private final static Camera camera = new Camera();
 	private final static Window window = new Window();;
 	
-	public static final double ROTATION_DIVISOR = 500d;	
+	
 	public static final int FPS_MAX = 60;
 	public static int fpsCurrent = 0;
 	public static int[][][] coordsDraw;
@@ -99,27 +99,36 @@ public class Main {
 //		}).start();
 	}
 	
-	private static final double movementSpeedPerSecond = 0.05;
+	private static final double MOVEMENT_SPEED_PER_SECOND = 50;
+	public static final double ROTATION_SPEED_PER_SECOND = Math.toRadians(90); //radians	
+	public static final double ROTATION_AMOUNT_PER_MOUSEMOVEMENT_PIXEL = Math.toRadians(0.25); //radians
 	private static long processInputsTimeLastNanos = System.nanoTime();
 	private static void processInputs() {
 		
 		//calculate delta time
 		long timeNowNanos = System.nanoTime();
-		double deltaTimeSeconds = (timeNowNanos - processInputsTimeLastNanos)/1000000d;
+		double deltaTimeSeconds = (timeNowNanos - processInputsTimeLastNanos)/1000000000d;
 		processInputsTimeLastNanos = timeNowNanos;
 		
 //		System.out.println(Arrays.toString(Main.getCamera().pos));
 		
 		//////KEYBOARD - MOVEMENT
 		boolean[] register = window.getKeyRegister();
-		double movementDelta = movementSpeedPerSecond * deltaTimeSeconds;
+		double movementDelta = MOVEMENT_SPEED_PER_SECOND * deltaTimeSeconds;
 		
-		if(register[KeyEvent.VK_W] && !register[KeyEvent.VK_S]) {
-			Main.getCamera().pos[0]+=Main.getCamera().forward[0]*movementDelta;
-			Main.getCamera().pos[1]+=Main.getCamera().forward[1]*movementDelta;
-		} else if(!register[KeyEvent.VK_W] && register[KeyEvent.VK_S]) {
-			Main.getCamera().pos[0]-=Main.getCamera().forward[0]*movementDelta;
-			Main.getCamera().pos[1]-=Main.getCamera().forward[1]*movementDelta;
+		if(register[KeyEvent.VK_W] ^ register[KeyEvent.VK_S]) {
+			//normalize subvector of components x1 and x2 => divide x1 or x2 by pythagoras of x1 and x2
+			double normalizationFactor = (1/Math.sqrt((camera.forward[0]*camera.forward[0])+(camera.forward[1]*camera.forward[1])))
+					//and for performance reasons, multiply it with the movementDelta, if we're at it
+					* movementDelta;
+			
+			if(register[KeyEvent.VK_W]) {
+				Main.getCamera().pos[0]+=camera.forward[0]*normalizationFactor;
+				Main.getCamera().pos[1]+=camera.forward[1]*normalizationFactor;
+			} else {
+				Main.getCamera().pos[0]-=camera.forward[0]*normalizationFactor;
+				Main.getCamera().pos[1]-=camera.forward[1]*normalizationFactor;
+			}
 		}
 		
 		if(register[KeyEvent.VK_A] && !register[KeyEvent.VK_D]) {
@@ -137,65 +146,54 @@ public class Main {
 		}
 		
 		
-		
-		//////MOUSE - ROTATION
+		//////MOUSE - ROTATION		
+		boolean forwardVectorChanged = false; //used to check if a recalculation of the forward vector is neccessary
 		if(register[KeyEvent.VK_UP] && !register[KeyEvent.VK_DOWN]) {
-			Main.getCamera().alpha = Math.min(Main.getCamera().alpha + (10/ROTATION_DIVISOR), (89d/180d)*Math.PI);
+			camera.alpha += ROTATION_SPEED_PER_SECOND*deltaTimeSeconds;
+			forwardVectorChanged = true;
 			
-			//max value
-			
-			
-			//Alpha
-			camera.forward = new double[]{Math.cos(camera.alpha)*Camera.forwardDEFAULT[0] + Math.sin(camera.alpha)*Camera.forwardDEFAULT[2],Camera.forwardDEFAULT[1],-Math.sin(camera.alpha)*Camera.forwardDEFAULT[0] + Math.cos(camera.alpha)*Camera.forwardDEFAULT[2]};
-			camera.left    = new double[]{Math.cos(camera.alpha)*Camera.leftDEFAULT[0] + Math.sin(camera.alpha)*Camera.leftDEFAULT[2],Camera.leftDEFAULT[1],-Math.sin(camera.alpha)*Camera.leftDEFAULT[0] + Math.cos(camera.alpha)*Camera.leftDEFAULT[2]};
-			//Beta
-			camera.forward = new double[]{Math.cos(camera.beta)*camera.forward[0]-Math.sin(camera.beta)*camera.forward[1],Math.sin(camera.beta)*camera.forward[0] + Math.cos(-camera.beta)*camera.forward[1],camera.forward[2]};
-			camera.left    = new double[]{Math.cos(camera.beta)*camera.left[0]-Math.sin(camera.beta)*camera.left[1],Math.sin(camera.beta)*camera.left[0] + Math.cos(-camera.beta)*camera.left[1],camera.left[2]};
 		} else if(!register[KeyEvent.VK_UP] && register[KeyEvent.VK_DOWN]) {
-//			Main.getCamera().alpha-=10/ROTATION_DIVISOR;
-			Main.getCamera().alpha = Math.max(Main.getCamera().alpha - (10/ROTATION_DIVISOR), (-89d/180d)*Math.PI);
-			//Alpha
-			camera.forward = new double[]{Math.cos(camera.alpha)*Camera.forwardDEFAULT[0] + Math.sin(camera.alpha)*Camera.forwardDEFAULT[2],Camera.forwardDEFAULT[1],-Math.sin(camera.alpha)*Camera.forwardDEFAULT[0] + Math.cos(camera.alpha)*Camera.forwardDEFAULT[2]};
-			camera.left    = new double[]{Math.cos(camera.alpha)*Camera.leftDEFAULT[0] + Math.sin(camera.alpha)*Camera.leftDEFAULT[2],Camera.leftDEFAULT[1],-Math.sin(camera.alpha)*Camera.leftDEFAULT[0] + Math.cos(camera.alpha)*Camera.leftDEFAULT[2]};
-			//Beta
-			camera.forward = new double[]{Math.cos(camera.beta)*camera.forward[0]-Math.sin(camera.beta)*camera.forward[1],Math.sin(camera.beta)*camera.forward[0] + Math.cos(-camera.beta)*camera.forward[1],camera.forward[2]};
-			camera.left    = new double[]{Math.cos(camera.beta)*camera.left[0]-Math.sin(camera.beta)*camera.left[1],Math.sin(camera.beta)*camera.left[0] + Math.cos(-camera.beta)*camera.left[1],camera.left[2]};
+			camera.alpha -= ROTATION_SPEED_PER_SECOND*deltaTimeSeconds;
+			forwardVectorChanged = true;
 		}
 		
 		if(register[KeyEvent.VK_LEFT] && !register[KeyEvent.VK_RIGHT]) {
-			Main.getCamera().beta+=10/ROTATION_DIVISOR;
-			//Alpha
-			camera.forward = new double[]{Math.cos(camera.alpha)*Camera.forwardDEFAULT[0] + Math.sin(camera.alpha)*Camera.forwardDEFAULT[2],Camera.forwardDEFAULT[1],-Math.sin(camera.alpha)*Camera.forwardDEFAULT[0] + Math.cos(camera.alpha)*Camera.forwardDEFAULT[2]};
-			camera.left    = new double[]{Math.cos(camera.alpha)*Camera.leftDEFAULT[0] + Math.sin(camera.alpha)*Camera.leftDEFAULT[2],Camera.leftDEFAULT[1],-Math.sin(camera.alpha)*Camera.leftDEFAULT[0] + Math.cos(camera.alpha)*Camera.leftDEFAULT[2]};
-			//Beta
-			camera.forward = new double[]{Math.cos(camera.beta)*camera.forward[0]-Math.sin(camera.beta)*camera.forward[1],Math.sin(camera.beta)*camera.forward[0] + Math.cos(-camera.beta)*camera.forward[1],camera.forward[2]};
-			camera.left    = new double[]{Math.cos(camera.beta)*camera.left[0]-Math.sin(camera.beta)*camera.left[1],Math.sin(camera.beta)*camera.left[0] + Math.cos(-camera.beta)*camera.left[1],camera.left[2]};
+			camera.beta += ROTATION_SPEED_PER_SECOND*deltaTimeSeconds;
+			forwardVectorChanged = true;
+			
 		} else if(!register[KeyEvent.VK_LEFT] && register[KeyEvent.VK_RIGHT]) {
-			Main.getCamera().beta-=10/ROTATION_DIVISOR;
-			//Alpha
-			camera.forward = new double[]{Math.cos(camera.alpha)*Camera.forwardDEFAULT[0] + Math.sin(camera.alpha)*Camera.forwardDEFAULT[2],Camera.forwardDEFAULT[1],-Math.sin(camera.alpha)*Camera.forwardDEFAULT[0] + Math.cos(camera.alpha)*Camera.forwardDEFAULT[2]};
-			camera.left    = new double[]{Math.cos(camera.alpha)*Camera.leftDEFAULT[0] + Math.sin(camera.alpha)*Camera.leftDEFAULT[2],Camera.leftDEFAULT[1],-Math.sin(camera.alpha)*Camera.leftDEFAULT[0] + Math.cos(camera.alpha)*Camera.leftDEFAULT[2]};
-			//Beta
-			camera.forward = new double[]{Math.cos(camera.beta)*camera.forward[0]-Math.sin(camera.beta)*camera.forward[1],Math.sin(camera.beta)*camera.forward[0] + Math.cos(-camera.beta)*camera.forward[1],camera.forward[2]};
-			camera.left    = new double[]{Math.cos(camera.beta)*camera.left[0]-Math.sin(camera.beta)*camera.left[1],Math.sin(camera.beta)*camera.left[0] + Math.cos(-camera.beta)*camera.left[1],camera.left[2]};
+			camera.beta -= ROTATION_SPEED_PER_SECOND*deltaTimeSeconds;
+			forwardVectorChanged = true;
 		}
-		int[] mouseMovement = window.getMouseMovementPixelSinceLastInvoke();
-		if(mouseMovement[0]!=0||mouseMovement[1]!=0)
-		{
-			//System.out.println(Arrays.toString(mouseMovement));
-			camera.alpha += -mouseMovement[1]/ROTATION_DIVISOR;
-			camera.beta += -mouseMovement[0]/ROTATION_DIVISOR;
-			//Alpha
-			camera.forward = new double[]{Math.cos(camera.alpha)*Camera.forwardDEFAULT[0] + Math.sin(camera.alpha)*Camera.forwardDEFAULT[2],Camera.forwardDEFAULT[1],-Math.sin(camera.alpha)*Camera.forwardDEFAULT[0] + Math.cos(camera.alpha)*Camera.forwardDEFAULT[2]};
-			camera.left    = new double[]{Math.cos(camera.alpha)*Camera.leftDEFAULT[0] + Math.sin(camera.alpha)*Camera.leftDEFAULT[2],Camera.leftDEFAULT[1],-Math.sin(camera.alpha)*Camera.leftDEFAULT[0] + Math.cos(camera.alpha)*Camera.leftDEFAULT[2]};
-			//Beta
-			camera.forward = new double[]{Math.cos(camera.beta)*camera.forward[0]-Math.sin(camera.beta)*camera.forward[1],Math.sin(camera.beta)*camera.forward[0] + Math.cos(-camera.beta)*camera.forward[1],camera.forward[2]};
-			camera.left    = new double[]{Math.cos(camera.beta)*camera.left[0]-Math.sin(camera.beta)*camera.left[1],Math.sin(camera.beta)*camera.left[0] + Math.cos(-camera.beta)*camera.left[1],camera.left[2]};
-			
-			
-		}
-//		System.out.println("alpha: " + camera.alpha + ", beta: " + camera.beta);
 		
+		
+		int[] mouseMovement = window.getMouseMovementPixelSinceLastInvoke();
+		if(mouseMovement[0]!=0||mouseMovement[1]!=0) {
+			camera.alpha += -mouseMovement[1]*ROTATION_AMOUNT_PER_MOUSEMOVEMENT_PIXEL;
+			camera.beta += -mouseMovement[0]*ROTATION_AMOUNT_PER_MOUSEMOVEMENT_PIXEL;
+			forwardVectorChanged = true;
+		}
+		
+		
+		//if the forward vector changed due to rotation of the camera, rangecheck alpha and recalculate the forward vector 
+		if(forwardVectorChanged) {
+		
+			////alpha range check (vertical view angle) => sodass man sich nicht sein Genack brechen kann ;D		
+			double alphaRange = Math.toRadians(89);
+			camera.alpha = camera.alpha > alphaRange ? alphaRange : (
+					camera.alpha < -alphaRange ? -alphaRange : camera.alpha
+			);
+						
+			////recalculate forward vector			
+			//Alpha
+			camera.forward = new double[]{Math.cos(camera.alpha)*Camera.forwardDEFAULT[0] + Math.sin(camera.alpha)*Camera.forwardDEFAULT[2],Camera.forwardDEFAULT[1],-Math.sin(camera.alpha)*Camera.forwardDEFAULT[0] + Math.cos(camera.alpha)*Camera.forwardDEFAULT[2]};
+			camera.left    = new double[]{Math.cos(camera.alpha)*Camera.leftDEFAULT[0] + Math.sin(camera.alpha)*Camera.leftDEFAULT[2],Camera.leftDEFAULT[1],-Math.sin(camera.alpha)*Camera.leftDEFAULT[0] + Math.cos(camera.alpha)*Camera.leftDEFAULT[2]};
+			//Beta
+			camera.forward = new double[]{Math.cos(camera.beta)*camera.forward[0]-Math.sin(camera.beta)*camera.forward[1],Math.sin(camera.beta)*camera.forward[0] + Math.cos(-camera.beta)*camera.forward[1],camera.forward[2]};
+			camera.left    = new double[]{Math.cos(camera.beta)*camera.left[0]-Math.sin(camera.beta)*camera.left[1],Math.sin(camera.beta)*camera.left[0] + Math.cos(-camera.beta)*camera.left[1],camera.left[2]};		
+		}
+		
+//		System.out.println("alpha: " + camera.alpha + ", beta: " + camera.beta);
 	}	
 	
 	public static Camera getCamera(){
