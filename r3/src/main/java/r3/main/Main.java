@@ -47,7 +47,7 @@ public class Main {
 					long timeEnd = System.nanoTime();
 					//System.out.println("Time: " + (timeEnd-timeBeginning));
 					try {
-						Thread.sleep(0);
+						Thread.sleep(10);
 					}catch(Exception e) {};				
 
 //					coordsDefault = new double[][][] {
@@ -239,8 +239,8 @@ public class Main {
 	public static double[][][] loadCoords(){
 		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
 		try {
-//			BufferedReader br = new BufferedReader(new FileReader(new File("E:/Bibliotheken/Downloads/Dragon.raw")));
 			BufferedReader br = new BufferedReader(new FileReader(new File("res/Dragon.raw")));
+
 		
 			int scale = 10;
 			
