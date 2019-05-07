@@ -11,20 +11,18 @@ import r3.mathstuff.Mathstuff;
 import r3.window.Window;
 
 public class Main {
-	private static Window window;
-	private static Camera camera;
+	private final static Camera camera = new Camera();
+	private final static Window window = new Window();;
 	
 	public static final double ROTATION_DIVISOR = 500d;	
 	public static final int FPS_MAX = 60;
-	public static int fps = 0;
-	public static int lastFps = 0;
+	public static int fpsCurrent = 0;
 	public static int[][][] coordsDraw;
-	public static double[][][] coords = loadCoords();
+	public static final double[][][] coords = loadCoords();
 	
-	public static void main(String[] args) {
-		camera = new Camera();
+	public static void main(String[] args) {		
+		window.init();
 		
-		window = new Window();
 		convertTriangles();
 		startLoop();		
 	}
@@ -35,48 +33,70 @@ public class Main {
 				super.run();
 				
 				System.out.println("started main loop");
+				
+				
+				//FPS counting => initialization
+				long timeStartNanos = System.nanoTime();
+				long timeNow;
+				final int cyclesForFPSCalculation = 10;
+				
+				int cycleCounter = 0;
 				while(true) {
+					
+					//process all pending inputs
 					processInputs();
 					
 					//Mathstuff.calcR3(Main.coords, camera.forward, camera.pos, camera.alpha, camera.beta, camera.scaleFactor);
 					
-					long timeBeginning = System.nanoTime();
+//					long timeBeginning = System.nanoTime();
 					window.getDrawComp().repaint();
 
-					fps++;
-					long timeEnd = System.nanoTime();
+//					fps++;
+//					long timeEnd = System.nanoTime();
 					//System.out.println("Time: " + (timeEnd-timeBeginning));
 					try {
 						Thread.sleep(10);
-					}catch(Exception e) {};				
-
+					}catch(Exception e) {};
+					
+					
 //					coordsDefault = new double[][][] {
 ////						{{-1.10,-0.50,0},{-1.10,0.50,0},{-1.10,0,0.50}}
 //						{{-10,-5,0},{-10,5,0},{-10,0,5}}
-//					};				
+//					};
+					
+					
+					//FPS counting NEEDS TO BE AT THE VERY END OF MAIN LOOP
+					cycleCounter++;
+					if(cycleCounter % cyclesForFPSCalculation == 0) {
+						timeNow = System.nanoTime();
+						fpsCurrent = (int) ((1000000000d*cyclesForFPSCalculation)/(timeNow - timeStartNanos));
+						//set new start time for next cycle
+						timeStartNanos = timeNow;
+//						System.out.println(( 1000000000d/(timeNow - timeStartNanos)) + ", " + timeNow + "/t" + timeStartNanos);
+					}					
 				}
 				
 			}
 		}).start();
-		(new Thread() {
-			public void run() {				
-				super.run();
-				
-				
-				while(true) {
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					//System.out.println(fps);
-					lastFps = fps;
-					fps=0;
-				}
-				
-			}
-		}).start();
+//		(new Thread() {
+//			public void run() {				
+//				super.run();
+//				
+//				
+//				while(true) {
+//					try {
+//						Thread.sleep(1000);
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//					//System.out.println(fps);
+//					lastFps = fps;
+//					fps=0;
+//				}
+//				
+//			}
+//		}).start();
 	}
 	
 	private static final double movementSpeedPerSecond = 0.05;

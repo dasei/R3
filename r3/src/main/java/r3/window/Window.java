@@ -13,7 +13,7 @@ public class Window extends JFrame implements KeyListener, MouseListener{
 	
 	private DrawComp dc;
 	
-	public Window() {
+	public void init() {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		dc = new DrawComp();
