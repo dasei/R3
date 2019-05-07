@@ -177,7 +177,7 @@ public class Mathstuff {
 			if(lengthMiddle!=0)
 			{
 				precision = 0.001*lengthMiddle+0.001;
-//				precision = 1;
+//				precision = 10;
 			}
 			else
 			{
@@ -246,6 +246,12 @@ public class Mathstuff {
 				//System.out.println("Lambda2End: " + lambda2End);
 				if(acB)
 				{
+					//System.out.println(lambda2End);
+					if(Double.isInfinite(lambda2End))
+					{
+						//System.out.println("Lambda1: "+lambda1+", Lambda2: "+lambda2End+", A: "+Arrays.toString(coords[x][0])+", B: "+Arrays.toString(coords[x][1])+", C: "+Arrays.toString(coords[x][2]));
+						break;
+					}
 					//lambda2 gibt die Stelle auf der Geraden o*lambda2 an
 					for(double lambda2 = 0;lambda2<=lambda2End;lambda2+=precision)
 					{
@@ -283,6 +289,12 @@ public class Mathstuff {
 						(lambda1*ab0[1]*ac[0]-lambda1*ab0[0]*ac[1])
 								/
 						(o[0]*ac[1]-o[1]*ac[0]);
+						//System.out.println(lambda2End);
+						if(Double.isInfinite(lambda2End))
+						{
+							//System.out.println("Lambda1: "+lambda1+", Lambda2: "+lambda2End+", A: "+Arrays.toString(coords[x][0])+", B: "+Arrays.toString(coords[x][1])+", C: "+Arrays.toString(coords[x][2]));
+							break;
+						}
 						for(double lambda2 = 0;lambda2<=lambda2End;lambda2+=precision)
 						{
 							lengthB = calcR3Point(new double[] {lambda2*o[0] + coords[x][0][0] + abLength*ab0[0],lambda2*o[1] + coords[x][0][1] + abLength*ab0[1],lambda2*o[2] + coords[x][0][2] + abLength*ab0[2]},forward,camPos,alpha,beta,factor);
@@ -315,6 +327,12 @@ public class Mathstuff {
 					(lambda1*ab0[0]*bc[1]-lambda1*ab0[1]*bc[0]-ab[0]*bc[1]+ab[1]*bc[0])
 							/
 					(o[1]*bc[0]-o[0]*bc[1]);
+					//System.out.println(lambda2End);
+					if(Double.isInfinite(lambda2End))
+					{
+						//System.out.println("Lambda1: "+lambda1+", Lambda2: "+lambda2End+", A: "+Arrays.toString(coords[x][0])+", B: "+Arrays.toString(coords[x][1])+", C: "+Arrays.toString(coords[x][2]));
+						break;
+					}
 					for(double lambda2 = 0;lambda2<=lambda2End;lambda2+=precision)
 					{
 						//Gefundener Punkt
@@ -350,6 +368,12 @@ public class Mathstuff {
 						(abLength*ab0[0]*bc[1]-abLength*ab0[1]*bc[0]-ab[0]*bc[1]+ab[1]*bc[0])
 								/
 						(o[1]*bc[0]-o[0]*bc[1]);
+						//System.out.println(lambda2End);
+						if(Double.isInfinite(lambda2End))
+						{
+							//System.out.println("Lambda1: "+lambda1+", Lambda2: "+lambda2End+", A: "+Arrays.toString(coords[x][0])+", B: "+Arrays.toString(coords[x][1])+", C: "+Arrays.toString(coords[x][2]));
+							break;
+						}
 						for(double lambda2 = 0;lambda2<=lambda2End;lambda2+=precision)
 						{
 							//double[] point = new double[] {lambda2*o[0] + coords[x][0][0] + abLength*ab[0],lambda2*o[1] + coords[x][0][1] + abLength*ab[1],lambda2*o[2] + coords[x][0][2] + abLength*ab[2]};
