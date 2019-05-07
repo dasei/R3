@@ -5,7 +5,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import r3.mathstuff.Camera;
 import r3.mathstuff.Mathstuff;
@@ -80,38 +79,52 @@ public class Main {
 		}).start();
 	}
 	
+	private static final double movementSpeedPerSecond = 0.05;
+	private static long processInputsTimeLastNanos = System.nanoTime();
 	private static void processInputs() {
+		
+		//calculate delta time
+		long timeNowNanos = System.nanoTime();
+		double deltaTimeSeconds = (timeNowNanos - processInputsTimeLastNanos)/1000000d;
+		processInputsTimeLastNanos = timeNowNanos;
+		
+//		System.out.println(Arrays.toString(Main.getCamera().pos));
 		
 		//////KEYBOARD - MOVEMENT
 		boolean[] register = window.getKeyRegister();
+		double movementDelta = movementSpeedPerSecond * deltaTimeSeconds;
 		
 		if(register[KeyEvent.VK_W] && !register[KeyEvent.VK_S]) {
-			Main.getCamera().pos[0]+=Main.getCamera().forward[0]/2;
-			Main.getCamera().pos[1]+=Main.getCamera().forward[1]/2;
+			Main.getCamera().pos[0]+=Main.getCamera().forward[0]*movementDelta;
+			Main.getCamera().pos[1]+=Main.getCamera().forward[1]*movementDelta;
 		} else if(!register[KeyEvent.VK_W] && register[KeyEvent.VK_S]) {
-			Main.getCamera().pos[0]-=Main.getCamera().forward[0]/2;
-			Main.getCamera().pos[1]-=Main.getCamera().forward[1]/2;
+			Main.getCamera().pos[0]-=Main.getCamera().forward[0]*movementDelta;
+			Main.getCamera().pos[1]-=Main.getCamera().forward[1]*movementDelta;
 		}
 		
 		if(register[KeyEvent.VK_A] && !register[KeyEvent.VK_D]) {
-			Main.getCamera().pos[0]+=Main.getCamera().left[0]/2;
-			Main.getCamera().pos[1]+=Main.getCamera().left[1]/2;
+			Main.getCamera().pos[0]+=Main.getCamera().left[0]*movementDelta;
+			Main.getCamera().pos[1]+=Main.getCamera().left[1]*movementDelta;
 		} else if(!register[KeyEvent.VK_A] && register[KeyEvent.VK_D]) {
-			Main.getCamera().pos[0]-=Main.getCamera().left[0]/2;
-			Main.getCamera().pos[1]-=Main.getCamera().left[1]/2;
+			Main.getCamera().pos[0]-=Main.getCamera().left[0]*movementDelta;
+			Main.getCamera().pos[1]-=Main.getCamera().left[1]*movementDelta;
 		}
 		
-		if(register[KeyEvent.VK_SPACE] && !register[KeyEvent.VK_SHIFT]) {
-			Main.getCamera().pos[2]+=0.5;
+		if(register[KeyEvent.VK_SPACE] && !(register[KeyEvent.VK_SHIFT]||register[KeyEvent.VK_E])) {
+			Main.getCamera().pos[2]+=movementDelta;
 		} else if(!register[KeyEvent.VK_SPACE] && (register[KeyEvent.VK_SHIFT]||register[KeyEvent.VK_E])) {
-			Main.getCamera().pos[2]-=0.5;
+			Main.getCamera().pos[2]-=movementDelta;
 		}
 		
 		
 		
 		//////MOUSE - ROTATION
 		if(register[KeyEvent.VK_UP] && !register[KeyEvent.VK_DOWN]) {
-			Main.getCamera().alpha+=10/ROTATION_DIVISOR;
+			Main.getCamera().alpha = Math.min(Main.getCamera().alpha + (10/ROTATION_DIVISOR), (89d/180d)*Math.PI);
+			
+			//max value
+			
+			
 			//Alpha
 			camera.forward = new double[]{Math.cos(camera.alpha)*Camera.forwardDEFAULT[0] + Math.sin(camera.alpha)*Camera.forwardDEFAULT[2],Camera.forwardDEFAULT[1],-Math.sin(camera.alpha)*Camera.forwardDEFAULT[0] + Math.cos(camera.alpha)*Camera.forwardDEFAULT[2]};
 			camera.left    = new double[]{Math.cos(camera.alpha)*Camera.leftDEFAULT[0] + Math.sin(camera.alpha)*Camera.leftDEFAULT[2],Camera.leftDEFAULT[1],-Math.sin(camera.alpha)*Camera.leftDEFAULT[0] + Math.cos(camera.alpha)*Camera.leftDEFAULT[2]};
@@ -119,7 +132,8 @@ public class Main {
 			camera.forward = new double[]{Math.cos(camera.beta)*camera.forward[0]-Math.sin(camera.beta)*camera.forward[1],Math.sin(camera.beta)*camera.forward[0] + Math.cos(-camera.beta)*camera.forward[1],camera.forward[2]};
 			camera.left    = new double[]{Math.cos(camera.beta)*camera.left[0]-Math.sin(camera.beta)*camera.left[1],Math.sin(camera.beta)*camera.left[0] + Math.cos(-camera.beta)*camera.left[1],camera.left[2]};
 		} else if(!register[KeyEvent.VK_UP] && register[KeyEvent.VK_DOWN]) {
-			Main.getCamera().alpha-=10/ROTATION_DIVISOR;
+//			Main.getCamera().alpha-=10/ROTATION_DIVISOR;
+			Main.getCamera().alpha = Math.max(Main.getCamera().alpha - (10/ROTATION_DIVISOR), (-89d/180d)*Math.PI);
 			//Alpha
 			camera.forward = new double[]{Math.cos(camera.alpha)*Camera.forwardDEFAULT[0] + Math.sin(camera.alpha)*Camera.forwardDEFAULT[2],Camera.forwardDEFAULT[1],-Math.sin(camera.alpha)*Camera.forwardDEFAULT[0] + Math.cos(camera.alpha)*Camera.forwardDEFAULT[2]};
 			camera.left    = new double[]{Math.cos(camera.alpha)*Camera.leftDEFAULT[0] + Math.sin(camera.alpha)*Camera.leftDEFAULT[2],Camera.leftDEFAULT[1],-Math.sin(camera.alpha)*Camera.leftDEFAULT[0] + Math.cos(camera.alpha)*Camera.leftDEFAULT[2]};
@@ -226,7 +240,7 @@ public class Main {
 		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
 		try {
 //			BufferedReader br = new BufferedReader(new FileReader(new File("E:/Bibliotheken/Downloads/Dragon.raw")));
-			BufferedReader br = new BufferedReader(new FileReader(new File("res/human.raw")));
+			BufferedReader br = new BufferedReader(new FileReader(new File("res/Dragon.raw")));
 		
 			int scale = 10;
 			

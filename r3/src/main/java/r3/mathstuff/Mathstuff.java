@@ -1,7 +1,5 @@
 package r3.mathstuff;
 
-import java.util.Arrays;
-
 import r3.main.Main;
 
 public class Mathstuff {
@@ -176,8 +174,8 @@ public class Mathstuff {
 			lengthMiddle = calcR3Point(middle,forward,camPos,alpha,beta,factor);
 			if(lengthMiddle!=0)
 			{
-				precision = 0.001*lengthMiddle+0.001;
-//				precision = 1;
+//				precision = 0.001*lengthMiddle+0.001;
+				precision = 1;
 			}
 			else
 			{
