@@ -16,9 +16,19 @@ public class DrawComp extends JComponent {
 	int g=0;
 	int b=0;
 	
-	private final Font font = new Font("arial", Font.BOLD, 20);	
+	private final Font font = new Font("arial", Font.BOLD, 20);
+	
+	//FPS counting => initialization
+	private long timeStartNanos;
+	private long timeNow;
+	private int cyclesForFPSCalculation = 10;	
+	private int cycleCounter = 0;
+	private double fpsCurrent = 0;
 	
 	public void paintComponent(Graphics g) {		
+		//TODO
+		if(cycleCounter == 0)
+			timeStartNanos = System.nanoTime();
 //		g2 = (Graphics2D) gOld;			
 //		if(r > 0 && b == 0){
 //			r--;
@@ -40,9 +50,6 @@ public class DrawComp extends JComponent {
 		
 		
 		
-		//Draw FPS
-		g.setFont(font);
-		g.drawString(Main.fpsCurrent+"", 5, 25);
 		
 		//Draw Crosshair
 		int screenWidth = this.getWidth();
@@ -50,6 +57,14 @@ public class DrawComp extends JComponent {
 		g.drawLine(screenWidth/2-20, screenHeight/2, screenWidth/2+20, screenHeight/2);
 		g.drawLine(screenWidth/2, screenHeight/2-20, screenWidth/2, screenHeight/2+20);
 		
+		
+		//Draw FPS (main Loop, Inputs)
+		g.setFont(font);
+		g.drawString("main" + Main.fpsCurrent, screenWidth-100, 25);
+		
+		//Draw FPS (calc)
+		g.drawString("calc" + fpsCurrent, 0, 25);
+
 	}
 	
 	private void draw3DZBuffered(Graphics g) {
@@ -59,11 +74,18 @@ public class DrawComp extends JComponent {
 		long timeBeginning = System.currentTimeMillis();
 		
 		
+		
+		
 		//Calculate Buffer
 		double[][] buffCache = Mathstuff.calcR3ZBuff(coords, camera.forward, camera.pos, camera.alpha, camera.beta, camera.scaleFactor);
 		
+		
+		
+		
+		
+		
 		//TODO time measurement
-		System.out.print((System.currentTimeMillis()-timeBeginning) + "\t");		
+		System.out.print((System.currentTimeMillis()-timeBeginning) + "\t");
 		timeBeginning = System.currentTimeMillis();
 		//
 		
@@ -78,6 +100,23 @@ public class DrawComp extends JComponent {
 		
 		//TODO time measurement
 		System.out.println((System.currentTimeMillis()-timeBeginning));
+		
+		
+		
+		//TODO time measurement => FPS DISPLAY
+		cycleCounter++;		
+		timeNow = System.nanoTime();
+		if(timeNow - timeStartNanos > 1000000000) {
+			cyclesForFPSCalculation = 1;
+			System.out.println("EEEEEEEEEEEEEEEEND");
+		}
+		if(cycleCounter % cyclesForFPSCalculation == 0) {
+			fpsCurrent =
+					((int) ((1000000000d*cyclesForFPSCalculation)/(timeNow - timeStartNanos) * 100)) / 100d;
+			//set new start time for next cycle
+			timeStartNanos = timeNow;
+//			System.out.println(( 1000000000d/(timeNow - timeStartNanos)) + ", " + timeNow + "/t" + timeStartNanos);
+		}	
 	}
 	
 	private void drawMesh(Graphics g, int[][][] frameBuffer, int screenCenterX, int screenCenterY) {		
