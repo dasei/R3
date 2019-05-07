@@ -173,41 +173,41 @@ public class Main {
 	}
 	
 	public static double[][][] loadCoords(){
-//		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
-//		try {
-////			BufferedReader br = new BufferedReader(new FileReader(new File("E:/Bibliotheken/Downloads/Dragon.raw")));
-//			BufferedReader br = new BufferedReader(new FileReader(new File("G:/Programmieren/Export/3DRender/Dragon.raw")));
-//		
-//			int scale = 10;
-//			
-//			while(br.ready()) {
-//				 
-//				String s = br.readLine();
-//				String[] coordinates = s.split(" ");
-//				triangles.add(
-//						new double[][] {
-//							{Double.parseDouble(coordinates[0])*scale,Double.parseDouble(coordinates[1])*scale,Double.parseDouble(coordinates[2])*scale},
-//							{Double.parseDouble(coordinates[3])*scale,Double.parseDouble(coordinates[4])*scale,Double.parseDouble(coordinates[5])*scale},
-//							{Double.parseDouble(coordinates[6])*scale,Double.parseDouble(coordinates[7])*scale,Double.parseDouble(coordinates[8])*scale}
-//						}
-//				);
-//				
-////				p.addVertex(new Point3D(Double.parseDouble(coordinates[0])*scale,Double.parseDouble(coordinates[1])*scale, Double.parseDouble(coordinates[2])*scale));
-////				p.addVertex(new Point3D(Double.parseDouble(coordinates[3])*scale,Double.parseDouble(coordinates[4])*scale, Double.parseDouble(coordinates[5])*scale));
-////				p.addVertex(new Point3D(Double.parseDouble(coordinates[6])*scale,Double.parseDouble(coordinates[7])*scale, Double.parseDouble(coordinates[8])*scale));
-//			}
-//			br.close();
-//			coordsDraw = new int[triangles.size()][3][2];
-//			return triangles.toArray(new double[0][][]);
-//			
-//		}catch(Exception e) {
-//			e.printStackTrace();
-//		}
-//		
-//		return new double[][][] {};
+		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
+		try {
+//			BufferedReader br = new BufferedReader(new FileReader(new File("E:/Bibliotheken/Downloads/Dragon.raw")));
+			BufferedReader br = new BufferedReader(new FileReader(new File("res/Dragon.raw")));
+		
+			int scale = 10;
+			
+			while(br.ready()) {
+				 
+				String s = br.readLine();
+				String[] coordinates = s.split(" ");
+				triangles.add(
+						new double[][] {
+							{Double.parseDouble(coordinates[0])*scale,Double.parseDouble(coordinates[1])*scale,Double.parseDouble(coordinates[2])*scale},
+							{Double.parseDouble(coordinates[3])*scale,Double.parseDouble(coordinates[4])*scale,Double.parseDouble(coordinates[5])*scale},
+							{Double.parseDouble(coordinates[6])*scale,Double.parseDouble(coordinates[7])*scale,Double.parseDouble(coordinates[8])*scale}
+						}
+				);
+				
+//				p.addVertex(new Point3D(Double.parseDouble(coordinates[0])*scale,Double.parseDouble(coordinates[1])*scale, Double.parseDouble(coordinates[2])*scale));
+//				p.addVertex(new Point3D(Double.parseDouble(coordinates[3])*scale,Double.parseDouble(coordinates[4])*scale, Double.parseDouble(coordinates[5])*scale));
+//				p.addVertex(new Point3D(Double.parseDouble(coordinates[6])*scale,Double.parseDouble(coordinates[7])*scale, Double.parseDouble(coordinates[8])*scale));
+			}
+			br.close();
+			coordsDraw = new int[triangles.size()][3][2];
+			return triangles.toArray(new double[0][][]);
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return new double[][][] {};
 /////////////////////////////////////////////////////		
-		return new double[][][] {
-		{{-10,-5,5},{-10,5,5},{-15,0,-5}}};
+//		return new double[][][] {
+//		{{-10,-5,5},{-10,5,5},{-15,0,-5}}};
 /////////////////////////////////////////////////////
 //		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
 //		Random random = new Random();
