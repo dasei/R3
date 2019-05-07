@@ -24,27 +24,33 @@ public class DrawComp extends JComponent {
 	
 	public void paintComponent(Graphics gOld) {		
 		g2 = (Graphics2D) gOld;			
-		if(r > 0 && b == 0){
-			r--;
-		    g++;
-		}
-		else if(g > 0 && r == 0){
-			g--;
-			b++;
-		}
-		else if(b > 0 && g == 0){
-			r++;
-			b--;
-		}
-		g2.setColor(new Color(r,g,b));
+//		if(r > 0 && b == 0){
+//			r--;
+//		    g++;
+//		}
+//		else if(g > 0 && r == 0){
+//			g--;
+//			b++;
+//		}
+//		else if(b > 0 && g == 0){
+//			r++;
+//			b--;
+//		}
+//		g2.setColor(new Color(r,g,b));
 		
 						//Main.getWindow().getDrawComp().repaint();
 				
 		
 	//	g.clearRect(0, 0, this.getWidth(), this.getHeight());
-		
+		int screenX = this.getWidth();
+		int screenY = this.getHeight();
+		g2.drawString(Main.lastFps+"",screenX-25 , 13);
 		Camera camera = Main.getCamera();
+		long timeBeginning = System.currentTimeMillis();
 		double[][] buffCache = Mathstuff.calcR3ZBuff(coords, camera.forward, camera.pos, camera.alpha, camera.beta, camera.scaleFactor);
+		long timeEnd = System.currentTimeMillis();
+		System.out.println("Calculating took: "+(timeEnd-timeBeginning));
+		timeBeginning = System.currentTimeMillis();
 		for(int x = 0;x<buffCache.length;x++)
 		{
 			for(int y = 0;y<buffCache[0].length;y++)
@@ -56,8 +62,8 @@ public class DrawComp extends JComponent {
 				}
 			}
 		}
-		int screenX = this.getWidth();
-		int screenY = this.getHeight();
+		timeEnd = System.currentTimeMillis();
+		System.out.println("Drawing took: "+(timeEnd-timeBeginning));
 		g2.drawLine(screenX/2-20, screenY/2-20, screenX/2+20, screenY/2+20);
 		g2.drawLine(screenX/2+20, screenY/2+20, screenX/2-20, screenY/2-20);
 		//g2.drawRect(screenX-screenX/20, screenY-screenY/20, screenX/10, screenY/10);

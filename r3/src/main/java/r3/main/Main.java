@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import r3.mathstuff.Camera;
+import r3.mathstuff.Mathstuff;
 import r3.window.Window;
 
 public class Main {
@@ -17,6 +18,7 @@ public class Main {
 	public static final double ROTATION_DIVISOR = 500d;	
 	public static final int FPS_MAX = 60;
 	public static int fps = 0;
+	public static int lastFps = 0;
 	public static int[][][] coordsDraw;
 	public static double[][][] coords = loadCoords();
 	
@@ -24,7 +26,7 @@ public class Main {
 		camera = new Camera();
 		
 		window = new Window();
-		
+		convertTriangles();
 		startLoop();		
 	}
 	
@@ -46,7 +48,7 @@ public class Main {
 					long timeEnd = System.nanoTime();
 					//System.out.println("Time: " + (timeEnd-timeBeginning));
 					try {
-						Thread.sleep(10);
+						Thread.sleep(0);
 					}catch(Exception e) {};				
 
 //					coordsDefault = new double[][][] {
@@ -69,7 +71,8 @@ public class Main {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					System.out.println(fps);
+					//System.out.println(fps);
+					lastFps = fps;
 					fps=0;
 				}
 				
@@ -85,21 +88,17 @@ public class Main {
 		if(register[KeyEvent.VK_W] && !register[KeyEvent.VK_S]) {
 			Main.getCamera().pos[0]+=Main.getCamera().forward[0]/2;
 			Main.getCamera().pos[1]+=Main.getCamera().forward[1]/2;
-			Main.getCamera().pos[2]+=Main.getCamera().forward[2];
 		} else if(!register[KeyEvent.VK_W] && register[KeyEvent.VK_S]) {
 			Main.getCamera().pos[0]-=Main.getCamera().forward[0]/2;
 			Main.getCamera().pos[1]-=Main.getCamera().forward[1]/2;
-			Main.getCamera().pos[2]-=Main.getCamera().forward[2]/2;
 		}
 		
 		if(register[KeyEvent.VK_A] && !register[KeyEvent.VK_D]) {
 			Main.getCamera().pos[0]+=Main.getCamera().left[0]/2;
 			Main.getCamera().pos[1]+=Main.getCamera().left[1]/2;
-			Main.getCamera().pos[2]+=Main.getCamera().left[2]/2;
 		} else if(!register[KeyEvent.VK_A] && register[KeyEvent.VK_D]) {
 			Main.getCamera().pos[0]-=Main.getCamera().left[0]/2;
 			Main.getCamera().pos[1]-=Main.getCamera().left[1]/2;
-			Main.getCamera().pos[2]-=Main.getCamera().left[2]/2;
 		}
 		
 		if(register[KeyEvent.VK_SPACE] && !register[KeyEvent.VK_SHIFT]) {
@@ -171,43 +170,92 @@ public class Main {
 	public static Window getWindow(){
 		return window;
 	}
-	
+	public static void convertTriangles()
+	{
+		double[] ab0;
+		double[] ac;
+		double[] bc;
+		double lambda;
+		double[] o;
+		double lambda2End = 0;
+		double lambda3 = 0;
+		double lengthB = 0;
+		double bcLength = 0;
+		double lengthMiddle = 0;
+		double oLength = 0;
+		for(int x = 0;x<coords.length;x++)
+		{
+			ab0 = new double[] {coords[x][1][0]-coords[x][0][0],coords[x][1][1]-coords[x][0][1],coords[x][1][2]-coords[x][0][2]};
+			double abLength = Mathstuff.length(ab0);
+			double[] ab = ab0;
+			ab0 = new double[] {ab0[0]/abLength,ab0[1]/abLength,ab0[2]/abLength};
+			//Vektor AC
+			ac = new double[] {coords[x][2][0]-coords[x][0][0],coords[x][2][1]-coords[x][0][1],coords[x][2][2]-coords[x][0][2]};
+			double acLength = Mathstuff.length(ac);
+			ac = new double[] {ac[0]/acLength,ac[1]/acLength,ac[2]/acLength};
+			//Vektor BC
+			bc = new double[]{coords[x][2][0]-coords[x][1][0],coords[x][2][1]-coords[x][1][1],coords[x][2][2]-coords[x][1][2]};
+			bcLength = Mathstuff.length(bc);
+			lambda = 
+			(ab0[0]*(coords[x][2][0]-coords[x][0][0])+ab0[1]*(coords[x][2][1]-coords[x][0][1])+ab0[2]*(coords[x][2][2]-coords[x][0][2]))
+							/
+			(ab0[0]*ab0[0]+ab0[1]*ab0[1]+ab0[2]*ab0[2]);
+			if(lambda<0)
+			{
+				System.out.println("Lambda before(<):" + lambda);
+				double[] aCache = coords[x][0];
+				coords[x][0] = coords[x][2];
+				coords[x][2] = coords[x][1];
+				coords[x][1] = aCache;
+			}
+			else if(lambda > abLength)
+			{
+				System.out.println("Lambda before(>):" + lambda);
+				double[] cCache = coords[x][2];
+				coords[x][2] = coords[x][1];
+				coords[x][1] = cCache;
+			}
+			lambda = 
+	    	(ab0[0]*(coords[x][2][0]-coords[x][0][0])+ab0[1]*(coords[x][2][1]-coords[x][0][1])+ab0[2]*(coords[x][2][2]-coords[x][0][2]))
+							/
+			(ab0[0]*ab0[0]+ab0[1]*ab0[1]+ab0[2]*ab0[2]);
+			System.out.println("Lambda after:" + lambda);
+		}
+	}
 	public static double[][][] loadCoords(){
-//		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
-//		try {
-////			BufferedReader br = new BufferedReader(new FileReader(new File("E:/Bibliotheken/Downloads/Dragon.raw")));
-//			BufferedReader br = new BufferedReader(new FileReader(new File("G:/Programmieren/Export/3DRender/Dragon.raw")));
-//		
-//			int scale = 10;
-//			
-//			while(br.ready()) {
-//				 
-//				String s = br.readLine();
-//				String[] coordinates = s.split(" ");
-//				triangles.add(
-//						new double[][] {
-//							{Double.parseDouble(coordinates[0])*scale,Double.parseDouble(coordinates[1])*scale,Double.parseDouble(coordinates[2])*scale},
-//							{Double.parseDouble(coordinates[3])*scale,Double.parseDouble(coordinates[4])*scale,Double.parseDouble(coordinates[5])*scale},
-//							{Double.parseDouble(coordinates[6])*scale,Double.parseDouble(coordinates[7])*scale,Double.parseDouble(coordinates[8])*scale}
-//						}
-//				);
-//				
-////				p.addVertex(new Point3D(Double.parseDouble(coordinates[0])*scale,Double.parseDouble(coordinates[1])*scale, Double.parseDouble(coordinates[2])*scale));
-////				p.addVertex(new Point3D(Double.parseDouble(coordinates[3])*scale,Double.parseDouble(coordinates[4])*scale, Double.parseDouble(coordinates[5])*scale));
-////				p.addVertex(new Point3D(Double.parseDouble(coordinates[6])*scale,Double.parseDouble(coordinates[7])*scale, Double.parseDouble(coordinates[8])*scale));
-//			}
-//			br.close();
-//			coordsDraw = new int[triangles.size()][3][2];
-//			return triangles.toArray(new double[0][][]);
-//			
-//		}catch(Exception e) {
-//			e.printStackTrace();
-//		}
-//		
-//		return new double[][][] {};
+		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
+		try {
+//			BufferedReader br = new BufferedReader(new FileReader(new File("E:/Bibliotheken/Downloads/Dragon.raw")));
+			BufferedReader br = new BufferedReader(new FileReader(new File("res/human.raw")));
+		
+			int scale = 10;
+			
+			while(br.ready()) {
+				 
+				String s = br.readLine();
+				String[] coordinates = s.split(" ");
+				triangles.add(
+						new double[][] {
+							{Double.parseDouble(coordinates[0])*scale,Double.parseDouble(coordinates[1])*scale,Double.parseDouble(coordinates[2])*scale},
+							{Double.parseDouble(coordinates[3])*scale,Double.parseDouble(coordinates[4])*scale,Double.parseDouble(coordinates[5])*scale},
+							{Double.parseDouble(coordinates[6])*scale,Double.parseDouble(coordinates[7])*scale,Double.parseDouble(coordinates[8])*scale}
+						}
+				);
+				
+//				p.addVertex(new Point3D(Double.parseDouble(coordinates[0])*scale,Double.parseDouble(coordinates[1])*scale, Double.parseDouble(coordinates[2])*scale));
+//				p.addVertex(new Point3D(Double.parseDouble(coordinates[3])*scale,Double.parseDouble(coordinates[4])*scale, Double.parseDouble(coordinates[5])*scale));
+//				p.addVertex(new Point3D(Double.parseDouble(coordinates[6])*scale,Double.parseDouble(coordinates[7])*scale, Double.parseDouble(coordinates[8])*scale));
+			}
+			br.close();
+			coordsDraw = new int[triangles.size()][3][2];
+			return triangles.toArray(new double[0][][]);		
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return new double[][][] {};
 /////////////////////////////////////////////////////		
-		return new double[][][] {
-		{{-10,-5,5},{-10,5,5},{-15,0,-5}}};
+//		return new double[][][] {
+//		{{-10,-5,5},{-10,5,5},{-15,0,-5}}};
 /////////////////////////////////////////////////////
 //		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
 //		Random random = new Random();
