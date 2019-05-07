@@ -13,3 +13,4 @@ LOADING SCREEN:
 Pewdiepie(greenscreen) rennt vor T-Series weg und das Ziel sind 100%/100millionen Subs
 
 Sowas wie wenn man ein Unity Programm startet(Das Logo und so ne Animation) brauchen wir auch.
+Idee: Logo mit unserem Render, fov++, pos[0]++

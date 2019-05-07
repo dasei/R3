@@ -45,7 +45,8 @@ public class Window extends JFrame implements KeyListener, MouseListener{
 	
 	public void keyPressed(KeyEvent e) {
 		keyRegister[e.getKeyCode()] = true;
-		System.out.println("registered key: " + e.getKeyChar());}
+		//System.out.println("registered key: " + e.getKeyChar());
+		}
 	
 	public void keyReleased(KeyEvent e) {
 		this.keyRegister[e.getKeyCode()] = false;
