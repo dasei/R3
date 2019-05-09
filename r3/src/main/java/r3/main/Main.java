@@ -257,7 +257,7 @@ public class Main {
 	public static double[][][] loadCoords(){
 		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(new File("res/Dragon.raw")));
+			BufferedReader br = new BufferedReader(new FileReader(new File("res/dragon.raw")));
 
 		
 			int scale = 10;
