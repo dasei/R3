@@ -175,7 +175,7 @@ public class Mathstuff {
 			if(lengthMiddle!=0)
 			{
 
-				precision = 0.001*lengthMiddle+0.001;
+				precision = 0.00138*lengthMiddle+0.001;
 //				precision = 1;
 
 			}
