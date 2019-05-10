@@ -21,6 +21,11 @@ public class Main {
 	public static final double[][][] coords = loadCoords();
 	
 	public static void main(String[] args) {		
+		
+//		System.out.println(Arrays.toString(Mathstuff.getInstance().vectorUnify(new double[] {0.5,0.5,0.5}, false)));
+		
+//		System.exit(0);
+		
 		window.init();
 		
 		convertTriangles();
@@ -29,7 +34,7 @@ public class Main {
 	
 	private static void startLoop() {
 		(new Thread() {
-			public void run() {				
+			public void run() {		
 				super.run();
 				
 				System.out.println("started main loop");
@@ -204,30 +209,36 @@ public class Main {
 	}
 	public static void convertTriangles()
 	{
-		double[] ab0;
-		double[] ac;
-		double[] bc;
-		double lambda;
-		double[] o;
-		double lambda2End = 0;
-		double lambda3 = 0;
-		double lengthB = 0;
-		double bcLength = 0;
-		double lengthMiddle = 0;
-		double oLength = 0;
-		for(int x = 0;x<coords.length;x++)
-		{
+		double[] ab0;	// vector ab, unit vector
+		double lambda;	// ab0 * lambda gives the point, on which the point of C sits in a 90° angle on
+		
+		double[] ac;	// vector ac
+//		double[] bc;
+//		double[] o;
+//		double lambda2End = 0;
+//		double lambda3 = 0;
+//		double lengthB = 0;
+//		double bcLength = 0;
+//		double lengthMiddle = 0;
+//		double oLength = 0;
+		
+//		Mathstuff mathstuff = new Mathstuff(false);
+		
+		for(int x = 0;x<coords.length;x++){
+			
+			//calculate AB (unit)			
+//			ab0 = Mathstuff.vectorUnify(new double[] {coords[x][1][0]-coords[x][0][0],coords[x][1][1]-coords[x][0][1],coords[x][1][2]-coords[x][0][2]}, false);
 			ab0 = new double[] {coords[x][1][0]-coords[x][0][0],coords[x][1][1]-coords[x][0][1],coords[x][1][2]-coords[x][0][2]};
-			double abLength = Mathstuff.length(ab0);
-			double[] ab = ab0;
+			double abLength = Mathstuff.length(ab0);			
 			ab0 = new double[] {ab0[0]/abLength,ab0[1]/abLength,ab0[2]/abLength};
+			
 			//Vektor AC
 			ac = new double[] {coords[x][2][0]-coords[x][0][0],coords[x][2][1]-coords[x][0][1],coords[x][2][2]-coords[x][0][2]};
 			double acLength = Mathstuff.length(ac);
 			ac = new double[] {ac[0]/acLength,ac[1]/acLength,ac[2]/acLength};
 			//Vektor BC
-			bc = new double[]{coords[x][2][0]-coords[x][1][0],coords[x][2][1]-coords[x][1][1],coords[x][2][2]-coords[x][1][2]};
-			bcLength = Mathstuff.length(bc);
+//			bc = new double[]{coords[x][2][0]-coords[x][1][0],coords[x][2][1]-coords[x][1][1],coords[x][2][2]-coords[x][1][2]};
+//			bcLength = Mathstuff.length(bc);
 			lambda = 
 			(ab0[0]*(coords[x][2][0]-coords[x][0][0])+ab0[1]*(coords[x][2][1]-coords[x][0][1])+ab0[2]*(coords[x][2][2]-coords[x][0][2]))
 							/
