@@ -209,10 +209,14 @@ public class Main {
 	}
 	public static void convertTriangles()
 	{
-		double[] ab0;	// vector ab, unit vector
+		double[] ab0;	// vector ab, unit vector		
 		double lambda;	// ab0 * lambda gives the point, on which the point of C sits in a 90° angle on
 		
-		double[] ac;	// vector ac
+		double[] ac0;	// vector ac
+		
+		
+		double abLength;
+		
 //		double[] bc;
 //		double[] o;
 //		double lambda2End = 0;
@@ -224,45 +228,52 @@ public class Main {
 		
 //		Mathstuff mathstuff = new Mathstuff(false);
 		
-		for(int x = 0;x<coords.length;x++){
+		double[] resortCache;
+		
+		for(int triangleI = 0;triangleI < coords.length;triangleI++) {
 			
-			//calculate AB (unit)			
-//			ab0 = Mathstuff.vectorUnify(new double[] {coords[x][1][0]-coords[x][0][0],coords[x][1][1]-coords[x][0][1],coords[x][1][2]-coords[x][0][2]}, false);
-			ab0 = new double[] {coords[x][1][0]-coords[x][0][0],coords[x][1][1]-coords[x][0][1],coords[x][1][2]-coords[x][0][2]};
-			double abLength = Mathstuff.length(ab0);			
-			ab0 = new double[] {ab0[0]/abLength,ab0[1]/abLength,ab0[2]/abLength};
+			//calculate AB (unit)
+			ab0 = new double[] {coords[triangleI][1][0]-coords[triangleI][0][0],coords[triangleI][1][1]-coords[triangleI][0][1],coords[triangleI][1][2]-coords[triangleI][0][2]};			
+			abLength = Mathstuff.vectorUnify(ab0);		
+//			ab0 = new double[] {coords[x][1][0]-coords[x][0][0],coords[x][1][1]-coords[x][0][1],coords[x][1][2]-coords[x][0][2]};
+//			double abLength = Mathstuff.length(ab0);			
+//			ab0 = new double[] {ab0[0]/abLength,ab0[1]/abLength,ab0[2]/abLength};
 			
 			//Vektor AC
-			ac = new double[] {coords[x][2][0]-coords[x][0][0],coords[x][2][1]-coords[x][0][1],coords[x][2][2]-coords[x][0][2]};
-			double acLength = Mathstuff.length(ac);
-			ac = new double[] {ac[0]/acLength,ac[1]/acLength,ac[2]/acLength};
+			ac0 = Mathstuff.vectorUnify(new double[] {coords[triangleI][2][0]-coords[triangleI][0][0],coords[triangleI][2][1]-coords[triangleI][0][1],coords[triangleI][2][2]-coords[triangleI][0][2]}, false);
+//			ac0 = new double[] {coords[x][2][0]-coords[x][0][0],coords[x][2][1]-coords[x][0][1],coords[x][2][2]-coords[x][0][2]};
+//			double acLength = Mathstuff.length(ac0);
+//			ac0 = new double[] {ac0[0]/acLength,ac0[1]/acLength,ac0[2]/acLength};
 			//Vektor BC
 //			bc = new double[]{coords[x][2][0]-coords[x][1][0],coords[x][2][1]-coords[x][1][1],coords[x][2][2]-coords[x][1][2]};
 //			bcLength = Mathstuff.length(bc);
 			lambda = 
-			(ab0[0]*(coords[x][2][0]-coords[x][0][0])+ab0[1]*(coords[x][2][1]-coords[x][0][1])+ab0[2]*(coords[x][2][2]-coords[x][0][2]))
+			(ab0[0]*(coords[triangleI][2][0]-coords[triangleI][0][0])+ab0[1]*(coords[triangleI][2][1]-coords[triangleI][0][1])+ab0[2]*(coords[triangleI][2][2]-coords[triangleI][0][2]))
 							/
 			(ab0[0]*ab0[0]+ab0[1]*ab0[1]+ab0[2]*ab0[2]);
-			if(lambda<0)
-			{
-				System.out.println("Lambda before(<):" + lambda);
-				double[] aCache = coords[x][0];
-				coords[x][0] = coords[x][2];
-				coords[x][2] = coords[x][1];
-				coords[x][1] = aCache;
+			if(lambda<0) {
+//				System.out.println("Lambda before(<):" + lambda);
+//				resortCache = coords[x][0];
+//				coords[x][0] = coords[x][2];
+//				coords[x][2] = coords[x][1];
+//				coords[x][1] = resortCache;
+				
+				resortCache = coords[triangleI][0];
+				coords[triangleI][0] = coords[triangleI][2];
+				coords[triangleI][2] = resortCache;
+				
+			} else if(lambda > abLength) {
+//				System.out.println("Lambda before(>):" + lambda);
+				resortCache = coords[triangleI][2];
+				coords[triangleI][2] = coords[triangleI][1];
+				coords[triangleI][1] = resortCache;
 			}
-			else if(lambda > abLength)
-			{
-				System.out.println("Lambda before(>):" + lambda);
-				double[] cCache = coords[x][2];
-				coords[x][2] = coords[x][1];
-				coords[x][1] = cCache;
-			}
-			lambda = 
-	    	(ab0[0]*(coords[x][2][0]-coords[x][0][0])+ab0[1]*(coords[x][2][1]-coords[x][0][1])+ab0[2]*(coords[x][2][2]-coords[x][0][2]))
-							/
-			(ab0[0]*ab0[0]+ab0[1]*ab0[1]+ab0[2]*ab0[2]);
-			System.out.println("Lambda after:" + lambda);
+			
+//			lambda = 
+//	    	(ab0[0]*(coords[x][2][0]-coords[x][0][0])+ab0[1]*(coords[x][2][1]-coords[x][0][1])+ab0[2]*(coords[x][2][2]-coords[x][0][2]))
+//							/
+//			(ab0[0]*ab0[0]+ab0[1]*ab0[1]+ab0[2]*ab0[2]);
+//			System.out.println("Lambda after:" + lambda);
 		}
 	}
 	public static double[][][] loadCoords(){

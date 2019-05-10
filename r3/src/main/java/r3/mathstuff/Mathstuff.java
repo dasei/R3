@@ -461,6 +461,7 @@ public class Mathstuff {
 	
 	/**
 	 * unifies passed vector; overwrites vector values, if ~createNewVector~ is false!
+	 * @return returns unified vector
 	 */
 	public static double[] vectorUnify(double[] vector, boolean createNewVector) {
 		double[] target;
@@ -479,12 +480,14 @@ public class Mathstuff {
 	/**
 	 * unfies passed vector<br>
 	 * NOTE: if overwriting values of this vector is not wanted please refer to {@link #vectorUnify(double[], boolean)}
+	 * @return returns length of initial vector
 	 */
-	public static void vectorUnify(double[] vector) {
+	public static double vectorUnify(double[] vector) {
 		double len = Math.sqrt((vector[0]*vector[0])+(vector[1]*vector[1])+(vector[2]*vector[2]));
 		vector[0] = vector[0] / len;
 		vector[1] = vector[1] / len;
 		vector[2] = vector[2] / len;
+		return len;
 	}
 	
 	private void printWarningValuesNotInitialized() {
