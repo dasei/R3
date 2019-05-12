@@ -122,6 +122,7 @@ public class Mathstuff {
 	private static int[] coordsINTCache;
 	public static double[][] calcR3ZBuff(double[][][] coords, double[] forward, double[] camPos,double alpha, double beta,double factor)
 	{
+		long pointsAmount = 0;
 //		System.out.println(Arrays.toString(forward));
 //		System.out.println(Arrays.toString(camPos));
 		//System.out.println("Start");
@@ -146,9 +147,8 @@ public class Mathstuff {
 		boolean acB = true;
 		//Lambda1:Stelle auf der Gerade AB*lambda1 + A
 		double lambda2End = 0;
-		double lambda3 = 0;
 		double lengthB = 0;
-		double bcLength = 0;
+//		double bcLength = 0;
 		double lengthMiddle = 0;
 		double oLength = 0;
 		
@@ -169,14 +169,19 @@ public class Mathstuff {
 			ac = new double[] {ac[0]/acLength,ac[1]/acLength,ac[2]/acLength};
 			//Vektor BC
 			bc = new double[]{coords[x][2][0]-coords[x][1][0],coords[x][2][1]-coords[x][1][1],coords[x][2][2]-coords[x][1][2]};
-			bcLength = length(bc);
+//			bcLength = length(bc);
 			middle = new double[]{(coords[x][0][0]+coords[x][1][0]+coords[x][2][0])/3,(coords[x][0][1]+coords[x][1][1]+coords[x][2][1])/3,(coords[x][0][2]+coords[x][1][2]+coords[x][2][2])/3};
 			lengthMiddle = calcR3Point(middle,forward,camPos,alpha,beta,factor);
 			if(lengthMiddle!=0)
 			{
-
-				precision = 0.001*lengthMiddle+0.001;
-//				precision = 1;
+				
+//				double precisionOld = 0.00138*lengthMiddle+0.001;
+				
+//				precision = 0.001+Math.pow(1.00146, lengthMiddle)-1;
+			//	System.out.println("--PrecisionOld: "+precisionOld+", PrecisionNew: "+precision+"--");
+				
+				//System.out.println(precision);
+				precision = 0.001;
 
 			}
 			else
@@ -266,6 +271,7 @@ public class Mathstuff {
 						if(coordsINTCache[1]>0&&coordsINTCache[2]>0&&coordsINTCache[1]<screenX&&coordsINTCache[2]<screenY&&(Buffer2D[coordsINTCache[1]][coordsINTCache[2]] > lengthB||Buffer2D[coordsINTCache[1]][coordsINTCache[2]]==0))
 						{
 							Buffer2D[coordsINTCache[1]][coordsINTCache[2]] = lengthB;
+							pointsAmount++;
 							//System.out.println(Arrays.toString(coordsINTCache)+", length: "+lengthB);
 								//System.out.println("X:"+R3Point[1]+" ;Y:"+R3Point[2]+" ;Deep:"+R3Point[3]);
 						}
@@ -277,6 +283,7 @@ public class Mathstuff {
 							if(coordsINTCache[1]>0&&coordsINTCache[2]>0&&coordsINTCache[1]<screenX&&coordsINTCache[2]<screenY&&(Buffer2D[coordsINTCache[1]][coordsINTCache[2]] > lengthB||Buffer2D[coordsINTCache[1]][coordsINTCache[2]]==0))
 							{
 								Buffer2D[coordsINTCache[1]][coordsINTCache[2]] = lengthB;
+								pointsAmount++;
 								//System.out.println("X:"+(int)R3PointEnd[1]+" ;Y:"+(int)R3PointEnd[2]+" ;Deep:"+(int)R3PointEnd[3]+" - Final");
 							}
 							break;
@@ -301,6 +308,7 @@ public class Mathstuff {
 							if(coordsINTCache[1]>0&&coordsINTCache[2]>0&&coordsINTCache[1]<screenX&&coordsINTCache[2]<screenY&&(Buffer2D[coordsINTCache[1]][coordsINTCache[2]] > lengthB||Buffer2D[coordsINTCache[1]][coordsINTCache[2]]==0))
 							{
 								Buffer2D[coordsINTCache[1]][coordsINTCache[2]] = lengthB;
+								pointsAmount++;
 								//System.out.println(Arrays.toString(coordsINTCache)+", length: "+lengthB);
 								//System.out.println("X:"+R3Point[1]+" ;Y:"+R3Point[2]+" ;Deep:"+R3Point[3]);
 							}
@@ -312,6 +320,7 @@ public class Mathstuff {
 								if(coordsINTCache[1]>0&&coordsINTCache[2]>0&&coordsINTCache[1]<screenX&&coordsINTCache[2]<screenY&&(Buffer2D[coordsINTCache[1]][coordsINTCache[2]] > lengthB||Buffer2D[coordsINTCache[1]][coordsINTCache[2]]==0))
 								{
 									Buffer2D[coordsINTCache[1]][coordsINTCache[2]] = lengthB;
+									pointsAmount++;
 									//System.out.println(Arrays.toString(coordsINTCache)+", length: "+lengthB);
 									//System.out.println("X:"+(int)R3PointEnd[1]+" ;Y:"+(int)R3PointEnd[2]+" ;Deep:"+(int)R3PointEnd[3]+" - Final");
 								}
@@ -345,6 +354,7 @@ public class Mathstuff {
 						if(coordsINTCache[1]>=0&&coordsINTCache[2]>=0&&coordsINTCache[1]<screenX&&coordsINTCache[2]<screenY&&(Buffer2D[coordsINTCache[1]][coordsINTCache[2]] > lengthB||Buffer2D[coordsINTCache[1]][coordsINTCache[2]]==0))
 						{
 							Buffer2D[coordsINTCache[1]][coordsINTCache[2]] = lengthB;
+							pointsAmount++;
 							//System.out.println("X:"+R3Point[1]+" ;Y:"+R3Point[2]+" ;Deep:"+R3Point[3]);
 						}
 						if(lambda2+precision > lambda2End)
@@ -355,6 +365,7 @@ public class Mathstuff {
 							if(coordsINTCache[1]>=0&&coordsINTCache[2]>=0&&coordsINTCache[1]<screenX&&coordsINTCache[2]<screenY&&(Buffer2D[coordsINTCache[1]][coordsINTCache[2]] > lengthB||Buffer2D[coordsINTCache[1]][coordsINTCache[2]]==0))
 							{
 								Buffer2D[coordsINTCache[1]][coordsINTCache[2]] = lengthB;
+								pointsAmount++;
 								//System.out.println(Arrays.toString(coordsINTCache)+", length: "+lengthB);
 								//System.out.println("X:"+R3PointEnd[1]+" ;Y:"+R3PointEnd[2]+" ;Deep:"+R3PointEnd[3]+" - Final");
 							}
@@ -382,6 +393,7 @@ public class Mathstuff {
 							if(coordsINTCache[1]>=0&&coordsINTCache[2]>=0&&coordsINTCache[1]<screenX&&coordsINTCache[2]<screenY&&(Buffer2D[coordsINTCache[1]][coordsINTCache[2]] > lengthB||Buffer2D[coordsINTCache[1]][coordsINTCache[2]]==0))
 							{
 								Buffer2D[coordsINTCache[1]][coordsINTCache[2]] = lengthB;
+								pointsAmount++;
 								//System.out.println(Arrays.toString(coordsINTCache)+", length: "+lengthB);
 								//System.out.println("X:"+R3Point[1]+" ;Y:"+R3Point[2]+" ;Deep:"+R3Point[3]);
 							}
@@ -393,6 +405,7 @@ public class Mathstuff {
 								if(coordsINTCache[1]>=0&&coordsINTCache[2]>=0&&coordsINTCache[1]<screenX&&coordsINTCache[2]<screenY&&(Buffer2D[coordsINTCache[1]][coordsINTCache[2]] > lengthB||Buffer2D[coordsINTCache[1]][coordsINTCache[2]]==0))
 								{
 									Buffer2D[coordsINTCache[1]][coordsINTCache[2]] = lengthB;
+									pointsAmount++;
 									//System.out.println(Arrays.toString(coordsINTCache)+", length: "+lengthB);
 									//System.out.println("X:"+(int)R3PointEnd[1]+" ;Y:"+(int)R3PointEnd[2]+" ;Deep:"+(int)R3PointEnd[3]+" - Final");
 									}
@@ -405,6 +418,7 @@ public class Mathstuff {
 				}
 				
 			}
+		System.out.println("pointsAmount: "+pointsAmount);
 		//System.out.println("stop");
 			return Buffer2D;
 		}

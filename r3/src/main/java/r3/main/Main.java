@@ -208,18 +208,11 @@ public class Main {
 		double[] ac;
 		double[] bc;
 		double lambda;
-		double[] o;
-		double lambda2End = 0;
-		double lambda3 = 0;
-		double lengthB = 0;
-		double bcLength = 0;
-		double lengthMiddle = 0;
-		double oLength = 0;
+
 		for(int x = 0;x<coords.length;x++)
 		{
 			ab0 = new double[] {coords[x][1][0]-coords[x][0][0],coords[x][1][1]-coords[x][0][1],coords[x][1][2]-coords[x][0][2]};
 			double abLength = Mathstuff.length(ab0);
-			double[] ab = ab0;
 			ab0 = new double[] {ab0[0]/abLength,ab0[1]/abLength,ab0[2]/abLength};
 			//Vektor AC
 			ac = new double[] {coords[x][2][0]-coords[x][0][0],coords[x][2][1]-coords[x][0][1],coords[x][2][2]-coords[x][0][2]};
@@ -227,7 +220,6 @@ public class Main {
 			ac = new double[] {ac[0]/acLength,ac[1]/acLength,ac[2]/acLength};
 			//Vektor BC
 			bc = new double[]{coords[x][2][0]-coords[x][1][0],coords[x][2][1]-coords[x][1][1],coords[x][2][2]-coords[x][1][2]};
-			bcLength = Mathstuff.length(bc);
 			lambda = 
 			(ab0[0]*(coords[x][2][0]-coords[x][0][0])+ab0[1]*(coords[x][2][1]-coords[x][0][1])+ab0[2]*(coords[x][2][2]-coords[x][0][2]))
 							/
@@ -235,10 +227,9 @@ public class Main {
 			if(lambda<0)
 			{
 				System.out.println("Lambda before(<):" + lambda);
-				double[] aCache = coords[x][0];
+				double[] resortCache = coords[x][0];
 				coords[x][0] = coords[x][2];
-				coords[x][2] = coords[x][1];
-				coords[x][1] = aCache;
+				coords[x][2] = resortCache;
 			}
 			else if(lambda > abLength)
 			{
@@ -257,8 +248,8 @@ public class Main {
 	public static double[][][] loadCoords(){
 		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(new File("res/dragon.raw")));
 
+			BufferedReader br = new BufferedReader(new FileReader(new File("res/spacestation.raw")));
 		
 			int scale = 10;
 			
@@ -284,6 +275,7 @@ public class Main {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
+
 		return new double[][][] {};
 /////////////////////////////////////////////////////		
 //		return new double[][][] {
