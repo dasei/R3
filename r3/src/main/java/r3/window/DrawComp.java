@@ -1,5 +1,6 @@
 package r3.window;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 
@@ -57,8 +58,9 @@ public class DrawComp extends JComponent {
 		g.drawLine(screenWidth/2-20, screenHeight/2, screenWidth/2+20, screenHeight/2);
 		g.drawLine(screenWidth/2, screenHeight/2-20, screenWidth/2, screenHeight/2+20);
 		
-		
+				
 		//Draw FPS (main Loop, Inputs)
+		g.setColor(Color.green);
 		g.setFont(font);
 		g.drawString("main" + Main.fpsCurrent, screenWidth-100, 25);
 		
@@ -77,7 +79,7 @@ public class DrawComp extends JComponent {
 		
 		
 		//Calculate Buffer
-		double[][] buffCache = Mathstuff.calcR3ZBuff(coords, camera.forward, camera.pos, camera.alpha, camera.beta, camera.scaleFactor);
+		double[][] buffCache = new Mathstuff(true).calcR3ZBuff(coords, camera);
 		
 		
 		
@@ -85,7 +87,7 @@ public class DrawComp extends JComponent {
 		
 		
 		//TODO time measurement
-		System.out.print((System.currentTimeMillis()-timeBeginning) + "\t");
+//		System.out.print((System.currentTimeMillis()-timeBeginning) + "\t");
 		timeBeginning = System.currentTimeMillis();
 		//
 		
@@ -99,17 +101,17 @@ public class DrawComp extends JComponent {
 		}
 		
 		//TODO time measurement
-		System.out.println((System.currentTimeMillis()-timeBeginning));
+//		System.out.println((System.currentTimeMillis()-timeBeginning));
 		
 		
 		
 		//TODO time measurement => FPS DISPLAY
 		cycleCounter++;		
 		timeNow = System.nanoTime();
-		if(timeNow - timeStartNanos > 1000000000) {
-			cyclesForFPSCalculation = 1;
-			System.out.println("EEEEEEEEEEEEEEEEND");
-		}
+		if(timeNow - timeStartNanos > 1000000000)
+			cyclesForFPSCalculation = 1;			
+		else
+			cyclesForFPSCalculation = 5;		
 		if(cycleCounter % cyclesForFPSCalculation == 0) {
 			fpsCurrent =
 					((int) ((1000000000d*cyclesForFPSCalculation)/(timeNow - timeStartNanos) * 100)) / 100d;
