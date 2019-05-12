@@ -150,6 +150,21 @@ public class Main {
 			Main.getCamera().pos[2]-=movementDelta;
 		}
 		
+		if(register[KeyEvent.VK_BACK_SPACE]) {
+			coords[0][2][1] -= 0.25;
+			convertTriangles();
+		} else if(register[KeyEvent.VK_ENTER]) {
+			coords[0][2][1] += 0.25;
+			convertTriangles();
+		} else if(register[KeyEvent.VK_T]) {
+			convertTriangles();
+		}
+//		
+//		System.out.println("---");
+//		System.out.println(Arrays.toString(coords[0][0]));
+//		System.out.println(Arrays.toString(coords[0][1]));
+//		System.out.println(Arrays.toString(coords[0][2]));
+//		System.out.println("---");
 		
 		//////MOUSE - ROTATION		
 		boolean forwardVectorChanged = false; //used to check if a recalculation of the forward vector is neccessary
@@ -207,8 +222,10 @@ public class Main {
 	public static Window getWindow(){
 		return window;
 	}
-	public static void convertTriangles()
-	{
+	public static void convertTriangles() {
+//		if(1==1)
+//		return;
+//		System.out.println("CONVERTING TRIANGLES");
 		double[] ab0;	// vector ab, unit vector		
 		double lambda;	// ab0 * lambda gives the point, on which the point of C sits in a 90° angle on
 		
@@ -251,6 +268,7 @@ public class Main {
 			(ab0[0]*(coords[triangleI][2][0]-coords[triangleI][0][0])+ab0[1]*(coords[triangleI][2][1]-coords[triangleI][0][1])+ab0[2]*(coords[triangleI][2][2]-coords[triangleI][0][2]))
 							/
 			(ab0[0]*ab0[0]+ab0[1]*ab0[1]+ab0[2]*ab0[2]);
+			
 			if(lambda<0) {
 //				System.out.println("Lambda before(<):" + lambda);
 //				resortCache = coords[x][0];
@@ -311,7 +329,9 @@ public class Main {
 		return new double[][][] {};
 /////////////////////////////////////////////////////		
 //		return new double[][][] {
-//		{{-10,-5,5},{-10,5,5},{-15,0,-5}}};
+//			//{{-10,-5,5},{-10,5,5},{-15,0,-5}},
+//			{{0,0,0},{0,5,0},{0,5,10}}
+//		};
 /////////////////////////////////////////////////////
 //		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
 //		Random random = new Random();

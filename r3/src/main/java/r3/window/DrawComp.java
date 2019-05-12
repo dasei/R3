@@ -79,7 +79,7 @@ public class DrawComp extends JComponent {
 		
 		
 		//Calculate Buffer
-		double[][] buffCache = new Mathstuff(true).calcR3ZBuff(coords, camera.forward, camera.pos, camera.alpha, camera.beta, camera.scaleFactor);
+		double[][] buffCache = new Mathstuff(true).calcR3ZBuff(coords, camera);
 		
 		
 		
@@ -87,7 +87,7 @@ public class DrawComp extends JComponent {
 		
 		
 		//TODO time measurement
-		System.out.print((System.currentTimeMillis()-timeBeginning) + "\t");
+//		System.out.print((System.currentTimeMillis()-timeBeginning) + "\t");
 		timeBeginning = System.currentTimeMillis();
 		//
 		
@@ -101,7 +101,7 @@ public class DrawComp extends JComponent {
 		}
 		
 		//TODO time measurement
-		System.out.println((System.currentTimeMillis()-timeBeginning));
+//		System.out.println((System.currentTimeMillis()-timeBeginning));
 		
 		
 		
