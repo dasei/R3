@@ -298,7 +298,8 @@ public class Main {
 		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
 		try {
 
-			BufferedReader br = new BufferedReader(new FileReader(new File("res/Dragon.raw")));
+//			BufferedReader br = new BufferedReader(new FileReader(new File("res/Dragon.raw")));
+			BufferedReader br = new BufferedReader(new FileReader(new File("E:/Admin/Desktop/blender/export/test3raw.raw")));
 
 		
 			int scale = 10;
