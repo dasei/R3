@@ -201,7 +201,7 @@ public class Mathstuff {
 	}
 	
 	
-	public double[][] calcR3ZBuff(double[][][] coords, Camera camera) {
+	public double[][] calcR3ZBuff(double[][][] coords, Camera camera, int triangleOffset, int triangleAmount) {
 		this.updateValues();
 		
 		//Extract constants from camera
@@ -211,8 +211,9 @@ public class Mathstuff {
 		double factor = camera.scaleFactor;
 		double[] camPos = camera.pos;
 		
+//		System.out.println(Arrays.toString(forward));
 		
-		double[][] Buffer2D = new double[screenWidth][screenHeight];
+		double[][] bufferDepth = new double[screenWidth][screenHeight];
 		double[] ab0;
 		double[] ac;
 		double[] bc;
@@ -263,8 +264,8 @@ public class Mathstuff {
 				
 //			precision = 0.001+Math.pow(1.00146, lengthMiddle)-1;
 //			precision = 0.0058*lengthMiddle+0.001;
-//			precision = 0.00138*lengthMiddle+0.001;
-			precision = 1;
+			precision = 0.00138*lengthMiddle+0.001;
+//			precision = 1;
 
 			
 			
@@ -401,9 +402,9 @@ public class Mathstuff {
 					
 					//check if the 2d point is in the screens boundaries and if its depth is smaller that the one noted in the buffer
 					if(coordsIntCache[0] > 0 && coordsIntCache[1] > 0 && coordsIntCache[0] < screenWidth && coordsIntCache[1] < screenHeight 
-							&& (Buffer2D[coordsIntCache[0]][coordsIntCache[1]] > depth || Buffer2D[coordsIntCache[0]][coordsIntCache[1]]==0))
+							&& (bufferDepth[coordsIntCache[0]][coordsIntCache[1]] > depth || bufferDepth[coordsIntCache[0]][coordsIntCache[1]]==0))
 					{
-						Buffer2D[coordsIntCache[0]][coordsIntCache[1]] = depth;
+						bufferDepth[coordsIntCache[0]][coordsIntCache[1]] = depth;
 						//System.out.println(Arrays.toString(coordsIntCache)+", length: "+lengthB);
 							//System.out.println("X:"+R3Point[1]+" ;Y:"+R3Point[2]+" ;Deep:"+R3Point[3]);
 					}
@@ -648,7 +649,7 @@ public class Mathstuff {
 			
 		}
 	//System.out.println("stop");
-		return Buffer2D;
+		return bufferDepth;
 	}
 	
 	public static double length(double[] vectorR3) {
