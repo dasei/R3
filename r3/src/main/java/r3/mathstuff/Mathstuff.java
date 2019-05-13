@@ -263,8 +263,8 @@ public class Mathstuff {
 				
 //			precision = 0.001+Math.pow(1.00146, lengthMiddle)-1;
 //			precision = 0.0058*lengthMiddle+0.001;
-			precision = 0.00138*lengthMiddle+0.001;
-//			precision = 1;
+//			precision = 0.00138*lengthMiddle+0.001;
+			precision = 1;
 
 			
 			

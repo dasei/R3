@@ -20,11 +20,25 @@ public class Main {
 	public static int[][][] coordsDraw;
 	public static final double[][][] coords = loadCoords();
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
 		
-//		System.out.println(Arrays.toString(Mathstuff.getInstance().vectorUnify(new double[] {0.5,0.5,0.5}, false)));
+////		System.out.println(Arrays.toString(Mathstuff.getInstance().vectorUnify(new double[] {0.5,0.5,0.5}, false)));
+//		
+		startMultithreading(16, 100);
 		
-//		System.exit(0);
+		try {
+			Thread.sleep(1000);
+		} catch(Exception e){}
+		
+		ThreadCalculater.awakeAll();
+		
+		System.exit(0);
+		
+		
+		
+		
+		
+		
 		
 		window.init();
 		
@@ -102,6 +116,83 @@ public class Main {
 //				
 //			}
 //		}).start();
+	}
+	
+	private static ThreadCalculater[] threadRegister;
+	private static void startMultithreading(int threadsAmount, int trianglesAmount) {
+		if(trianglesAmount < threadsAmount)
+			threadsAmount = trianglesAmount;
+		
+		threadRegister = new ThreadCalculater[threadsAmount];
+		
+		
+		int triangleOffset = 0;
+		int trianglesPerThread = trianglesAmount / threadsAmount;
+		for(int threadI = 0; threadI < threadsAmount; threadI++) {
+			if(threadI < threadsAmount - 1) {
+				//not the last thread to be created
+				threadRegister[threadI] = new ThreadCalculater(threadsAmount, threadI, triangleOffset, trianglesPerThread);
+				triangleOffset += trianglesPerThread; 
+			} else {
+				//the last thread gets all remaining triangles (=> rounding errors in other threads)
+				threadRegister[threadI] = new ThreadCalculater(threadsAmount, threadI, triangleOffset, trianglesAmount - triangleOffset);
+			}
+		}
+		
+		for(ThreadCalculater thread : threadRegister) {
+			thread.start();
+		}
+	}
+	
+	private static class ThreadCalculater extends Thread {
+		
+		private static Object threadLock = new Object(){
+			
+		};
+		
+		private final int triangleOffset;;
+		private final int triangleAmount;
+		
+		private final int threadsAmount;
+		
+		private final int threadIndex;
+		
+		public ThreadCalculater(int threadsAmount, int threadIndex, int triangleOffset, int triangleAmount) {
+			this.threadsAmount = threadsAmount;
+			
+			this.triangleAmount = triangleAmount;
+			this.triangleOffset = triangleOffset;
+			
+			this.threadIndex = threadIndex;
+			
+//			System.out.println(triangleOffset + " - " + triangleAmount);
+		}
+		
+		public void run() {
+			//main loop
+			while(true) {
+				//wait for 'calculation notification'
+				synchronized(threadLock) {
+					try {
+						threadLock.wait();
+					} catch (InterruptedException e) {					
+						e.printStackTrace();
+					}
+				}
+				
+				System.out.println("Thread " + threadIndex + " was notified");
+			}
+		}
+		
+		public static Object getThreadLock(){
+			return ThreadCalculater.threadLock;
+		}
+		
+		public static void awakeAll(){
+			synchronized(threadLock) {
+				threadLock.notifyAll();
+			}
+		}
 	}
 	
 	private static final double MOVEMENT_SPEED_PER_SECOND = 20;
