@@ -201,11 +201,7 @@ public class Mathstuff {
 	}
 	
 	
-<<<<<<< HEAD
-	public double[][] calcR3ZBuff(double[][][] coords, Camera camera) {
-=======
 	public double[][] calcR3ZBuff(double[][][] coords, Camera camera, int triangleOffset, int triangleAmount) {
->>>>>>> branch 'master' of https://github.com/dasei/r3
 		this.updateValues();
 		
 		//Extract constants from camera
@@ -214,18 +210,10 @@ public class Mathstuff {
 		double beta = camera.beta;
 		double factor = camera.scaleFactor;
 		double[] camPos = camera.pos;
-<<<<<<< HEAD
-=======
 		
 //		System.out.println(Arrays.toString(forward));
->>>>>>> branch 'master' of https://github.com/dasei/r3
 		
-<<<<<<< HEAD
-		
-		double[][] Buffer2D = new double[screenWidth][screenHeight];
-=======
 		double[][] bufferDepth = new double[screenWidth][screenHeight];
->>>>>>> branch 'master' of https://github.com/dasei/r3
 		double[] ab0;
 		double[] ac;
 		double[] bc;
@@ -274,15 +262,9 @@ public class Mathstuff {
 				continue;
 
 				
-<<<<<<< HEAD
 			precision = 0.001+Math.pow(1.00146, lengthMiddle)-1;
 //			precision = 0.0058*lengthMiddle+0.001;
 //			precision = 0.00138*lengthMiddle+0.001;
-=======
-//			precision = 0.001+Math.pow(1.00146, lengthMiddle)-1;
-//			precision = 0.0058*lengthMiddle+0.001;
-			precision = 0.00138*lengthMiddle+0.001;
->>>>>>> branch 'master' of https://github.com/dasei/r3
 //			precision = 1;
 
 			
@@ -420,17 +402,9 @@ public class Mathstuff {
 					
 					//check if the 2d point is in the screens boundaries and if its depth is smaller that the one noted in the buffer
 					if(coordsIntCache[0] > 0 && coordsIntCache[1] > 0 && coordsIntCache[0] < screenWidth && coordsIntCache[1] < screenHeight 
-<<<<<<< HEAD
-							&& (Buffer2D[coordsIntCache[0]][coordsIntCache[1]] > depth || Buffer2D[coordsIntCache[0]][coordsIntCache[1]]==0))
-=======
 							&& (bufferDepth[coordsIntCache[0]][coordsIntCache[1]] > depth || bufferDepth[coordsIntCache[0]][coordsIntCache[1]]==0))
->>>>>>> branch 'master' of https://github.com/dasei/r3
 					{
-<<<<<<< HEAD
-						Buffer2D[coordsIntCache[0]][coordsIntCache[1]] = depth;
-=======
 						bufferDepth[coordsIntCache[0]][coordsIntCache[1]] = depth;
->>>>>>> branch 'master' of https://github.com/dasei/r3
 						//System.out.println(Arrays.toString(coordsIntCache)+", length: "+lengthB);
 							//System.out.println("X:"+R3Point[1]+" ;Y:"+R3Point[2]+" ;Deep:"+R3Point[3]);
 					}
@@ -675,11 +649,7 @@ public class Mathstuff {
 			
 		}
 	//System.out.println("stop");
-<<<<<<< HEAD
-		return Buffer2D;
-=======
 		return bufferDepth;
->>>>>>> branch 'master' of https://github.com/dasei/r3
 	}
 	
 	public static double length(double[] vectorR3) {

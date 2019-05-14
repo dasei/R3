@@ -20,13 +20,6 @@ public class Main {
 	public static int[][][] coordsDraw;
 	public static final double[][][] coords = loadCoords();
 	
-<<<<<<< HEAD
-	public static void main(String[] args) {		
-		
-//		System.out.println(Arrays.toString(Mathstuff.getInstance().vectorUnify(new double[] {0.5,0.5,0.5}, false)));
-		
-//		System.exit(0);
-=======
 	public static void main(String[] args) {
 		
 ////		System.out.println(Arrays.toString(Mathstuff.getInstance().vectorUnify(new double[] {0.5,0.5,0.5}, false)));
@@ -50,14 +43,13 @@ public class Main {
 		
 		
 		
->>>>>>> branch 'master' of https://github.com/dasei/r3
 		
 		window.init();
 		
 		convertTriangles();
 //		startLoopThread();
 		
-		startMultithreading(Main.coords.length, 4);
+		startMultithreading(Main.coords.length, 8);
 	}
 	
 	private static void startLoopThread() {
@@ -382,17 +374,6 @@ public class Main {
 			Main.getCamera().pos[2]-=movementDelta;
 		}
 		
-<<<<<<< HEAD
-		if(register[KeyEvent.VK_BACK_SPACE]) {
-			coords[0][2][1] -= 0.25;
-			convertTriangles();
-		} else if(register[KeyEvent.VK_ENTER]) {
-			coords[0][2][1] += 0.25;
-			convertTriangles();
-		} else if(register[KeyEvent.VK_T]) {
-			convertTriangles();
-		}
-=======
 //		if(register[KeyEvent.VK_BACK_SPACE]) {
 //			coords[0][2][1] -= 0.25;
 //			convertTriangles();
@@ -402,7 +383,6 @@ public class Main {
 //		} else if(register[KeyEvent.VK_T]) {
 //			convertTriangles();
 //		}
->>>>>>> branch 'master' of https://github.com/dasei/r3
 //		
 //		System.out.println("---");
 //		System.out.println(Arrays.toString(coords[0][0]));
@@ -542,8 +522,7 @@ public class Main {
 		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
 		try {
 
-//			BufferedReader br = new BufferedReader(new FileReader(new File("res/Dragon.raw")));
-			BufferedReader br = new BufferedReader(new FileReader(new File("E:/Admin/Desktop/blender/export/test3raw.raw")));
+			BufferedReader br = new BufferedReader(new FileReader(new File("res/Dragon.raw")));
 
 		
 			int scale = 10;

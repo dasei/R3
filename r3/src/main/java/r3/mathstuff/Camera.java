@@ -2,7 +2,7 @@ package r3.mathstuff;
 
 public class Camera {
 	
-	public double[] pos = new double[]{500,0,0};
+	public double[] pos = new double[]{0,0,0};
 	
 	
 	// cant be changed, used in Mathstuff calulation	

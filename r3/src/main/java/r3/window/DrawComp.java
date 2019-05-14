@@ -83,12 +83,8 @@ public class DrawComp extends JComponent {
 //		System.out.println(Main.ThreadProcessor.th);
 		
 		//Calculate Buffer
-<<<<<<< HEAD
-		double[][] buffCache = new Mathstuff(true).calcR3ZBuff(coords, camera);
-=======
 //		double[][] buffCache = new Mathstuff(true).calcR3ZBuff(coords, camera, 0, Main.coords.length);
 		double[][] buffCache = Main.ThreadProcessor.getBufferDepthCompleted();
->>>>>>> branch 'master' of https://github.com/dasei/r3
 		
 		
 //		System.out.println("--------------------------------");
@@ -98,11 +94,7 @@ public class DrawComp extends JComponent {
 		
 		//TODO time measurement
 //		System.out.print((System.currentTimeMillis()-timeBeginning) + "\t");
-<<<<<<< HEAD
-		timeBeginning = System.currentTimeMillis();
-=======
 //		timeBeginning = System.currentTimeMillis();
->>>>>>> branch 'master' of https://github.com/dasei/r3
 		//
 		
 		//Draw Buffer
@@ -127,19 +119,6 @@ public class DrawComp extends JComponent {
 		
 		
 		//TODO time measurement => FPS DISPLAY
-<<<<<<< HEAD
-		cycleCounter++;		
-		timeNow = System.nanoTime();
-		if(timeNow - timeStartNanos > 1000000000)
-			cyclesForFPSCalculation = 1;			
-		else
-			cyclesForFPSCalculation = 5;		
-		if(cycleCounter % cyclesForFPSCalculation == 0) {
-			fpsCurrent =
-					((int) ((1000000000d*cyclesForFPSCalculation)/(timeNow - timeStartNanos) * 100)) / 100d;
-			//set new start time for next cycle
-			timeStartNanos = timeNow;
-=======
 //		cycleCounter++;		
 //		timeNow = System.nanoTime();
 //		if(timeNow - timeStartNanos > 1000000000)
@@ -151,7 +130,6 @@ public class DrawComp extends JComponent {
 //					((int) ((1000000000d*cyclesForFPSCalculation)/(timeNow - timeStartNanos) * 100)) / 100d;
 //			//set new start time for next cycle
 //			timeStartNanos = timeNow;
->>>>>>> branch 'master' of https://github.com/dasei/r3
 //			System.out.println(( 1000000000d/(timeNow - timeStartNanos)) + ", " + timeNow + "/t" + timeStartNanos);
 //		}	
 		
