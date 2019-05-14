@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import r3.mathstuff.Camera;
 import r3.mathstuff.Mathstuff;
+import r3.multithreading.ThreadProcessor;
 import r3.window.Window;
 
 public class Main {
@@ -20,16 +21,41 @@ public class Main {
 	public static int[][][] coordsDraw;
 	public static final double[][][] coords = loadCoords();
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
+		
+////		System.out.println(Arrays.toString(Mathstuff.getInstance().vectorUnify(new double[] {0.5,0.5,0.5}, false)));
+		
+		
+//		try {
+//			Thread.sleep(5000);
+//		} catch(Exception e){}
+//		
+//		ThreadProcessor.awakeAll();
+//		
+//		try {
+//			Thread.sleep(5000);
+//		} catch(Exception e){}
+//		
+//		ThreadProcessor.awakeAll();
+//		
+//		System.exit(0);
+		
+		
+		
+		
+		
+		
 		window.init();
 		
 		convertTriangles();
-		startLoop();		
+//		startLoopThread();
+		
+		ThreadProcessor.startMultithreading(Main.coords.length, 4);
 	}
 	
-	private static void startLoop() {
+	private static void startLoopThread() {
 		(new Thread() {
-			public void run() {				
+			public void run() {		
 				super.run();
 				
 				System.out.println("started main loop");
@@ -78,32 +104,13 @@ public class Main {
 				
 			}
 		}).start();
-//		(new Thread() {
-//			public void run() {				
-//				super.run();
-//				
-//				
-//				while(true) {
-//					try {
-//						Thread.sleep(1000);
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//					//System.out.println(fps);
-//					lastFps = fps;
-//					fps=0;
-//				}
-//				
-//			}
-//		}).start();
 	}
 	
 	private static final double MOVEMENT_SPEED_PER_SECOND = 20;
 	public static final double ROTATION_SPEED_PER_SECOND = Math.toRadians(45); //radians	
 	public static final double ROTATION_AMOUNT_PER_MOUSEMOVEMENT_PIXEL = Math.toRadians(0.25); //radians
 	private static long processInputsTimeLastNanos = System.nanoTime();
-	private static void processInputs() {
+	public static void processInputs() {
 		
 		//calculate delta time
 		long timeNowNanos = System.nanoTime();
@@ -145,6 +152,21 @@ public class Main {
 			Main.getCamera().pos[2]-=movementDelta;
 		}
 		
+//		if(register[KeyEvent.VK_BACK_SPACE]) {
+//			coords[0][2][1] -= 0.25;
+//			convertTriangles();
+//		} else if(register[KeyEvent.VK_ENTER]) {
+//			coords[0][2][1] += 0.25;
+//			convertTriangles();
+//		} else if(register[KeyEvent.VK_T]) {
+//			convertTriangles();
+//		}
+//		
+//		System.out.println("---");
+//		System.out.println(Arrays.toString(coords[0][0]));
+//		System.out.println(Arrays.toString(coords[0][1]));
+//		System.out.println(Arrays.toString(coords[0][2]));
+//		System.out.println("---");
 		
 		//////MOUSE - ROTATION		
 		boolean forwardVectorChanged = false; //used to check if a recalculation of the forward vector is neccessary
@@ -202,56 +224,76 @@ public class Main {
 	public static Window getWindow(){
 		return window;
 	}
-	public static void convertTriangles()
-	{
-		double[] ab0;
-		double[] ac;
-		double[] bc;
-		double lambda;
-		double[] o;
-		double lambda2End = 0;
-		double lambda3 = 0;
-		double lengthB = 0;
-		double bcLength = 0;
-		double lengthMiddle = 0;
-		double oLength = 0;
-		for(int x = 0;x<coords.length;x++)
-		{
-			ab0 = new double[] {coords[x][1][0]-coords[x][0][0],coords[x][1][1]-coords[x][0][1],coords[x][1][2]-coords[x][0][2]};
-			double abLength = Mathstuff.length(ab0);
-			double[] ab = ab0;
-			ab0 = new double[] {ab0[0]/abLength,ab0[1]/abLength,ab0[2]/abLength};
+	public static void convertTriangles() {
+//		if(1==1)
+//		return;
+//		System.out.println("CONVERTING TRIANGLES");
+		double[] ab0;	// vector ab, unit vector		
+		double lambda;	// ab0 * lambda gives the point, on which the point of C sits in a 90° angle on
+		
+		double[] ac0;	// vector ac
+		
+		
+		double abLength;
+		
+//		double[] bc;
+//		double[] o;
+//		double lambda2End = 0;
+//		double lambda3 = 0;
+//		double lengthB = 0;
+//		double bcLength = 0;
+//		double lengthMiddle = 0;
+//		double oLength = 0;
+		
+//		Mathstuff mathstuff = new Mathstuff(false);
+		
+		double[] resortCache;
+		
+		for(int triangleI = 0;triangleI < coords.length;triangleI++) {
+			
+			//calculate AB (unit)
+			ab0 = new double[] {coords[triangleI][1][0]-coords[triangleI][0][0],coords[triangleI][1][1]-coords[triangleI][0][1],coords[triangleI][1][2]-coords[triangleI][0][2]};			
+			abLength = Mathstuff.vectorUnify(ab0);		
+//			ab0 = new double[] {coords[x][1][0]-coords[x][0][0],coords[x][1][1]-coords[x][0][1],coords[x][1][2]-coords[x][0][2]};
+//			double abLength = Mathstuff.length(ab0);			
+//			ab0 = new double[] {ab0[0]/abLength,ab0[1]/abLength,ab0[2]/abLength};
+			
 			//Vektor AC
-			ac = new double[] {coords[x][2][0]-coords[x][0][0],coords[x][2][1]-coords[x][0][1],coords[x][2][2]-coords[x][0][2]};
-			double acLength = Mathstuff.length(ac);
-			ac = new double[] {ac[0]/acLength,ac[1]/acLength,ac[2]/acLength};
+			ac0 = Mathstuff.vectorUnify(new double[] {coords[triangleI][2][0]-coords[triangleI][0][0],coords[triangleI][2][1]-coords[triangleI][0][1],coords[triangleI][2][2]-coords[triangleI][0][2]}, false);
+//			ac0 = new double[] {coords[x][2][0]-coords[x][0][0],coords[x][2][1]-coords[x][0][1],coords[x][2][2]-coords[x][0][2]};
+//			double acLength = Mathstuff.length(ac0);
+//			ac0 = new double[] {ac0[0]/acLength,ac0[1]/acLength,ac0[2]/acLength};
 			//Vektor BC
-			bc = new double[]{coords[x][2][0]-coords[x][1][0],coords[x][2][1]-coords[x][1][1],coords[x][2][2]-coords[x][1][2]};
-			bcLength = Mathstuff.length(bc);
+//			bc = new double[]{coords[x][2][0]-coords[x][1][0],coords[x][2][1]-coords[x][1][1],coords[x][2][2]-coords[x][1][2]};
+//			bcLength = Mathstuff.length(bc);
 			lambda = 
-			(ab0[0]*(coords[x][2][0]-coords[x][0][0])+ab0[1]*(coords[x][2][1]-coords[x][0][1])+ab0[2]*(coords[x][2][2]-coords[x][0][2]))
+			(ab0[0]*(coords[triangleI][2][0]-coords[triangleI][0][0])+ab0[1]*(coords[triangleI][2][1]-coords[triangleI][0][1])+ab0[2]*(coords[triangleI][2][2]-coords[triangleI][0][2]))
 							/
 			(ab0[0]*ab0[0]+ab0[1]*ab0[1]+ab0[2]*ab0[2]);
-			if(lambda<0)
-			{
-				System.out.println("Lambda before(<):" + lambda);
-				double[] aCache = coords[x][0];
-				coords[x][0] = coords[x][2];
-				coords[x][2] = coords[x][1];
-				coords[x][1] = aCache;
+			
+			if(lambda<0) {
+//				System.out.println("Lambda before(<):" + lambda);
+//				resortCache = coords[x][0];
+//				coords[x][0] = coords[x][2];
+//				coords[x][2] = coords[x][1];
+//				coords[x][1] = resortCache;
+				
+				resortCache = coords[triangleI][0];
+				coords[triangleI][0] = coords[triangleI][2];
+				coords[triangleI][2] = resortCache;
+				
+			} else if(lambda > abLength) {
+//				System.out.println("Lambda before(>):" + lambda);
+				resortCache = coords[triangleI][2];
+				coords[triangleI][2] = coords[triangleI][1];
+				coords[triangleI][1] = resortCache;
 			}
-			else if(lambda > abLength)
-			{
-				System.out.println("Lambda before(>):" + lambda);
-				double[] cCache = coords[x][2];
-				coords[x][2] = coords[x][1];
-				coords[x][1] = cCache;
-			}
-			lambda = 
-	    	(ab0[0]*(coords[x][2][0]-coords[x][0][0])+ab0[1]*(coords[x][2][1]-coords[x][0][1])+ab0[2]*(coords[x][2][2]-coords[x][0][2]))
-							/
-			(ab0[0]*ab0[0]+ab0[1]*ab0[1]+ab0[2]*ab0[2]);
-			System.out.println("Lambda after:" + lambda);
+			
+//			lambda = 
+//	    	(ab0[0]*(coords[x][2][0]-coords[x][0][0])+ab0[1]*(coords[x][2][1]-coords[x][0][1])+ab0[2]*(coords[x][2][2]-coords[x][0][2]))
+//							/
+//			(ab0[0]*ab0[0]+ab0[1]*ab0[1]+ab0[2]*ab0[2]);
+//			System.out.println("Lambda after:" + lambda);
 		}
 	}
 	public static double[][][] loadCoords(){
@@ -289,7 +331,9 @@ public class Main {
 		return new double[][][] {};
 /////////////////////////////////////////////////////		
 //		return new double[][][] {
-//		{{-10,-5,5},{-10,5,5},{-15,0,-5}}};
+//			//{{-10,-5,5},{-10,5,5},{-15,0,-5}},
+//			{{0,0,0},{0,5,0},{0,5,10}}
+//		};
 /////////////////////////////////////////////////////
 //		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
 //		Random random = new Random();
