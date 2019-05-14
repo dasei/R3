@@ -255,8 +255,14 @@ public class Mathstuff {
 //			bcLength = length(bc);
 			middle = new double[]{(coords[triangleI][0][0]+coords[triangleI][1][0]+coords[triangleI][2][0])/3,(coords[triangleI][0][1]+coords[triangleI][1][1]+coords[triangleI][2][1])/3,(coords[triangleI][0][2]+coords[triangleI][1][2]+coords[triangleI][2][2])/3};
 			
-			//lengthMiddle = calcR3Point(middle, forward, camPos, alpha, beta, factor); //dont calculate entire point with everything, but only its depth
-			lengthMiddle = calcR3Depth(middle, camPos); //TODO validate
+			
+			lengthMiddle = calcR3Point(middle, coordsIntCache, forward, camPos, alpha, beta, factor); //dont calculate entire point with everything, but only its depth
+			//lengthMiddle = calcR3Depth(middle, camPos); //TODO validate
+			//TODO change please
+			if(coordsIntCache[0] < 0 || coordsIntCache[1] < 0 || coordsIntCache[0] > screenWidth || coordsIntCache[1] > screenHeight)
+				continue;
+			
+			
 			
 			if(lengthMiddle == 0)
 				continue;
