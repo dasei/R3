@@ -3,6 +3,7 @@ package r3.mathstuff;
 import java.util.Arrays;
 
 import r3.main.Main;
+import r3.multithreading.ThreadProcessor;
 
 public class Mathstuff {
 	
@@ -201,11 +202,11 @@ public class Mathstuff {
 	}
 	
 	
-	public double[][] calcR3ZBuff(double[][][] coords, Camera camera, int triangleOffset, int triangleAmount) {
+	public double[][] calcR3ZBuff(double[][][] coords, Camera camera, int triangleOffset, int triangleAmount, boolean createNewBuffer) {
 		this.updateValues();
 		
 		//Extract constants from camera
-		double[] forward = camera.forward;		
+		double[] forward = camera.forward;
 		double alpha = camera.alpha;
 		double beta = camera.beta;
 		double factor = camera.scaleFactor;
@@ -213,7 +214,12 @@ public class Mathstuff {
 		
 //		System.out.println(Arrays.toString(forward));
 		
-		double[][] bufferDepth = new double[screenWidth][screenHeight];
+		double[][] bufferDepth;
+		if(createNewBuffer)
+			bufferDepth = new double[screenWidth][screenHeight];
+		else
+			bufferDepth = ThreadProcessor.getBufferToCalculateOn();
+		
 		double[] ab0;
 		double[] ac;
 		double[] bc;
@@ -255,8 +261,14 @@ public class Mathstuff {
 //			bcLength = length(bc);
 			middle = new double[]{(coords[triangleI][0][0]+coords[triangleI][1][0]+coords[triangleI][2][0])/3,(coords[triangleI][0][1]+coords[triangleI][1][1]+coords[triangleI][2][1])/3,(coords[triangleI][0][2]+coords[triangleI][1][2]+coords[triangleI][2][2])/3};
 			
-			//lengthMiddle = calcR3Point(middle, forward, camPos, alpha, beta, factor); //dont calculate entire point with everything, but only its depth
-			lengthMiddle = calcR3Depth(middle, camPos); //TODO validate
+			
+			lengthMiddle = calcR3Point(middle, coordsIntCache, forward, camPos, alpha, beta, factor); //dont calculate entire point with everything, but only its depth
+			//lengthMiddle = calcR3Depth(middle, camPos); //TODO validate
+			//TODO change please
+			if(coordsIntCache[0] < 0 || coordsIntCache[1] < 0 || coordsIntCache[0] > screenWidth || coordsIntCache[1] > screenHeight)
+				continue;
+			
+			
 			
 			if(lengthMiddle == 0)
 				continue;
