@@ -258,7 +258,7 @@ public class Main {
 		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
 		try {
 
-			BufferedReader br = new BufferedReader(new FileReader(new File("res/Dragon.raw")));
+			BufferedReader br = new BufferedReader(new FileReader(new File("res/dragon.raw")));
 
 		
 			int scale = 10;
