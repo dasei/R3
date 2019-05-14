@@ -15,9 +15,11 @@ public class Window extends JFrame implements KeyListener, MouseListener{
 	
 	public void init() {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setResizable(false);
+		
 		
 		dc = new DrawComp();
-		dc.setPreferredSize(new Dimension(1280,720));
+		dc.setPreferredSize(new Dimension(1280,720));		
 		this.add(dc);
 		
 		

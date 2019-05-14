@@ -3,6 +3,7 @@ package r3.mathstuff;
 import java.util.Arrays;
 
 import r3.main.Main;
+import r3.multithreading.ThreadProcessor;
 
 public class Mathstuff {
 	
@@ -201,11 +202,11 @@ public class Mathstuff {
 	}
 	
 	
-	public double[][] calcR3ZBuff(double[][][] coords, Camera camera, int triangleOffset, int triangleAmount) {
+	public double[][] calcR3ZBuff(double[][][] coords, Camera camera, int triangleOffset, int triangleAmount, boolean createNewBuffer) {
 		this.updateValues();
 		
 		//Extract constants from camera
-		double[] forward = camera.forward;		
+		double[] forward = camera.forward;
 		double alpha = camera.alpha;
 		double beta = camera.beta;
 		double factor = camera.scaleFactor;
@@ -213,7 +214,12 @@ public class Mathstuff {
 		
 //		System.out.println(Arrays.toString(forward));
 		
-		double[][] bufferDepth = new double[screenWidth][screenHeight];
+		double[][] bufferDepth;
+		if(createNewBuffer)
+			bufferDepth = new double[screenWidth][screenHeight];
+		else
+			bufferDepth = ThreadProcessor.getBufferToCalculateOn();
+		
 		double[] ab0;
 		double[] ac;
 		double[] bc;

@@ -31,7 +31,7 @@ public class DrawComp extends JComponent {
 //			timeStartNanos = System.nanoTime();
 		
 		
-		Main.processInputs();
+//		Main.processInputs();
 		
 //		g2 = (Graphics2D) gOld;			
 //		if(r > 0 && b == 0){
@@ -69,6 +69,9 @@ public class DrawComp extends JComponent {
 		
 		//Draw FPS (calc)
 //		g.drawString("calc" + fpsCurrent, 0, 25);
+		
+		
+		ThreadProcessor.onThreadFinish(true);
 
 	}
 	
@@ -85,7 +88,7 @@ public class DrawComp extends JComponent {
 		
 		//Calculate Buffer
 //		double[][] buffCache = new Mathstuff(true).calcR3ZBuff(coords, camera, 0, Main.coords.length);
-		double[][] buffCache = ThreadProcessor.getBufferDepthCompleted();
+		double[][] buffCache = ThreadProcessor.getBufferToDraw();
 		
 		
 //		System.out.println("--------------------------------");
@@ -134,9 +137,9 @@ public class DrawComp extends JComponent {
 //			System.out.println(( 1000000000d/(timeNow - timeStartNanos)) + ", " + timeNow + "/t" + timeStartNanos);
 //		}	
 		
-		synchronized(ThreadProcessor.getThreadLock()) {
-			ThreadProcessor.getThreadLock().notifyAll();
-		}
+//		synchronized(ThreadProcessor.getThreadLock()) {
+//			ThreadProcessor.getThreadLock().notifyAll();
+//		}
 	}
 	
 	private void drawMesh(Graphics g, int[][][] frameBuffer, int screenCenterX, int screenCenterY) {		
