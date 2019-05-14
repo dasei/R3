@@ -274,9 +274,9 @@ public class Mathstuff {
 				continue;
 
 				
-			precision = 0.001+Math.pow(1.00146, lengthMiddle)-1;
+//			precision = 0.001+Math.pow(1.00146, lengthMiddle)-1;
 //			precision = 0.0058*lengthMiddle+0.001;
-//			precision = 0.00138*lengthMiddle+0.001;
+			precision = 0.00138*lengthMiddle+0.001;
 //			precision = 1;
 
 			
@@ -288,12 +288,12 @@ public class Mathstuff {
 			(ab0[0]*ab0[0]+ab0[1]*ab0[1]+ab0[2]*ab0[2]);
 			//check boundaries of lambdaAB
 			if(lambdaAB > abLength || lambdaAB < 0) {
-				System.err.println("This model contains a invalid triangle (lambdaAB > abLength). Its getting skipped ");
-				System.out.println("---");
-				System.out.println(Arrays.toString(coords[triangleI][0]));
-				System.out.println(Arrays.toString(coords[triangleI][1]));
-				System.out.println(Arrays.toString(coords[triangleI][2]));
-				System.out.println("---");
+//				System.err.println("This model contains a invalid triangle (lambdaAB > abLength). Its getting skipped ");
+//				System.out.println("---");
+//				System.out.println(Arrays.toString(coords[triangleI][0]));
+//				System.out.println(Arrays.toString(coords[triangleI][1]));
+//				System.out.println(Arrays.toString(coords[triangleI][2]));
+//				System.out.println("---");
 				continue;
 			}
 			

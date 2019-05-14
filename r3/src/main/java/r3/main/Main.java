@@ -50,11 +50,8 @@ public class Main {
 		convertTriangles();
 //		startLoopThread();
 		
-<<<<<<< HEAD
-		startMultithreading(Main.coords.length, 8);
-=======
-		ThreadProcessor.startMultithreading(Main.coords.length, 4);
->>>>>>> branch 'master' of https://github.com/dasei/r3
+
+		ThreadProcessor.startMultithreading(Main.coords.length, 8);
 	}
 	
 	private static void startLoopThread() {
@@ -110,7 +107,7 @@ public class Main {
 		}).start();
 	}
 	
-	private static final double MOVEMENT_SPEED_PER_SECOND = 20;
+	private static final double MOVEMENT_SPEED_PER_SECOND = 1;
 	public static final double ROTATION_SPEED_PER_SECOND = Math.toRadians(45); //radians	
 	public static final double ROTATION_AMOUNT_PER_MOUSEMOVEMENT_PIXEL = Math.toRadians(0.25); //radians
 	private static long processInputsTimeLastNanos = System.nanoTime();
@@ -304,7 +301,7 @@ public class Main {
 		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
 		try {
 
-			BufferedReader br = new BufferedReader(new FileReader(new File("res/dragon.raw")));
+			BufferedReader br = new BufferedReader(new FileReader(new File("res/handgun.raw")));
 
 		
 			int scale = 10;
