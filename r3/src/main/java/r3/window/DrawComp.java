@@ -90,7 +90,6 @@ public class DrawComp extends JComponent {
 //		double[][] buffCache = new Mathstuff(true).calcR3ZBuff(coords, camera, 0, Main.coords.length);
 		double[][] buffCache = ThreadProcessor.getBufferToDraw();
 		
-		
 //		System.out.println("--------------------------------");
 //		Main.cycleCounterDebug++;
 		
@@ -100,6 +99,8 @@ public class DrawComp extends JComponent {
 //		System.out.print((System.currentTimeMillis()-timeBeginning) + "\t");
 //		timeBeginning = System.currentTimeMillis();
 		//
+		if(buffCache == null)
+			return;
 		
 		//Draw Buffer
 		for(int x = 0;x<buffCache.length;x++){

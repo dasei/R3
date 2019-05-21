@@ -51,7 +51,7 @@ public class Main {
 //		startLoopThread();
 		
 
-		ThreadProcessor.startMultithreading(Main.coords.length, 8);
+		ThreadProcessor.startMultithreading(Main.coords.length, 4);
 	}
 	
 	private static void startLoopThread() {
@@ -107,7 +107,7 @@ public class Main {
 		}).start();
 	}
 	
-	private static final double MOVEMENT_SPEED_PER_SECOND = 1;
+	private static final double MOVEMENT_SPEED_PER_SECOND = 10;
 	public static final double ROTATION_SPEED_PER_SECOND = Math.toRadians(45); //radians	
 	public static final double ROTATION_AMOUNT_PER_MOUSEMOVEMENT_PIXEL = Math.toRadians(0.25); //radians
 	private static long processInputsTimeLastNanos = System.nanoTime();
@@ -301,7 +301,7 @@ public class Main {
 		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
 		try {
 
-			BufferedReader br = new BufferedReader(new FileReader(new File("res/handgun.raw")));
+			BufferedReader br = new BufferedReader(new FileReader(new File("res/Dragon.raw")));
 
 		
 			int scale = 10;
