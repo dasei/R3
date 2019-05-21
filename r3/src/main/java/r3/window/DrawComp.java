@@ -88,7 +88,7 @@ public class DrawComp extends JComponent {
 		
 		//Calculate Buffer
 //		double[][] buffCache = new Mathstuff(true).calcR3ZBuff(coords, camera, 0, Main.coords.length);
-		double[][] buffCache = ThreadProcessor.getBufferToDraw();
+		double[][][] buffCache = ThreadProcessor.getBufferToDraw();
 		
 //		System.out.println("--------------------------------");
 //		Main.cycleCounterDebug++;
@@ -105,9 +105,15 @@ public class DrawComp extends JComponent {
 		//Draw Buffer
 		for(int x = 0;x<buffCache.length;x++){
 			for(int y = 0;y<buffCache[0].length;y++){
-				if(buffCache[x][y]==0)
+				if(buffCache[x][y][0]==0)
 					continue;
+				if(buffCache[x][y][1] != -1)
+					g.setColor(Main.colors.get((int) buffCache[x][y][1]));
+				else
+					g.setColor(Color.WHITE);
+				
 				g.drawRect(x, y, 0, 0);
+				
 			}
 		}
 		

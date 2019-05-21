@@ -214,9 +214,9 @@ public class Mathstuff {
 		
 //		System.out.println(Arrays.toString(forward));
 		
-		double[][] bufferDepth;
+		double[][][] bufferDepth;
 		if(createNewBuffer)
-			bufferDepth = new double[screenWidth][screenHeight];
+			bufferDepth = new double[screenWidth][screenHeight][2];
 		else
 			bufferDepth = ThreadProcessor.getBufferToCalculateOn();
 		
@@ -414,9 +414,10 @@ public class Mathstuff {
 					
 					//check if the 2d point is in the screens boundaries and if its depth is smaller that the one noted in the buffer
 					if(coordsIntCache[0] > 0 && coordsIntCache[1] > 0 && coordsIntCache[0] < screenWidth && coordsIntCache[1] < screenHeight 
-							&& (bufferDepth[coordsIntCache[0]][coordsIntCache[1]] > depth || bufferDepth[coordsIntCache[0]][coordsIntCache[1]]==0))
+							&& (bufferDepth[coordsIntCache[0]][coordsIntCache[1]][0] > depth || bufferDepth[coordsIntCache[0]][coordsIntCache[1]][0] == 0))
 					{
-						bufferDepth[coordsIntCache[0]][coordsIntCache[1]] = depth;
+						bufferDepth[coordsIntCache[0]][coordsIntCache[1]][0] = depth;
+						bufferDepth[coordsIntCache[0]][coordsIntCache[1]][1] = (int) coords[triangleI][3]; 
 						//System.out.println(Arrays.toString(coordsIntCache)+", length: "+lengthB);
 							//System.out.println("X:"+R3Point[1]+" ;Y:"+R3Point[2]+" ;Deep:"+R3Point[3]);
 					}

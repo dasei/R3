@@ -21,6 +21,7 @@ public class Main {
 	public static int fpsCurrent = 0;
 	public static int[][][] coordsDraw;
 	public static final double[][][] coords = loadCoords(true);
+	public static final ArrayList<Color> colors = new ArrayList<Color>();
 	
 	public static void main(String[] args) {
 		
@@ -311,9 +312,15 @@ public class Main {
 				 
 				String s = br.readLine();
 				String[] coordinates = s.split(" ");
+				double[] vertices = new double[4];
 				if(useColor) {
+					Color color;
+					//get color of pixel, and store it in the array, if it isn't yet contained
+					
+					vertices[0] = {Double.parseDouble(coordinates[0])*scale,Double.parseDouble(coordinates[1])*scale,Double.parseDouble(coordinates[2])*scale}; 
+				
 					triangles.add(
-							new double[][] {
+							new double[] {
 								{Double.parseDouble(coordinates[0])*scale,Double.parseDouble(coordinates[1])*scale,Double.parseDouble(coordinates[2])*scale},
 								{Double.parseDouble(coordinates[3])*scale,Double.parseDouble(coordinates[4])*scale,Double.parseDouble(coordinates[5])*scale},
 								{Double.parseDouble(coordinates[6])*scale,Double.parseDouble(coordinates[7])*scale,Double.parseDouble(coordinates[8])*scale},
@@ -363,5 +370,21 @@ public class Main {
 //		}
 //		coordsDraw = new int[triangles.size()][3][2];
 //		return triangles.toArray(new double[0][][]);
+	}
+	
+	/**
+	 * stores a color in the array, if it is not yet contained
+	 */
+	public static Color storeColor(int rgb){
+		//check if color is already contained in colors ArrayList
+		for(Color c : colors) {
+			if(c.getRGB() == rgb) {
+				return c;
+			}
+		}
+		
+		Color colorNew = new Color(rgb);
+		colors.add(colorNew);
+		return colorNew;
 	}
 }

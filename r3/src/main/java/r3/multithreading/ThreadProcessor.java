@@ -5,9 +5,9 @@ import r3.mathstuff.Mathstuff;
 
 public class ThreadProcessor extends Thread {
 	
-	public static double[][] bufferCalculation;
-	public static double[][] bufferToDraw;
-	public static double[][] bufferToClear;
+	public static double[][][] bufferCalculation;
+	public static double[][][] bufferToDraw;
+	public static double[][][] bufferToClear;
 	
 	public static void startMultithreading(int trianglesAmount, int threadsAmount) {
 		if(trianglesAmount < threadsAmount)
@@ -15,9 +15,9 @@ public class ThreadProcessor extends Thread {
 		
 		int width = Main.getWindow().getDrawComp().getWidth();
 		int height = Main.getWindow().getDrawComp().getHeight();
-		bufferCalculation = new double[width][height];
-		bufferToDraw = new double[width][height];
-		bufferToClear = new double[width][height];
+		bufferCalculation = new double[width][height][2];
+		bufferToDraw = new double[width][height][2];
+		bufferToClear = new double[width][height][2];
 		
 		ThreadProcessor.threadRegister = new ThreadProcessor[threadsAmount];
 		
@@ -139,7 +139,7 @@ public class ThreadProcessor extends Thread {
 
 	public static ThreadProcessor[] threadRegister;
 	private static int threadsFinishedAmount = 0;
-	private static double[][] bufferDepthCompleted;
+	private static double[][][] bufferDepthCompleted;
 	
 	public int bufferVersion = 0;
 	
@@ -236,7 +236,7 @@ public class ThreadProcessor extends Thread {
 				// lets hope it doesn´t crash boy, hai sou da 
 				
 				//shift buffers
-				double[][] bufferCache = bufferToClear;
+				double[][][] bufferCache = bufferToClear;
 				bufferToClear = bufferToDraw;
 				bufferToDraw = bufferCalculation;
 				bufferCalculation = bufferCache;
@@ -282,10 +282,11 @@ public class ThreadProcessor extends Thread {
 				while(true) {
 					
 					//clear buffer
-					double[][] buffer = bufferToClear;
+					double[][][] buffer = bufferToClear;
 					for(int x = 0; x < buffer.length; x++){
 						for(int y = 0; y < buffer[0].length; y++){
-							buffer[x][y] = 0;
+							buffer[x][y][0] = 0;
+							buffer[x][y][1] = -1;
 						}	
 					}
 					
@@ -299,11 +300,11 @@ public class ThreadProcessor extends Thread {
 //		return bufferDepthCompleted != null ? bufferDepthCompleted : new double[0][0];
 //	}
 	
-	public static double[][] getBufferToCalculateOn() {
+	public static double[][][] getBufferToCalculateOn() {
 		return bufferCalculation;
 	}
 	
-	public static double[][] getBufferToDraw() {
+	public static double[][][] getBufferToDraw() {
 		return bufferToDraw;
 	}
 	
