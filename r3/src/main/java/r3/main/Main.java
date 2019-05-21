@@ -1,5 +1,6 @@
 package r3.main;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,7 +20,7 @@ public class Main {
 	public static final int FPS_MAX = 60;
 	public static int fpsCurrent = 0;
 	public static int[][][] coordsDraw;
-	public static final double[][][] coords = loadCoords();
+	public static final double[][][] coords = loadCoords(true);
 	
 	public static void main(String[] args) {
 		
@@ -297,7 +298,7 @@ public class Main {
 //			System.out.println("Lambda after:" + lambda);
 		}
 	}
-	public static double[][][] loadCoords(){
+	public static double[][][] loadCoords(boolean useColor){
 		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
 		try {
 
@@ -310,13 +311,25 @@ public class Main {
 				 
 				String s = br.readLine();
 				String[] coordinates = s.split(" ");
-				triangles.add(
-						new double[][] {
-							{Double.parseDouble(coordinates[0])*scale,Double.parseDouble(coordinates[1])*scale,Double.parseDouble(coordinates[2])*scale},
-							{Double.parseDouble(coordinates[3])*scale,Double.parseDouble(coordinates[4])*scale,Double.parseDouble(coordinates[5])*scale},
-							{Double.parseDouble(coordinates[6])*scale,Double.parseDouble(coordinates[7])*scale,Double.parseDouble(coordinates[8])*scale}
-						}
-				);
+				if(useColor) {
+					triangles.add(
+							new double[][] {
+								{Double.parseDouble(coordinates[0])*scale,Double.parseDouble(coordinates[1])*scale,Double.parseDouble(coordinates[2])*scale},
+								{Double.parseDouble(coordinates[3])*scale,Double.parseDouble(coordinates[4])*scale,Double.parseDouble(coordinates[5])*scale},
+								{Double.parseDouble(coordinates[6])*scale,Double.parseDouble(coordinates[7])*scale,Double.parseDouble(coordinates[8])*scale},
+								{Color.red.getRGB()}
+							}
+					);
+				}else{
+					triangles.add(
+							new double[][] {
+								{Double.parseDouble(coordinates[0])*scale,Double.parseDouble(coordinates[1])*scale,Double.parseDouble(coordinates[2])*scale},
+								{Double.parseDouble(coordinates[3])*scale,Double.parseDouble(coordinates[4])*scale,Double.parseDouble(coordinates[5])*scale},
+								{Double.parseDouble(coordinates[6])*scale,Double.parseDouble(coordinates[7])*scale,Double.parseDouble(coordinates[8])*scale},
+								{-1}
+							}
+					);
+				}
 				
 //				p.addVertex(new Point3D(Double.parseDouble(coordinates[0])*scale,Double.parseDouble(coordinates[1])*scale, Double.parseDouble(coordinates[2])*scale));
 //				p.addVertex(new Point3D(Double.parseDouble(coordinates[3])*scale,Double.parseDouble(coordinates[4])*scale, Double.parseDouble(coordinates[5])*scale));
