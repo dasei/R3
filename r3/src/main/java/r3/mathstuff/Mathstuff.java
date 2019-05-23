@@ -202,7 +202,7 @@ public class Mathstuff {
 	}
 	
 	
-	public double[][] calcR3ZBuff(double[][][] coords, Camera camera, int triangleOffset, int triangleAmount, boolean createNewBuffer) {
+	public double[][][] calcR3ZBuff(double[][][] coords, Camera camera, int triangleOffset, int triangleAmount, boolean createNewBuffer) {
 		this.updateValues();
 		
 		//Extract constants from camera
@@ -417,9 +417,9 @@ public class Mathstuff {
 							&& (bufferDepth[coordsIntCache[0]][coordsIntCache[1]][0] > depth || bufferDepth[coordsIntCache[0]][coordsIntCache[1]][0] == 0))
 					{
 						bufferDepth[coordsIntCache[0]][coordsIntCache[1]][0] = depth;
-						bufferDepth[coordsIntCache[0]][coordsIntCache[1]][1] = (int) coords[triangleI][3]; 
-						//System.out.println(Arrays.toString(coordsIntCache)+", length: "+lengthB);
-							//System.out.println("X:"+R3Point[1]+" ;Y:"+R3Point[2]+" ;Deep:"+R3Point[3]);
+						
+						//set color
+						bufferDepth[coordsIntCache[0]][coordsIntCache[1]][1] = (int) coords[triangleI][3][0];
 					}
 				}
 					

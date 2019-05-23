@@ -107,10 +107,11 @@ public class DrawComp extends JComponent {
 			for(int y = 0;y<buffCache[0].length;y++){
 				if(buffCache[x][y][0]==0)
 					continue;
-				if(buffCache[x][y][1] != -1)
-					g.setColor(Main.colors.get((int) buffCache[x][y][1]));
-				else
-					g.setColor(Color.WHITE);
+				if(buffCache[x][y][1] != -1){
+//					System.out.println("HELP HERE IS FIRE IN SE HOOD: " + buffCache[x][y][1]);
+					g.setColor(Main.getColorAt((int) buffCache[x][y][1]));
+				}else
+					g.setColor(Color.BLACK);
 				
 				g.drawRect(x, y, 0, 0);
 				

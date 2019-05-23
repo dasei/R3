@@ -20,8 +20,8 @@ public class Main {
 	public static final int FPS_MAX = 60;
 	public static int fpsCurrent = 0;
 	public static int[][][] coordsDraw;
-	public static final double[][][] coords = loadCoords(true);
 	public static final ArrayList<Color> colors = new ArrayList<Color>();
+	public static final double[][][] coords = loadCoords(true);
 	
 	public static void main(String[] args) {
 		
@@ -308,39 +308,37 @@ public class Main {
 		
 			int scale = 10;
 			
+			Color color;
 			while(br.ready()) {
 				 
 				String s = br.readLine();
 				String[] coordinates = s.split(" ");
-				double[] vertices = new double[4];
-				if(useColor) {
-					Color color;
-					//get color of pixel, and store it in the array, if it isn't yet contained
-					
-					vertices[0] = {Double.parseDouble(coordinates[0])*scale,Double.parseDouble(coordinates[1])*scale,Double.parseDouble(coordinates[2])*scale}; 
+				double[][] vertices = new double[4][];
 				
-					triangles.add(
-							new double[] {
-								{Double.parseDouble(coordinates[0])*scale,Double.parseDouble(coordinates[1])*scale,Double.parseDouble(coordinates[2])*scale},
-								{Double.parseDouble(coordinates[3])*scale,Double.parseDouble(coordinates[4])*scale,Double.parseDouble(coordinates[5])*scale},
-								{Double.parseDouble(coordinates[6])*scale,Double.parseDouble(coordinates[7])*scale,Double.parseDouble(coordinates[8])*scale},
-								{Color.red.getRGB()}
-							}
-					);
+				vertices[0] = new double[] {Double.parseDouble(coordinates[0])*scale, Double.parseDouble(coordinates[1])*scale, Double.parseDouble(coordinates[2])*scale}; 
+				vertices[1] = new double[] {Double.parseDouble(coordinates[3])*scale, Double.parseDouble(coordinates[4])*scale, Double.parseDouble(coordinates[5])*scale};
+				vertices[2] = new double[] {Double.parseDouble(coordinates[6])*scale, Double.parseDouble(coordinates[7])*scale, Double.parseDouble(coordinates[8])*scale};
+				
+				//store color in forth index
+				double r = Math.random();
+				if(r < 0.3){
+					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.red.getRGB())) : -1};
+				}else if(r < 0.6){
+					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
 				}else{
-					triangles.add(
-							new double[][] {
-								{Double.parseDouble(coordinates[0])*scale,Double.parseDouble(coordinates[1])*scale,Double.parseDouble(coordinates[2])*scale},
-								{Double.parseDouble(coordinates[3])*scale,Double.parseDouble(coordinates[4])*scale,Double.parseDouble(coordinates[5])*scale},
-								{Double.parseDouble(coordinates[6])*scale,Double.parseDouble(coordinates[7])*scale,Double.parseDouble(coordinates[8])*scale},
-								{-1}
-							}
-					);
+					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.blue.getRGB())) : -1};
 				}
+					
+				//System.out.println(vertices[3][0]);
+//				new Color(Color.red.getRGB())
+//				System.out.println((int) ((double) Color.red.getRGB()) + ", " + Color.red.getRGB());
 				
-//				p.addVertex(new Point3D(Double.parseDouble(coordinates[0])*scale,Double.parseDouble(coordinates[1])*scale, Double.parseDouble(coordinates[2])*scale));
-//				p.addVertex(new Point3D(Double.parseDouble(coordinates[3])*scale,Double.parseDouble(coordinates[4])*scale, Double.parseDouble(coordinates[5])*scale));
-//				p.addVertex(new Point3D(Double.parseDouble(coordinates[6])*scale,Double.parseDouble(coordinates[7])*scale, Double.parseDouble(coordinates[8])*scale));
+//				try{
+//					Thread.sleep(1000);
+//				}catch(Exception e){}
+				
+					
+				triangles.add(vertices);
 			}
 			br.close();
 			coordsDraw = new int[triangles.size()][3][2];
@@ -375,16 +373,28 @@ public class Main {
 	/**
 	 * stores a color in the array, if it is not yet contained
 	 */
-	public static Color storeColor(int rgb){
+	public static int storeColor(int rgb){
 		//check if color is already contained in colors ArrayList
-		for(Color c : colors) {
-			if(c.getRGB() == rgb) {
-				return c;
-			}
+		for(int i = 0; i < colors.size(); i++) {
+			if(colors.get(i).getRGB() == rgb)
+				return i;
 		}
 		
 		Color colorNew = new Color(rgb);
 		colors.add(colorNew);
-		return colorNew;
+		return colors.size()-1;
 	}
+	
+	public static Color getColorAt(int index){
+		return colors.get(index);
+	}
+//	private static final Color colorDefault = Color.black;
+//	public static Color getColorWith(int ) {
+//		for(Color c : colors) {
+//			if(c.getRGB() == rgb) {
+//				return c;
+//			}
+//		}
+//		return colorDefault;
+//	}
 }
