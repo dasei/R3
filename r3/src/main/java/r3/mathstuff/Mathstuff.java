@@ -1,5 +1,6 @@
 package r3.mathstuff;
 
+import java.awt.Color;
 import java.util.Arrays;
 
 import r3.main.Main;
@@ -306,9 +307,9 @@ public class Mathstuff {
 
 			// check if no color is given
 			if (coords[triangleI][3][0] == -1) {
-				throw new RuntimeException("Diiga");
-//				calcR3Mesh(bufferDepth, coords[triangleI]);
-//				continue;
+//				throw new RuntimeException("Diiga");
+				calcR3Mesh(bufferDepth, coords[triangleI], forward, camPos, alpha, beta, factor);
+				continue;
 			}
 
 			// System.out.println("t " + triangleI);
@@ -816,38 +817,99 @@ public class Mathstuff {
 		return bufferDepth;
 	}
 
-	private static final double R3MESH_PRECISION = 1;
+	private static final double R3MESH_PRECISION = 0.2;
 	private double[] meshCacheVectorAB = new double[3];
 	private double[] meshCacheVectorAC = new double[3];
 	private double[] meshCacheVectorBC = new double[3];
 	private double meshCacheVectorABLength;
 	private double meshCacheVectorACLength;
 	private double meshCacheVectorBCLength;
+	private double[] meshCacheVectorABUnit = new double[3];
+	private double[] meshCacheVectorACUnit = new double[3];
+	private double[] meshCacheVectorBCUnit = new double[3];
 
-	private double[][][] calcR3Mesh(double[][][] bufferDepth, double[][] triangleCoords, double[] forward, double[] camPos,double alpha, double beta, double factor) {
+	private void calcR3Mesh(double[][][] bufferDepth, double[][] triangleCoords, double[] forward, double[] camPos,double alpha, double beta, double factor) {
 		meshCacheVectorAB[0] = triangleCoords[1][0] - triangleCoords[0][0];
 		meshCacheVectorAB[1] = triangleCoords[1][1] - triangleCoords[0][1];
 		meshCacheVectorAB[2] = triangleCoords[1][2] - triangleCoords[0][2];
-		meshCacheVectorABLength = Math.sqrt((meshCacheVectorAB[0]*meshCacheVectorAB[0]) + (meshCacheVectorAB[1]*meshCacheVectorAB[1]) + (meshCacheVectorAB[1]*meshCacheVectorAB[1]));
+		meshCacheVectorABLength = Math.sqrt((meshCacheVectorAB[0]*meshCacheVectorAB[0]) + (meshCacheVectorAB[1]*meshCacheVectorAB[1]) + (meshCacheVectorAB[2]*meshCacheVectorAB[2]));		
+		meshCacheVectorABUnit[0] = meshCacheVectorAB[0] / meshCacheVectorABLength;
+		meshCacheVectorABUnit[1] = meshCacheVectorAB[1] / meshCacheVectorABLength;
+		meshCacheVectorABUnit[2] = meshCacheVectorAB[2] / meshCacheVectorABLength;
 		
 		meshCacheVectorAC[0] = triangleCoords[2][0] - triangleCoords[0][0];
 		meshCacheVectorAC[1] = triangleCoords[2][1] - triangleCoords[0][1];
 		meshCacheVectorAC[2] = triangleCoords[2][2] - triangleCoords[0][2];
-		meshCacheVectorACLength = Math.sqrt((meshCacheVectorAC[0]*meshCacheVectorAC[0]) + (meshCacheVectorAC[1]*meshCacheVectorAC[1]) + (meshCacheVectorAC[1]*meshCacheVectorAC[1]));
+		meshCacheVectorACLength = Math.sqrt((meshCacheVectorAC[0]*meshCacheVectorAC[0]) + (meshCacheVectorAC[1]*meshCacheVectorAC[2]) + (meshCacheVectorAC[2]*meshCacheVectorAC[2]));
+		meshCacheVectorACUnit[0] = meshCacheVectorAC[0] / meshCacheVectorACLength;
+		meshCacheVectorACUnit[1] = meshCacheVectorAC[1] / meshCacheVectorACLength;
+		meshCacheVectorACUnit[2] = meshCacheVectorAC[2] / meshCacheVectorACLength;
 		
 		meshCacheVectorBC[0] = triangleCoords[2][0] - triangleCoords[1][0];
 		meshCacheVectorBC[1] = triangleCoords[2][1] - triangleCoords[1][1];
 		meshCacheVectorBC[2] = triangleCoords[2][2] - triangleCoords[1][2];
-		meshCacheVectorBCLength = Math.sqrt((meshCacheVectorBC[0]*meshCacheVectorBC[0]) + (meshCacheVectorBC[1]*meshCacheVectorBC[1]) + (meshCacheVectorBC[1]*meshCacheVectorBC[1]));
-		
+		meshCacheVectorBCLength = Math.sqrt((meshCacheVectorBC[0]*meshCacheVectorBC[0]) + (meshCacheVectorBC[1]*meshCacheVectorBC[2]) + (meshCacheVectorBC[2]*meshCacheVectorBC[2]));
+		meshCacheVectorBCUnit[0] = meshCacheVectorBC[0] / meshCacheVectorBCLength;
+		meshCacheVectorBCUnit[1] = meshCacheVectorBC[1] / meshCacheVectorBCLength;
+		meshCacheVectorBCUnit[2] = meshCacheVectorBC[2] / meshCacheVectorBCLength;
 		
 		double iterator;
 //		double depth
+		double[] cachePoint3D = new double[3];
+		int[] cachePoint2D = new int[2];
+		double cacheDepth;
 		for(iterator = 0; iterator < meshCacheVectorABLength; iterator += R3MESH_PRECISION) {
+			cachePoint3D[0] = (meshCacheVectorABUnit[0] * iterator) + triangleCoords[0][0];
+			cachePoint3D[1] = (meshCacheVectorABUnit[1] * iterator) + triangleCoords[0][1];
+			cachePoint3D[2] = (meshCacheVectorABUnit[2] * iterator) + triangleCoords[0][2];
 			
+			cacheDepth = calcR3Point(cachePoint3D, cachePoint2D, forward, camPos, alpha, beta, factor);
+			if (cachePoint2D[0] > 0 && cachePoint2D[1] > 0 && cachePoint2D[0] < screenWidth && cachePoint2D[1] < screenHeight
+					&& cacheDepth < bufferDepth[cachePoint2D[0]][cachePoint2D[1]][0]) {
+			
+					bufferDepth[cachePoint2D[0]][cachePoint2D[1]][0] = cacheDepth;
+
+					// set color
+//					bufferDepth[cachePoint2D[0]][cachePoint2D[1]][1] = -1;
+				
+			}
 		}
 		
-		throw new RuntimeException("Ay");
+		for(iterator = 0; iterator < meshCacheVectorACLength; iterator += R3MESH_PRECISION) {
+			cachePoint3D[0] = (meshCacheVectorACUnit[0] * iterator) + triangleCoords[0][0];
+			cachePoint3D[1] = (meshCacheVectorACUnit[1] * iterator) + triangleCoords[0][1];
+			cachePoint3D[2] = (meshCacheVectorACUnit[2] * iterator) + triangleCoords[0][2];
+			
+			cacheDepth = calcR3Point(cachePoint3D, cachePoint2D, forward, camPos, alpha, beta, factor);
+			if (cachePoint2D[0] > 0 && cachePoint2D[1] > 0 && cachePoint2D[0] < screenWidth && cachePoint2D[1] < screenHeight
+					&& cacheDepth < bufferDepth[cachePoint2D[0]][cachePoint2D[1]][0]) {
+			
+					bufferDepth[cachePoint2D[0]][cachePoint2D[1]][0] = cacheDepth;
+
+					// set color
+//					bufferDepth[cachePoint2D[0]][cachePoint2D[1]][1] = -1;				
+				
+			}
+		}
+		
+		for(iterator = 0; iterator < meshCacheVectorBCLength; iterator += R3MESH_PRECISION) {
+			cachePoint3D[0] = (meshCacheVectorBCUnit[0] * iterator) + triangleCoords[1][0];
+			cachePoint3D[1] = (meshCacheVectorBCUnit[1] * iterator) + triangleCoords[1][1];
+			cachePoint3D[2] = (meshCacheVectorBCUnit[2] * iterator) + triangleCoords[1][2];
+			
+			cacheDepth = calcR3Point(cachePoint3D, cachePoint2D, forward, camPos, alpha, beta, factor);
+			if (cachePoint2D[0] > 0 && cachePoint2D[1] > 0 && cachePoint2D[0] < screenWidth && cachePoint2D[1] < screenHeight
+					&& cacheDepth < bufferDepth[cachePoint2D[0]][cachePoint2D[1]][0]) {
+			
+					bufferDepth[cachePoint2D[0]][cachePoint2D[1]][0] = cacheDepth;
+
+					// set color
+//					bufferDepth[cachePoint2D[0]][cachePoint2D[1]][1] = -1;
+				
+			}
+		}
+		
+//		throw new RuntimeException("Ay");
 	}
 
 	public static double length(double[] vectorR3) {

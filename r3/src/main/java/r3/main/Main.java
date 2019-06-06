@@ -322,12 +322,19 @@ public class Main {
 				//store color in forth index
 				double r = Math.random();
 				if(r < 0.3){
-					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.red.getRGB())) : -1};
+//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.red.getRGB())) : -1};
+//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.PINK.getRGB())) : -1};
 				}else if(r < 0.6){
-					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
+//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
+//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.BLUE.getRGB())) : -1};
 				}else{
-					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.blue.getRGB())) : -1};
+//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.blue.getRGB())) : -1};
+//					vertices[3] = new double[] {-1};
+//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.YELLOW.getRGB())) : -1};
 				}
+				vertices[3] = new double[] {-1};
+				
+//				vertices[3] = new double[] {(double) Color.PINK.getRGB()};
 					
 				//System.out.println(vertices[3][0]);
 //				new Color(Color.red.getRGB())

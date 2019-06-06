@@ -2,6 +2,7 @@ package r3.multithreading;
 
 import r3.main.Main;
 import r3.mathstuff.Mathstuff;
+import r3.window.DrawComp;
 
 public class ThreadProcessor extends Thread {
 	
@@ -15,8 +16,8 @@ public class ThreadProcessor extends Thread {
 		
 		int width = Main.getWindow().getDrawComp().getWidth();
 		int height = Main.getWindow().getDrawComp().getHeight();
-		bufferCalculation = new double[width][height][2];
-		bufferToDraw = new double[width][height][2];
+		bufferCalculation = clearBuffer(new double[width][height][2]);
+		bufferToDraw = clearBuffer(new double[width][height][2]);
 		bufferToClear = new double[width][height][2];
 		
 		ThreadProcessor.threadRegister = new ThreadProcessor[threadsAmount];
@@ -282,18 +283,22 @@ public class ThreadProcessor extends Thread {
 				while(true) {
 					
 					//clear buffer
-					double[][][] buffer = bufferToClear;
-					for(int x = 0; x < buffer.length; x++){
-						for(int y = 0; y < buffer[0].length; y++){
-							buffer[x][y][0] = 0;
-							buffer[x][y][1] = -1;
-						}	
-					}
+					clearBuffer(bufferToClear);
 					
 					onThreadFinish(false);
 				}
 			}
 		}).start();
+	}
+	
+	private static double[][][] clearBuffer(double[][][] buffer) {
+		for(int x = 0; x < buffer.length; x++){
+			for(int y = 0; y < buffer[0].length; y++){
+				buffer[x][y][0] = DrawComp.BUFFER_DEPTH_CLEAR_VALUE;
+				buffer[x][y][1] = -1;
+			}	
+		}
+		return buffer;
 	}
 	
 //	public static double[][] getBufferDepthCompleted() {

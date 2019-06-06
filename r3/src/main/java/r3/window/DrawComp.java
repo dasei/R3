@@ -11,6 +11,8 @@ import r3.multithreading.ThreadProcessor;
 
 public class DrawComp extends JComponent {
 	
+	public static final int BUFFER_DEPTH_CLEAR_VALUE = Integer.MAX_VALUE;
+	
 	public double[][][] coords  = Main.coords;
 	int r=255;
 	int g=0;
@@ -105,7 +107,7 @@ public class DrawComp extends JComponent {
 		//Draw Buffer
 		for(int x = 0;x<buffCache.length;x++){
 			for(int y = 0;y<buffCache[0].length;y++){
-				if(buffCache[x][y][0]==0)
+				if(buffCache[x][y][0] == BUFFER_DEPTH_CLEAR_VALUE)
 					continue;
 				if(buffCache[x][y][1] != -1){
 //					System.out.println("HELP HERE IS FIRE IN SE HOOD: " + buffCache[x][y][1]);
