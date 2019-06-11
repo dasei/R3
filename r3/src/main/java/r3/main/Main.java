@@ -53,7 +53,7 @@ public class Main {
 //		startLoopThread();
 		
 
-		ThreadProcessor.startMultithreading(Main.coords.length, 4);
+		ThreadProcessor.startMultithreading(Main.coords.length, 8);
 	}
 	
 	private static void startLoopThread() {
@@ -109,7 +109,7 @@ public class Main {
 		}).start();
 	}
 	
-	private static final double MOVEMENT_SPEED_PER_SECOND = 10;
+	private static final double MOVEMENT_SPEED_PER_SECOND = 100;
 	public static final double ROTATION_SPEED_PER_SECOND = Math.toRadians(45); //radians	
 	public static final double ROTATION_AMOUNT_PER_MOUSEMOVEMENT_PIXEL = Math.toRadians(0.25); //radians
 	private static long processInputsTimeLastNanos = System.nanoTime();
@@ -303,7 +303,7 @@ public class Main {
 		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
 		try {
 
-			BufferedReader br = new BufferedReader(new FileReader(new File("res/Dragon.raw")));
+			BufferedReader br = new BufferedReader(new FileReader(new File("res/dragon.raw")));
 
 		
 			int scale = 10;
@@ -330,7 +330,7 @@ public class Main {
 				}else{
 //					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.blue.getRGB())) : -1};
 //					vertices[3] = new double[] {-1};
-//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.YELLOW.getRGB())) : -1};
+//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
 				}
 				vertices[3] = new double[] {-1};
 				

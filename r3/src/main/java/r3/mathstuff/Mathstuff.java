@@ -817,7 +817,10 @@ public class Mathstuff {
 		return bufferDepth;
 	}
 
-	private static final double R3MESH_PRECISION = 0.2;
+//	private static final double R3MESH_PRECISION = 0.2;
+	private double precisionMesh;
+	private double lengthMiddle;
+	private int[] coordsIntCache = new int[2];
 	private double[] meshCacheVectorAB = new double[3];
 	private double[] meshCacheVectorAC = new double[3];
 	private double[] meshCacheVectorBC = new double[3];
@@ -829,6 +832,25 @@ public class Mathstuff {
 	private double[] meshCacheVectorBCUnit = new double[3];
 
 	private void calcR3Mesh(double[][][] bufferDepth, double[][] triangleCoords, double[] forward, double[] camPos,double alpha, double beta, double factor) {
+		
+		double[] middle = new double[] { (triangleCoords[0][0] + triangleCoords[1][0] + triangleCoords[2][0]) / 3,
+				(triangleCoords[0][1] + triangleCoords[1][1] + triangleCoords[2][1]) / 3,
+				(triangleCoords[0][2] + triangleCoords[1][2] + triangleCoords[2][2]) / 3 };
+
+		lengthMiddle = calcR3Point(middle, coordsIntCache, forward, camPos, alpha, beta, factor);
+		
+		if (coordsIntCache[0] < 0 || coordsIntCache[1] < 0 || coordsIntCache[0] > screenWidth
+				|| coordsIntCache[1] > screenHeight)
+			return;
+
+		if (lengthMiddle == 0)
+			return;
+
+		// precision = 0.001+Math.pow(1.00146, lengthMiddle)-1;
+		// precision = 0.0058*lengthMiddle+0.001;
+		precisionMesh = 0.003 * lengthMiddle + 0.001;
+//		precisionMesh = 0.2;
+		
 		meshCacheVectorAB[0] = triangleCoords[1][0] - triangleCoords[0][0];
 		meshCacheVectorAB[1] = triangleCoords[1][1] - triangleCoords[0][1];
 		meshCacheVectorAB[2] = triangleCoords[1][2] - triangleCoords[0][2];
@@ -858,7 +880,7 @@ public class Mathstuff {
 		double[] cachePoint3D = new double[3];
 		int[] cachePoint2D = new int[2];
 		double cacheDepth;
-		for(iterator = 0; iterator < meshCacheVectorABLength; iterator += R3MESH_PRECISION) {
+		for(iterator = 0; iterator < meshCacheVectorABLength; iterator += precisionMesh) {
 			cachePoint3D[0] = (meshCacheVectorABUnit[0] * iterator) + triangleCoords[0][0];
 			cachePoint3D[1] = (meshCacheVectorABUnit[1] * iterator) + triangleCoords[0][1];
 			cachePoint3D[2] = (meshCacheVectorABUnit[2] * iterator) + triangleCoords[0][2];
@@ -875,7 +897,7 @@ public class Mathstuff {
 			}
 		}
 		
-		for(iterator = 0; iterator < meshCacheVectorACLength; iterator += R3MESH_PRECISION) {
+		for(iterator = 0; iterator < meshCacheVectorACLength; iterator += precisionMesh) {
 			cachePoint3D[0] = (meshCacheVectorACUnit[0] * iterator) + triangleCoords[0][0];
 			cachePoint3D[1] = (meshCacheVectorACUnit[1] * iterator) + triangleCoords[0][1];
 			cachePoint3D[2] = (meshCacheVectorACUnit[2] * iterator) + triangleCoords[0][2];
@@ -892,7 +914,7 @@ public class Mathstuff {
 			}
 		}
 		
-		for(iterator = 0; iterator < meshCacheVectorBCLength; iterator += R3MESH_PRECISION) {
+		for(iterator = 0; iterator < meshCacheVectorBCLength; iterator += precisionMesh) {
 			cachePoint3D[0] = (meshCacheVectorBCUnit[0] * iterator) + triangleCoords[1][0];
 			cachePoint3D[1] = (meshCacheVectorBCUnit[1] * iterator) + triangleCoords[1][1];
 			cachePoint3D[2] = (meshCacheVectorBCUnit[2] * iterator) + triangleCoords[1][2];
