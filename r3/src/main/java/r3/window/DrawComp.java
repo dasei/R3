@@ -27,7 +27,11 @@ public class DrawComp extends JComponent {
 //	private int cycleCounter = 0;
 //	private double fpsCurrent = 0;
 	
-	public void paintComponent(Graphics g) {		
+	public void paintComponent(Graphics g) {	
+		
+		if(ThreadProcessor.threadRegister == null)
+			return;
+		
 		//TODO
 //		if(cycleCounter == 0)
 //			timeStartNanos = System.nanoTime();
