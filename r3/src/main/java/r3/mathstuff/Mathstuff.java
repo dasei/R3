@@ -109,9 +109,9 @@ public class Mathstuff {
 		// return coords;
 	}
 
-	private double[] calcR3DepthVectorCache;
+	private static double[] calcR3DepthVectorCache;
 
-	public double calcR3Depth(double[] point, double[] cameraPos) {
+	public static double calcR3Depth(double[] point, double[] cameraPos) {
 		calcR3DepthVectorCache = new double[] { point[0] - cameraPos[0], point[1] - cameraPos[1],
 				point[2] - cameraPos[2] };
 		return Math.sqrt((calcR3DepthVectorCache[0] * calcR3DepthVectorCache[0])
