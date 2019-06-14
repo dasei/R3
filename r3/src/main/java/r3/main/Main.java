@@ -111,7 +111,7 @@ public class Main {
 	}
 	private static int indexSelected = -1;
 	private static double editColor = (double) storeColor(Color.red.getRGB());
-	private static final double MOVEMENT_SPEED_PER_SECOND = 10;
+	private static final double MOVEMENT_SPEED_PER_SECOND = 100;
 	public static final double ROTATION_SPEED_PER_SECOND = Math.toRadians(45); //radians	
 	public static final double ROTATION_AMOUNT_PER_MOUSEMOVEMENT_PIXEL = Math.toRadians(0.25); //radians
 	private static long processInputsTimeLastNanos = System.nanoTime();
@@ -447,21 +447,21 @@ public class Main {
 			{
 				double r = Math.random();
 				if(r < 0.3){
-					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.red.getRGB())) : -1};
-					fixedColor[i] = useColor ? true : false;
+//					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.red.getRGB())) : -1};
+//					fixedColor[i] = useColor ? true : false;
 //					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.PINK.getRGB())) : -1};
 				}else if(r < 0.6){
 //					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
-					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.BLUE.getRGB())) : -1};
-					fixedColor[i] = useColor ? true : false;
+//					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.BLUE.getRGB())) : -1};
+//					fixedColor[i] = useColor ? true : false;
 				}else{
 //					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.blue.getRGB())) : -1};
 //					cacheTriangles[i][3] = new double[] {-1};
-					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
-					fixedColor[i] = useColor ? true : false;
+//					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
+//					fixedColor[i] = useColor ? true : false;
 				}
-//				cacheTriangles[i][3] = new double[] {-1};
-//				fixedColor[i] = false;
+				cacheTriangles[i][3] = new double[] {-1};
+				fixedColor[i] = false;
 			}
 			return cacheTriangles;		
 		}catch(Exception e) {
