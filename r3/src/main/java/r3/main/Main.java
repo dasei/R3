@@ -412,19 +412,19 @@ public class Main {
 				vertices[2] = new double[] {Double.parseDouble(coordinates[6])*scale, Double.parseDouble(coordinates[7])*scale, Double.parseDouble(coordinates[8])*scale};
 				
 				//store color in forth index
-				double r = Math.random();
-				if(r < 0.3){
-//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.red.getRGB())) : -1};
-//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.PINK.getRGB())) : -1};
-				}else if(r < 0.6){
-//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
-//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.BLUE.getRGB())) : -1};
-				}else{
-//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.blue.getRGB())) : -1};
-//					vertices[3] = new double[] {-1};
-//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
-				}
-				vertices[3] = new double[] {-1};
+//				double r = Math.random();
+//				if(r < 0.3){
+////					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.red.getRGB())) : -1};
+////					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.PINK.getRGB())) : -1};
+//				}else if(r < 0.6){
+////					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
+////					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.BLUE.getRGB())) : -1};
+//				}else{
+////					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.blue.getRGB())) : -1};
+////					vertices[3] = new double[] {-1};
+////					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
+//				}
+//				vertices[3] = new double[] {-1};
 				
 //				vertices[3] = new double[] {(double) Color.PINK.getRGB()};
 					
@@ -442,7 +442,28 @@ public class Main {
 			br.close();
 			coordsDraw = new int[triangles.size()][3][2];
 			fixedColor = new boolean[triangles.size()];
-			return triangles.toArray(new double[0][][]);		
+			double[][][] cacheTriangles = triangles.toArray(new double[0][][]);
+			for(int i = 0;i < triangles.size();i++)
+			{
+				double r = Math.random();
+				if(r < 0.3){
+					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.red.getRGB())) : -1};
+					fixedColor[i] = useColor ? true : false;
+//					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.PINK.getRGB())) : -1};
+				}else if(r < 0.6){
+//					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
+					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.BLUE.getRGB())) : -1};
+					fixedColor[i] = useColor ? true : false;
+				}else{
+//					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.blue.getRGB())) : -1};
+//					cacheTriangles[i][3] = new double[] {-1};
+					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
+					fixedColor[i] = useColor ? true : false;
+				}
+//				cacheTriangles[i][3] = new double[] {-1};
+//				fixedColor[i] = false;
+			}
+			return cacheTriangles;		
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
