@@ -20,6 +20,7 @@ public class Main {
 	public static final int FPS_MAX = 60;
 	public static int fpsCurrent = 0;
 	public static int[][][] coordsDraw;
+	public static boolean[] fixedColor;
 	public static final ArrayList<Color> colors = new ArrayList<Color>();
 	public static double[][][] coords = loadCoords(true);
 	
@@ -158,7 +159,10 @@ public class Main {
 		if(register[KeyEvent.VK_ENTER])
 		{
 			if(indexSelected!=-1)
-			coords[indexSelected][3][0] = editColor;
+			{
+				coords[indexSelected][3][0] = editColor;
+				fixedColor[indexSelected] = true;
+			}
 			indexSelected = -1;
 		}
 //		if(register[KeyEvent.VK_BACK_SPACE]) {
@@ -291,15 +295,15 @@ public class Main {
 			}
 			if(lastIndex!=-1)
 			{
-				if(indexSelected!=-1)
-					coords[indexSelected ][3][0] = -1;
+				if(indexSelected!=-1&&!fixedColor[indexSelected])
+					coords[indexSelected][3][0] = -1;
 				indexSelected = lastIndex;
 				if(coords[lastIndex][3][0]==-1)
 				coords[lastIndex][3][0] = editColor;
 			}
 			else
 			{
-				if(indexSelected!=-1)
+				if(indexSelected!=-1&&!fixedColor[indexSelected])
 				{
 					coords[indexSelected][3][0] = -1;
 					indexSelected = -1;
@@ -437,6 +441,7 @@ public class Main {
 			}
 			br.close();
 			coordsDraw = new int[triangles.size()][3][2];
+			fixedColor = new boolean[triangles.size()];
 			return triangles.toArray(new double[0][][]);		
 		}catch(Exception e) {
 			e.printStackTrace();
