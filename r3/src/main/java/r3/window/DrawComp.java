@@ -119,8 +119,8 @@ public class DrawComp extends JComponent {
 				}else
 					g.setColor(Color.BLACK);
 				
-				g.drawRect(x, y, 0, 0);
-				
+				g.drawRect(x, y, 1, 0);                                                 
+//				g.drawLine(x, y, x-1, y-1);
 			}
 		}
 		
