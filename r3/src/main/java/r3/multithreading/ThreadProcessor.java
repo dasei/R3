@@ -1,5 +1,8 @@
 package r3.multithreading;
 
+import java.util.ArrayList;
+
+import game.gameobjects.GameObject;
 import r3.main.Main;
 import r3.mathstuff.Mathstuff;
 import r3.window.DrawComp;
@@ -10,7 +13,7 @@ public class ThreadProcessor extends Thread {
 	public static double[][][] bufferToDraw;
 	public static double[][][] bufferToClear;
 	
-	public static void startMultithreading(int trianglesAmount, int threadsAmount) {
+	public static void startMultithreadingRaw(int trianglesAmount, int threadsAmount) {
 		if(trianglesAmount < threadsAmount)
 			threadsAmount = trianglesAmount;
 		
@@ -45,9 +48,60 @@ public class ThreadProcessor extends Thread {
 		startClearThread();
 	}
 	
+	/**
+	 * <p>initializes multithreading for the Game, using GameObjects instead of the raw double[][][] list of triangles in class Main</p>
+	 * <p>NOTE: the number of threads actually started equals the passed value of threadsAmount, hence while in the beginning only few objects are present
+	 * in the Game, over time more can be added easily without the need to start a new Thread</p>
+	 */
+	public static void startMultithreadingGame(ArrayList<GameObject> gameObjects, int threadsAmount) {
+		int width = Main.getWindow().getDrawComp().getWidth();
+		int height = Main.getWindow().getDrawComp().getHeight();
+		bufferCalculation = clearBuffer(new double[width][height][2]);
+		bufferToDraw = clearBuffer(new double[width][height][2]);
+		bufferToClear = new double[width][height][2];
+		
+		ThreadProcessor.threadRegister = new ThreadProcessor[threadsAmount]; //TODO test this monstrum
+		
+		for(int i = 0; i < threadRegister.length; i++) {
+			threadRegister[i] = new ThreadProcessor(i);
+		}
+		
+		addGameObjects(gameObjects);	
+		
+		for(ThreadProcessor thread : ThreadProcessor.threadRegister) {
+			thread.start();
+		}
+		
+		startDrawerThread();
+		
+		startClearThread();
+	}
 	
-	
-	
+	/**
+	 * this adds passed GameObjects to the Threads equally. Their order can be quite random so please let these methods do everything for you
+	 */
+	public static void addGameObjects(ArrayList<GameObject> gameObjectsNew) {
+		
+		//count all currently active GameObjects		
+		int gameObjectsAmountCurrent = 0;
+		for(ThreadProcessor thread : threadRegister)
+			gameObjectsAmountCurrent += thread.getGameObjects().size();
+		
+		// the idea is, to take the amount of currently active GameObject plus the new ones and divide that number be the number of threads.
+		// every thread is then supposed to get this amount of GameObjects at maximum
+		int gameObjectsPerThread = 1 + ((gameObjectsAmountCurrent + gameObjectsNew.size()) / threadRegister.length);
+		
+		int threadSizeInitial;
+		int amountOfNewGameObjectsAdded = 0, amountOfNewGameObjects = gameObjectsNew.size();
+		for(int threadI = 0; threadI < threadRegister.length && amountOfNewGameObjectsAdded < amountOfNewGameObjects; threadI++) {
+			threadSizeInitial = threadRegister[threadI].getGameObjects().size();
+			//add the amount of gameObjects to this Thread, that is need to reach the gameObjectsPerThread amount
+			for(int gameObjectI = 0; gameObjectI < gameObjectsPerThread - threadSizeInitial && amountOfNewGameObjectsAdded < amountOfNewGameObjects; gameObjectI++) {
+				threadRegister[threadI].getGameObjects().add(gameObjectsNew.get(amountOfNewGameObjectsAdded));
+				amountOfNewGameObjectsAdded++;
+			}
+		}
+	}
 	
 	
 	
@@ -56,9 +110,12 @@ public class ThreadProcessor extends Thread {
 	
 	private static Object threadLock = new Object();
 	
-	private final int triangleOffset;
-	private final int triangleAmount;
-	private final int threadIndex;
+	private int triangleOffset;
+	private int triangleAmount;
+	private int threadIndex;
+	
+	private boolean useGameObjectsNotRaw;
+	private ArrayList<GameObject> gameObjects;
 	
 	private Mathstuff mathstuff;
 //	private double[][] bufferDepth;
@@ -66,13 +123,20 @@ public class ThreadProcessor extends Thread {
 	private boolean readyToBeMerged = false;
 	
 	public ThreadProcessor(int threadIndex, int triangleOffset, int triangleAmount) {			
+		this.useGameObjectsNotRaw = false;
+		
 		this.triangleAmount = triangleAmount;
 		this.triangleOffset = triangleOffset;
 		this.threadIndex = threadIndex;
+	}
+	
+	/*
+	 * public Constructor for ThreadProcessor. This will use GameObjects instead of the raw double[][][] triangle list in Main
+	 */
+	public ThreadProcessor(int threadIndex) {
+		this.useGameObjectsNotRaw = true;
 		
-		//TODO reverse this
-//		this.triangleOffset = 0;
-//		this.triangleAmount = Main.coords.length;
+		this.gameObjects = new ArrayList<GameObject>();
 	}
 	
 	public void run() {
@@ -91,7 +155,7 @@ public class ThreadProcessor extends Thread {
 			
 			//main calculation
 //			this.bufferVersion = Main.cycleCounterDebug;
-			mathstuff.calcR3ZBuff(Main.coords, Main.getCamera(), triangleOffset, triangleAmount, false);
+			mathstuff.calcR3ZBuff(Main.coords, Main.getCamera(), triangleOffset, triangleAmount, false); //TODO if it uses GameObjects, actually calculate them!
 			
 			//merging of buffers (will wait)
 //			mergeBuffersQueu();
@@ -103,6 +167,10 @@ public class ThreadProcessor extends Thread {
 			onThreadFinish(false);
 			
 		}
+	}
+	
+	public ArrayList<GameObject> getGameObjects(){
+		return this.gameObjects;
 	}
 	
 //	public boolean readyToBeMerged() {
@@ -312,6 +380,7 @@ public class ThreadProcessor extends Thread {
 	public static double[][][] getBufferToDraw() {
 		return bufferToDraw;
 	}
+	
 	
 //	/**
 //	 * the actual process of merging two buffers

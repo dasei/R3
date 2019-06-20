@@ -52,8 +52,9 @@ public class Main {
 		convertTriangles();
 //		startLoopThread();
 		
+		
 
-		ThreadProcessor.startMultithreading(Main.coords.length, 4);
+		ThreadProcessor.startMultithreadingRaw(Main.coords.length, 4);
 	}
 	
 	private static void startLoopThread() {
@@ -376,6 +377,8 @@ public class Main {
 //		coordsDraw = new int[triangles.size()][3][2];
 //		return triangles.toArray(new double[0][][]);
 	}
+	
+	
 	
 	/**
 	 * stores a color in the array, if it is not yet contained
