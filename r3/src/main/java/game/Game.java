@@ -1,0 +1,115 @@
+package game;
+
+import java.awt.Color;
+import java.util.ArrayList;
+
+import game.gameobjects.Floor;
+import game.gameobjects.GameObject;
+import r3.main.Main;
+import r3.mathstuff.Mathstuff;
+import r3.multithreading.ThreadProcessor;
+
+public class Game {
+	
+	public static void main(String[] args) {
+		Main.WORKING_WITH_GAMEOBJECTS = true;
+		
+		Main.getWindow().init(); Main.getWindow().setTitle(Main.getWindow().getTitle() + "GAME");	
+		
+		new Game();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public static final int FPS = 60;
+	public static final boolean fps_cap = true;
+	
+	private ArrayList<GameObject> gameObjects;
+	
+	
+	public Game() {
+		this.gameObjects = new ArrayList<GameObject>();
+		
+		ThreadProcessor.startMultithreadingGame(new ArrayList<GameObject>(), 4);
+		
+		//--gameObjects		
+		ArrayList<GameObject> gameObjectsStart = new ArrayList<GameObject>();
+		
+		
+//		gameObjectsStart.add(new GameObject(FileLoader.loadTrianglesFromFile(new File("res/Dragon.raw")), null));
+//		gameObjectsStart.add(
+//				new GameObject(
+//						new double[][][] {
+//							{
+////								{-50, -50, -100},
+////								{-50, 50, -100},
+////								{50, -50, -100}
+//								{-0.5, -0.5, 0},
+//								{-0.5, 0.5, 0},
+//								{0.5, -0.5, 0}
+//								
+//							}
+//						},
+//				null
+//		));
+		
+		gameObjectsStart.add(new Floor(0, 0, -0.75, Main.storeColor(Color.green.getRGB())));
+		gameObjectsStart.add(new GameObject(Mathstuff.generateCube(new double[] {0, 0, 2}, 1, Main.storeColor(Color.blue.getRGB())), null));
+		
+		
+		
+		ThreadProcessor.addGameObjects(gameObjectsStart, true);
+		//--
+		
+		startGameLoop();
+	}
+	
+	public void addGameObject(GameObject gameObject) {
+		this.gameObjects.add(gameObject);
+	}
+	
+	private void startGameLoop() {
+		(new Thread() {
+			public void run() {				
+				
+				
+				double deltaTimeSeconds = 0;
+				
+				long iterationStart, duration;
+				while(true) {
+					iterationStart = System.currentTimeMillis();					
+					///--- LOOP
+					
+					for(GameObject gameObject : gameObjects) {
+						gameObject.updatePosition(deltaTimeSeconds);
+					}
+					
+					
+					///--- LOOP
+					duration = System.currentTimeMillis() - iterationStart;
+					
+					if(fps_cap && duration < 1000 / FPS) {						
+						try {
+							Thread.sleep((1000 / FPS) - (duration));
+						} catch(Exception e) {}
+					}					
+					
+					deltaTimeSeconds = (System.currentTimeMillis() - iterationStart) / 1000d;
+				}				
+			}
+		}).start();
+	}
+}
