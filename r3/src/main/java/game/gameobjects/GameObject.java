@@ -2,10 +2,10 @@ package game.gameobjects;
 
 import game.physics.Hitbox;
 
-public abstract class GameObject {
+public class GameObject {
 	
 	private double[][][] triangles;
-	private int[][][] trianglesDrawCoordinates2D;
+//	private int[][][] trianglesDrawCoordinates2D; //needed? => check drawCoords2D int[][][] in main
 	
 	private Hitbox hitbox;
 	
@@ -15,7 +15,7 @@ public abstract class GameObject {
 	
 	public GameObject(double[][][] triangles, Hitbox hitbox) {
 		this.triangles = triangles;
-		this.trianglesDrawCoordinates2D = new int[this.triangles.length][3][2];
+//		this.trianglesDrawCoordinates2D = new int[this.triangles.length][3][2];
 		this.hitbox = hitbox;
 	}
 	
@@ -25,14 +25,17 @@ public abstract class GameObject {
 		this.pos[2] += speedPerSec[2];
 	}
 	
-	public abstract void move();
+	public void move() {}
 	
+	protected void setTriangles(double[][][] triangles) {
+		this.triangles = triangles;
+	}
 	
 	public double[][][] getTriangles() {
 		return this.triangles;
 	}
 	
-	public int[][][] getTrianglesDrawCoordinates2D() {
-		return this.trianglesDrawCoordinates2D;
-	}
+//	public int[][][] getTrianglesDrawCoordinates2D() {
+//		return this.trianglesDrawCoordinates2D;
+//	}
 }

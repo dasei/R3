@@ -66,7 +66,7 @@ public class ThreadProcessor extends Thread {
 			threadRegister[i] = new ThreadProcessor(i);
 		}
 		
-		addGameObjects(gameObjects);	
+		addGameObjects(gameObjects, true);	
 		
 		for(ThreadProcessor thread : ThreadProcessor.threadRegister) {
 			thread.start();
@@ -80,7 +80,11 @@ public class ThreadProcessor extends Thread {
 	/**
 	 * this adds passed GameObjects to the Threads equally. Their order can be quite random so please let these methods do everything for you
 	 */
-	public static void addGameObjects(ArrayList<GameObject> gameObjectsNew) {
+	public static void addGameObjects(ArrayList<GameObject> gameObjectsNew, boolean optimizeTriangles) {
+		if(optimizeTriangles)
+			for(GameObject gameObject : gameObjectsNew)
+				Mathstuff.optimizeCoordinates(gameObject.getTriangles());
+		
 		
 		//count all currently active GameObjects		
 		int gameObjectsAmountCurrent = 0;
@@ -89,7 +93,7 @@ public class ThreadProcessor extends Thread {
 		
 		// the idea is, to take the amount of currently active GameObject plus the new ones and divide that number be the number of threads.
 		// every thread is then supposed to get this amount of GameObjects at maximum
-		int gameObjectsPerThread = 1 + ((gameObjectsAmountCurrent + gameObjectsNew.size()) / threadRegister.length);
+		int gameObjectsPerThread = 1 + ((gameObjectsAmountCurrent + gameObjectsNew.size() - 1) / threadRegister.length);
 		
 		int threadSizeInitial;
 		int amountOfNewGameObjectsAdded = 0, amountOfNewGameObjects = gameObjectsNew.size();
@@ -122,7 +126,7 @@ public class ThreadProcessor extends Thread {
 	
 	private boolean readyToBeMerged = false;
 	
-	public ThreadProcessor(int threadIndex, int triangleOffset, int triangleAmount) {			
+	public ThreadProcessor(int threadIndex, int triangleOffset, int triangleAmount) {
 		this.useGameObjectsNotRaw = false;
 		
 		this.triangleAmount = triangleAmount;
@@ -155,7 +159,10 @@ public class ThreadProcessor extends Thread {
 			
 			//main calculation
 //			this.bufferVersion = Main.cycleCounterDebug;
-			mathstuff.calcR3ZBuff(Main.coords, Main.getCamera(), triangleOffset, triangleAmount, false); //TODO if it uses GameObjects, actually calculate them!
+			if(this.useGameObjectsNotRaw)
+				mathstuff.calcR3ZBuff(this.gameObjects, Main.getCamera(), false);
+			else
+				mathstuff.calcR3ZBuff(Main.coords, Main.getCamera(), triangleOffset, triangleAmount, false);
 			
 			//merging of buffers (will wait)
 //			mergeBuffersQueu();

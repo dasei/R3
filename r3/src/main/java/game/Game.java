@@ -1,16 +1,20 @@
 package game;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
+import game.gameobjects.Floor;
 import game.gameobjects.GameObject;
 import r3.main.Main;
+import r3.mathstuff.Mathstuff;
 import r3.multithreading.ThreadProcessor;
 
 public class Game {
 	
 	public static void main(String[] args) {
+		Main.WORKING_WITH_GAMEOBJECTS = true;
 		
-		Main.getWindow().init();		
+		Main.getWindow().init(); Main.getWindow().setTitle(Main.getWindow().getTitle() + "GAME");	
 		
 		new Game();
 	}
@@ -40,6 +44,35 @@ public class Game {
 		this.gameObjects = new ArrayList<GameObject>();
 		
 		ThreadProcessor.startMultithreadingGame(new ArrayList<GameObject>(), 4);
+		
+		//--gameObjects		
+		ArrayList<GameObject> gameObjectsStart = new ArrayList<GameObject>();
+		
+		
+//		gameObjectsStart.add(new GameObject(FileLoader.loadTrianglesFromFile(new File("res/Dragon.raw")), null));
+//		gameObjectsStart.add(
+//				new GameObject(
+//						new double[][][] {
+//							{
+////								{-50, -50, -100},
+////								{-50, 50, -100},
+////								{50, -50, -100}
+//								{-0.5, -0.5, 0},
+//								{-0.5, 0.5, 0},
+//								{0.5, -0.5, 0}
+//								
+//							}
+//						},
+//				null
+//		));
+		
+		gameObjectsStart.add(new Floor(0, 0, -0.75, Main.storeColor(Color.green.getRGB())));
+		gameObjectsStart.add(new GameObject(Mathstuff.generateCube(new double[] {0, 0, 2}, 1, Main.storeColor(Color.blue.getRGB())), null));
+		
+		
+		
+		ThreadProcessor.addGameObjects(gameObjectsStart, true);
+		//--
 		
 		startGameLoop();
 	}
