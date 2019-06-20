@@ -1011,9 +1011,10 @@ public class Mathstuff {
 						cacheLambda2Divisor = (o[1] * bc[0] - o[0] * bc[1]);
 						if (cacheLambda2Divisor == 0) {
 							cacheLambda2Divisor = (o[2] * bc[0] - o[0] * bc[2]);
-							// System.err.println(cacheLambda2Divisor);
 							if (cacheLambda2Divisor == 0) {
-								// System.err.println("0");
+									cacheLambda2Divisor = (o[2] * bc[1] - o[1] * bc[2]);	
+									if (cacheLambda2Divisor == 0) {
+								 System.err.println("0");
 								// cacheLambda2Divisor = (o[1]*bc[2]-o[2]*bc[1]);
 								// if(cacheLambda2Divisor == 0) {
 								// System.out.println("WARNING: This model contains
@@ -1032,6 +1033,10 @@ public class Mathstuff {
 								// (lambdaABCrawler*ab0[2]*bc[1]-lambdaABCrawler*ab0[1]*bc[2]-ab[2]*bc[1]+ab[1]*bc[2])
 								// / cacheLambda2Divisor;
 								// }
+									} else {
+										lambda2Max = (lambdaABCrawler * ab0[1] * bc[2] - lambdaABCrawler * ab0[2] * bc[1]
+												- ab[1] * bc[2] + ab[2] * bc[1]) / cacheLambda2Divisor;
+									}
 							} else {
 								lambda2Max = (lambdaABCrawler * ab0[0] * bc[2] - lambdaABCrawler * ab0[2] * bc[0]
 										- ab[0] * bc[2] + ab[2] * bc[0]) / cacheLambda2Divisor;
@@ -1596,13 +1601,43 @@ public class Mathstuff {
 					((-vectorAC[0]*vectorAP[1])+(vectorAC[1]*vectorAP[0]))
 							/
 					((vectorCB[0]*vectorAP[1])+(-vectorCB[1]*vectorAP[0]));
-					
+					if(Double.isNaN(lambdaCB))
+					{
+						lambdaCB = 
+						((-vectorAC[0]*vectorAP[2])+(vectorAC[2]*vectorAP[0]))
+								/
+						((vectorCB[0]*vectorAP[2])+(-vectorCB[2]*vectorAP[0]));
+						if(Double.isNaN(lambdaCB))
+						{
+							lambdaCB = 
+							((-vectorAC[1]*vectorAP[2])+(vectorAC[2]*vectorAP[1]))
+									/
+							((vectorCB[1]*vectorAP[2])+(-vectorCB[2]*vectorAP[1]));
+						}
+					}
+//					System.out.println(lambdaCB+">=0,<=1");
 					lambdaAP = 
 					(lambdaCB*vectorCB[2]+vectorAC[2])
 							/
 					(vectorAP[2]);
+					if(Double.isNaN(lambdaAP))
+					{
+						lambdaAP = 
+						(lambdaCB*vectorCB[1]+vectorAC[1])
+								/
+						(vectorAP[1]);
+						if(Double.isNaN(lambdaAP))
+						{
+							lambdaAP = 
+							(lambdaCB*vectorCB[0]+vectorAC[0])
+									/
+							(vectorAP[0]);
+						}
+					}
+//					System.out.println(lambdaAP+">=1");
 					if(lambdaAP>=1&&lambdaCB<=1&&lambdaCB>=0)
 					{
+						System.out.println(i);
 						double distance = calcR3Depth(pointP, camPos);
 						if(distance<lastDistance)
 						{
