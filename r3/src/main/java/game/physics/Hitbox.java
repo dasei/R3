@@ -6,4 +6,8 @@ public class Hitbox {
 	public Hitbox(double radius) {
 		this.radius = radius;
 	}
+	
+	public double getRadius() {
+		return this.radius;
+	}
 }

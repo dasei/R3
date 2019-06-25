@@ -11,12 +11,20 @@ import r3.multithreading.ThreadProcessor;
 
 public class Game {
 	
+	private static Game game;
+	
 	public static void main(String[] args) {
 		Main.WORKING_WITH_GAMEOBJECTS = true;
 		
 		Main.getWindow().init(); Main.getWindow().setTitle(Main.getWindow().getTitle() + "GAME");	
 		
-		new Game();
+		getGame();
+	}
+	
+	public static Game getGame(){
+		if(game == null)
+			game = new Game();
+		return game;
 	}
 	
 	
@@ -72,6 +80,8 @@ public class Game {
 		
 		
 		ThreadProcessor.addGameObjects(gameObjectsStart, true);
+		for(GameObject obj : gameObjectsStart)
+			addGameObject(obj);
 		//--
 		
 		startGameLoop();
@@ -111,5 +121,9 @@ public class Game {
 				}				
 			}
 		}).start();
+	}
+	
+	public ArrayList<GameObject> getGameObjects() {
+		return this.gameObjects;
 	}
 }
