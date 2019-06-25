@@ -39,17 +39,17 @@ public class Floor extends GameObject {
 //				add the square
 				triangles.add(
 						new double[][] {
-							{((x-(matrix.length/2d))*squareSize), ((y-(matrix[x].length/2d))*squareSize), x3Center},
-							{((x-(matrix.length/2d))*squareSize), ((y-(matrix[x].length/2d)+1)*squareSize), x3Center},
-							{((x-(matrix.length/2d)+1)*squareSize), ((y-(matrix[x].length/2d))*squareSize), x3Center},
+							{((x-(matrix.length/2d))*squareSize) + x1Center, ((y-(matrix[x].length/2d))*squareSize) + x2Center, x3Center},
+							{((x-(matrix.length/2d))*squareSize) + x1Center, ((y-(matrix[x].length/2d)+1)*squareSize) + x2Center, x3Center},
+							{((x-(matrix.length/2d)+1)*squareSize) + x1Center, ((y-(matrix[x].length/2d))*squareSize) + x2Center, x3Center},
 							{colorID}
 						}
 				);				
 				triangles.add(
 						new double[][] {
-							{((x-(matrix.length/2d)+1)*squareSize), ((y-(matrix[x].length/2d)+1)*squareSize), x3Center},
-							{((x-(matrix.length/2d))*squareSize), ((y-(matrix[x].length/2d)+1)*squareSize), x3Center},
-							{((x-(matrix.length/2d)+1)*squareSize), ((y-(matrix[x].length/2d))*squareSize), x3Center},
+							{((x-(matrix.length/2d)+1)*squareSize) + x1Center, ((y-(matrix[x].length/2d)+1)*squareSize) + x2Center, x3Center},
+							{((x-(matrix.length/2d))*squareSize) + x1Center, ((y-(matrix[x].length/2d)+1)*squareSize) + x2Center, x3Center},
+							{((x-(matrix.length/2d)+1)*squareSize) + x1Center, ((y-(matrix[x].length/2d))*squareSize) + x2Center, x3Center},
 							{colorID}
 						}
 				);

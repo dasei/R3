@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import game.gameobjects.Floor;
 import game.gameobjects.GameObject;
+import game.physics.Hitbox;
 import r3.main.Main;
 import r3.mathstuff.Mathstuff;
 import r3.multithreading.ThreadProcessor;
@@ -75,7 +76,9 @@ public class Game {
 //		));
 		
 		gameObjectsStart.add(new Floor(0, 0, -0.75, Main.storeColor(Color.green.getRGB())));
-		gameObjectsStart.add(new GameObject(Mathstuff.generateCube(new double[] {0, 0, 2}, 1, Main.storeColor(Color.blue.getRGB())), null));
+		GameObject cube = new GameObject(Mathstuff.generateCube(new double[] {0, 0, 2}, 1, Main.storeColor(Color.blue.getRGB())), new Hitbox(0.1));
+		cube.setSpeedPerSecond(new double[] {0,0,-0.1});
+		gameObjectsStart.add(cube);
 		
 		
 		

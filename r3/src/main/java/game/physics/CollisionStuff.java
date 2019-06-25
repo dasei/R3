@@ -20,8 +20,10 @@ public class CollisionStuff {
 		ArrayList<GameObject> gameObjects = Game.getGame().getGameObjects();
 		GameObject gameObjWorld;
 		double[][][] gameObjTriangles;
-		for(int gameObjectI = gameObjects.size(); gameObjectI >= 0; gameObjectI--){			
+		for(int gameObjectI = gameObjects.size()-1; gameObjectI >= 0; gameObjectI--){			
 			gameObjWorld = gameObjects.get(gameObjectI);
+			if(gameObject == gameObjWorld)
+				continue;
 			gameObjTriangles = gameObjWorld.getTriangles();
 						
 			for(int triangleI = 0; triangleI < gameObjTriangles.length; triangleI++) {				
@@ -52,10 +54,12 @@ public class CollisionStuff {
 							+	Math.pow(vecTriangleNormal[2], 2)
 						)
 				;
-				System.out.println(lambdaNormal);
 				
-				if(Math.abs(lambdaNormal) <= hitboxGameObjectRadius)
+				
+				if(Math.abs(lambdaNormal) <= hitboxGameObjectRadius) {
+					System.out.println("collision of: " + gameObject.getClass() + " with lambdaNormal: " + lambdaNormal);
 					return true;
+				}
 			}
 		}
 		return false;

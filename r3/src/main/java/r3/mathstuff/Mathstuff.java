@@ -866,7 +866,7 @@ public class Mathstuff {
 			gameObject = gameObjects.get(gameObjectI);
 			if(gameObject == null)
 				continue;
-			coords = gameObject.getTriangles();
+			coords = gameObject.getTrianglesAbsolute();
 			
 			
 			for (int triangleI = 0; triangleI < coords.length; triangleI++) {
