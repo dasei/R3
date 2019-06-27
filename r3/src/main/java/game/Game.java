@@ -75,10 +75,25 @@ public class Game {
 //				null
 //		));
 		
-		gameObjectsStart.add(new Floor(0, 0, -0.75, Main.storeColor(Color.green.getRGB())));
-		GameObject cube = new GameObject(Mathstuff.generateCube(new double[] {0, 0, 2}, 1, Main.storeColor(Color.blue.getRGB())), new Hitbox(0.1));
+		gameObjectsStart.add(new Floor(0, 0, 0, Main.storeColor(Color.green.getRGB())));
+		
+		GameObject cube = Mathstuff.generateCube(new double[] {0, 0, 2}, 1, Main.storeColor(Color.blue.getRGB()));
 		cube.setSpeedPerSecond(new double[] {0,0,-0.1});
 		gameObjectsStart.add(cube);
+		
+//		double z = 0;
+//		GameObject testObj = new GameObject(
+//				new double[][][] {
+//						{
+//								{0, 0, z},
+//								{10, 0, z},
+//								{0, -10, z},
+//								{Main.storeColor(Color.yellow.getRGB())}
+//						}
+//					},
+//				new Hitbox(0.1));
+////		testObj.setSpeedPerSecond(new double[] {0,0,-0.1});
+//		gameObjectsStart.add(testObj);
 		
 		
 		

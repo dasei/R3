@@ -1,8 +1,11 @@
 package r3.mathstuff;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
+import game.gameobjects.Floor;
 import game.gameobjects.GameObject;
+import game.physics.Hitbox;
 import r3.main.Main;
 import r3.multithreading.ThreadProcessor;
 
@@ -827,7 +830,7 @@ public class Mathstuff {
 		double beta = camera.beta;
 		double factor = camera.scaleFactor;
 		double[] camPos = camera.pos;
-
+		
 		// System.out.println(Arrays.toString(forward));
 
 		double[][][] bufferDepth;
@@ -867,6 +870,12 @@ public class Mathstuff {
 			if(gameObject == null)
 				continue;
 			coords = gameObject.getTrianglesAbsolute();
+			
+//			if(!(gameObject instanceof Floor)) {
+//				System.out.println("------");
+//				System.out.println(Arrays.toString(coords[0][0]));
+//				System.out.println("------");
+//			}
 			
 			
 			for (int triangleI = 0; triangleI < coords.length; triangleI++) {
@@ -1561,11 +1570,12 @@ public class Mathstuff {
 		double[] pointP = new double[3];
 		
 		double lastDistance = Double.MAX_VALUE;
-		double[][] closestTriangle = null;
-		double[][][] coords;
+		int closestTriangleIndex = -1;
+		GameObject gameObjectOfClosestTriangle = null;
+		double[][][] coords;		
 		for(ThreadProcessor thread : ThreadProcessor.threadRegister) {
 			for(GameObject gameObject : thread.getGameObjects()) {
-				coords = gameObject.getTriangles();
+				coords = gameObject.getTrianglesAbsolute();
 				for(int i = 0; i < coords.length; i++) {
 					vectorAC[0] = coords[i][2][0] - coords[i][0][0];
 					vectorAC[1] = coords[i][2][1] - coords[i][0][1];
@@ -1582,7 +1592,7 @@ public class Mathstuff {
 					lambdaP =
 					-((camPos[0]-coords[i][0][0])*(vectorAC[1]*vectorAB[2]-vectorAC[2]*vectorAB[1])+(camPos[1]-coords[i][0][1])*(vectorAC[2]*vectorAB[0]-vectorAC[0]*vectorAB[2])+(camPos[2]-coords[i][0][2])*(vectorAC[0]*vectorAB[1]-vectorAC[1]*vectorAB[0]))
 							/
-					(forward[0]*(vectorAC[1]*vectorAB[2]-vectorAC[2]*vectorAB[1]) + forward[1]*(vectorAC[2]*vectorAB[0]-vectorAC[0]*vectorAB[2]) + forward[2]*(vectorAC[0]*vectorAB[1]-vectorAC[1]*vectorAB[0]));
+ 					(forward[0]*(vectorAC[1]*vectorAB[2]-vectorAC[2]*vectorAB[1]) + forward[1]*(vectorAC[2]*vectorAB[0]-vectorAC[0]*vectorAB[2]) + forward[2]*(vectorAC[0]*vectorAB[1]-vectorAC[1]*vectorAB[0]));
 					
 					if(lambdaP<0)
 					{
@@ -1642,14 +1652,18 @@ public class Mathstuff {
 						if(distance<lastDistance)
 						{
 							lastDistance = distance;
-							closestTriangle = coords[i];
+							closestTriangleIndex = i;
+							gameObjectOfClosestTriangle = gameObject;
 						}
 					}
 				}
 			}
 		}
 		
-		return closestTriangle; 
+		if(gameObjectOfClosestTriangle == null)
+			return null;
+		
+		return gameObjectOfClosestTriangle.getTriangles()[closestTriangleIndex]; 
 	}
 	
 	public double[][] getClosestTriangleRaw(Camera camera) {
@@ -1772,24 +1786,24 @@ public class Mathstuff {
 	/**
 	 * @param colorID colorID as returned by {@link Main#storeColor(int)}
 	 */
-	public static double[][][] generateCube(double[] centerPos, double edgeLength, double colorID) {
-		double[][][] triangles = new double[4][4][];
+	public static GameObject generateCube(double[] centerPos, double edgeLength, double colorID) {
+		double[][][] triangles = new double[12][4][];
 		double halfEdgeLength = edgeLength/2d;
 		
 		//bottom side
 		triangles[0] = 
 				new double[][] {
-					{centerPos[0]-halfEdgeLength, centerPos[1]-halfEdgeLength, centerPos[2]-halfEdgeLength},
-					{centerPos[0]+halfEdgeLength, centerPos[1]-halfEdgeLength, centerPos[2]-halfEdgeLength},
-					{centerPos[0]-halfEdgeLength, centerPos[1]+halfEdgeLength, centerPos[2]-halfEdgeLength},
+					{-halfEdgeLength, -halfEdgeLength, -halfEdgeLength},
+					{+halfEdgeLength, -halfEdgeLength, -halfEdgeLength},
+					{-halfEdgeLength, +halfEdgeLength, -halfEdgeLength},
 					{colorID}
 				}
 		;
 		triangles[1] = 
 				new double[][] {
-					{centerPos[0]+halfEdgeLength, centerPos[1]+halfEdgeLength, centerPos[2]-halfEdgeLength},
-					{centerPos[0]+halfEdgeLength, centerPos[1]-halfEdgeLength, centerPos[2]-halfEdgeLength},
-					{centerPos[0]+halfEdgeLength, centerPos[1]+halfEdgeLength, centerPos[2]+halfEdgeLength},
+					{+halfEdgeLength, +halfEdgeLength, -halfEdgeLength},
+					{+halfEdgeLength, -halfEdgeLength, -halfEdgeLength},
+					{-halfEdgeLength, +halfEdgeLength, -halfEdgeLength},
 					{colorID}
 				}
 		;
@@ -1797,40 +1811,95 @@ public class Mathstuff {
 		//top side
 		triangles[2] = 
 				new double[][] {
-					{centerPos[0]-halfEdgeLength, centerPos[1]-halfEdgeLength, centerPos[2]+halfEdgeLength},
-					{centerPos[0]+halfEdgeLength, centerPos[1]-halfEdgeLength, centerPos[2]+halfEdgeLength},
-					{centerPos[0]-halfEdgeLength, centerPos[1]+halfEdgeLength, centerPos[2]+halfEdgeLength},
+					{-halfEdgeLength, -halfEdgeLength, +halfEdgeLength},
+					{+halfEdgeLength, -halfEdgeLength, +halfEdgeLength},
+					{-halfEdgeLength, +halfEdgeLength, +halfEdgeLength},
 					{colorID}
 				}
 		;
 		triangles[3] = 
 				new double[][] {
-					{centerPos[0]+halfEdgeLength, centerPos[1]+halfEdgeLength, centerPos[2]+halfEdgeLength},
-					{centerPos[0]+halfEdgeLength, centerPos[1]-halfEdgeLength, centerPos[2]+halfEdgeLength},
-					{centerPos[0]-halfEdgeLength, centerPos[1]+halfEdgeLength, centerPos[2]+halfEdgeLength},
+					{+halfEdgeLength, +halfEdgeLength, +halfEdgeLength},
+					{+halfEdgeLength, -halfEdgeLength, +halfEdgeLength},
+					{-halfEdgeLength, +halfEdgeLength, +halfEdgeLength},
 					{colorID}
 				}
 		;
 		
 		
 		//front side
-//		triangles[4] = 
-//				new double[][] {
-//					{centerPos[0]+halfEdgeLength, centerPos[1]-halfEdgeLength, centerPos[2]-halfEdgeLength},
-//					{centerPos[0]+halfEdgeLength, centerPos[1]-halfEdgeLength, centerPos[2]+halfEdgeLength},
-//					{centerPos[0]-halfEdgeLength, centerPos[1]+halfEdgeLength, centerPos[2]-halfEdgeLength},
-//					{colorID}
-//				}
-//		;
-//		triangles[5] = 
-//				new double[][] {
-//					{centerPos[0]+halfEdgeLength, centerPos[1]+halfEdgeLength, centerPos[2]+halfEdgeLength},
-//					{centerPos[0]+halfEdgeLength, centerPos[1]-halfEdgeLength, centerPos[2]+halfEdgeLength},
-//					{centerPos[0]+halfEdgeLength, centerPos[1]+halfEdgeLength, centerPos[2]-halfEdgeLength},
-//					{colorID}
-//				}
-//		;
+		triangles[4] = 
+				new double[][] {
+					{+halfEdgeLength, -halfEdgeLength, -halfEdgeLength},
+					{+halfEdgeLength, +halfEdgeLength, +halfEdgeLength},
+					{+halfEdgeLength, +halfEdgeLength, -halfEdgeLength},
+					{colorID}
+				}
+		;
+		triangles[5] = 
+				new double[][] {
+					{+halfEdgeLength, -halfEdgeLength, -halfEdgeLength},
+					{+halfEdgeLength, +halfEdgeLength, +halfEdgeLength},
+					{+halfEdgeLength, -halfEdgeLength, +halfEdgeLength},
+					{colorID}
+			}
+		;
 		
-		return triangles;
+		//back side
+		triangles[6] = 
+				new double[][] {
+					{-halfEdgeLength, -halfEdgeLength, -halfEdgeLength},
+					{-halfEdgeLength, +halfEdgeLength, +halfEdgeLength},
+					{-halfEdgeLength, +halfEdgeLength, -halfEdgeLength},
+					{colorID}
+			}
+		;
+		triangles[7] = 
+				new double[][] {		
+					{-halfEdgeLength, -halfEdgeLength, -halfEdgeLength},
+					{-halfEdgeLength, +halfEdgeLength, +halfEdgeLength},
+					{-halfEdgeLength, -halfEdgeLength, +halfEdgeLength},
+					{colorID}
+				}
+		;
+		
+		//left side
+		triangles[8] = 
+				new double[][] {		
+					{+halfEdgeLength, -halfEdgeLength, +halfEdgeLength},
+					{-halfEdgeLength, -halfEdgeLength, -halfEdgeLength},
+					{-halfEdgeLength, -halfEdgeLength, +halfEdgeLength},
+					{colorID}
+				}
+		;
+		triangles[9] = 
+				new double[][] {		
+					{+halfEdgeLength, -halfEdgeLength, +halfEdgeLength},
+					{-halfEdgeLength, -halfEdgeLength, -halfEdgeLength},
+					{+halfEdgeLength, -halfEdgeLength, -halfEdgeLength},
+					{colorID}
+				}
+		;
+		
+		//left side
+		triangles[10] = 
+				new double[][] {		
+					{+halfEdgeLength, +halfEdgeLength, +halfEdgeLength},
+					{-halfEdgeLength, +halfEdgeLength, -halfEdgeLength},
+					{-halfEdgeLength, +halfEdgeLength, +halfEdgeLength},
+					{colorID}
+				}
+		;
+		triangles[11] = 
+				new double[][] {		
+					{+halfEdgeLength, +halfEdgeLength, +halfEdgeLength},
+					{-halfEdgeLength, +halfEdgeLength, -halfEdgeLength},
+					{+halfEdgeLength, +halfEdgeLength, -halfEdgeLength},
+					{colorID}
+				}
+		;
+		
+//		System.out.println("This generated cube hets a hitbox of radius " + halfEdgeLength);
+		return new GameObject(centerPos, triangles, new Hitbox(halfEdgeLength));
 	}
 }
