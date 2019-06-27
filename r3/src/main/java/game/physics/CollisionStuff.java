@@ -1,6 +1,7 @@
 package game.physics;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import game.Game;
 import game.gameobjects.GameObject;
@@ -9,7 +10,6 @@ import r3.mathstuff.Mathstuff;
 public class CollisionStuff {
 	public static boolean collides(GameObject gameObject, double[] gameObjectHitboxCenterPosition) {
 		//LOOP THROUGH EVERYTHING
-		
 		//--krasses cache field of things
 		double[] vecAB = new double[3], vecAC = new double[3], vecTriangleNormal = new double[3];
 		double[] hitboxCenterGameObject = gameObjectHitboxCenterPosition;		 
@@ -24,9 +24,12 @@ public class CollisionStuff {
 			gameObjWorld = gameObjects.get(gameObjectI);
 			if(gameObject == gameObjWorld)
 				continue;
-			gameObjTriangles = gameObjWorld.getTriangles();
+			gameObjTriangles = gameObjWorld.getTrianglesAbsolute();
 						
-			for(int triangleI = 0; triangleI < gameObjTriangles.length; triangleI++) {				
+			for(int triangleI = 0; triangleI < gameObjTriangles.length; triangleI++) {		
+				
+//				System.out.println(triangleI +Arrays.toString(gameObjTriangles[triangleI][0])+Arrays.toString(gameObjTriangles[triangleI][1])+Arrays.toString(gameObjTriangles[triangleI][2]));
+				System.out.println(Arrays.toString(hitboxCenterGameObject));
 				vecAB[0] = gameObjTriangles[triangleI][1][0] - gameObjTriangles[triangleI][0][0];
 				vecAB[1] = gameObjTriangles[triangleI][1][1] - gameObjTriangles[triangleI][0][1];
 				vecAB[2] = gameObjTriangles[triangleI][1][2] - gameObjTriangles[triangleI][0][2];
@@ -57,7 +60,7 @@ public class CollisionStuff {
 				
 				
 				if(Math.abs(lambdaNormal) <= hitboxGameObjectRadius) {
-					System.out.println("collision of: " + gameObject.getClass() + " with lambdaNormal: " + lambdaNormal);
+ 					System.out.println("collision of: " + gameObject.getClass() + " with lambdaNormal: " + lambdaNormal);
 					return true;
 				}
 			}
