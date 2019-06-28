@@ -1,5 +1,9 @@
 package game.gameobjects;
 
+import java.util.Arrays;
+
+import javax.swing.plaf.synth.SynthSpinnerUI;
+
 import game.physics.CollisionStuff;
 import game.physics.Hitbox;
 
@@ -24,12 +28,20 @@ public class GameObject {
 		this.trianglesRelative = triangles;
 		this.hitbox = hitbox;
 	}
+	
+	public GameObject(double[] pos, double[][][] triangles, Hitbox hitbox) {
+		this(triangles, hitbox);
+		this.pos = pos;		
+	}
 
 	private final double[] cachePosAfterMovement = new double[3];
 	public final void updatePosition(double deltaTimeSeconds) {
+		if(deltaTimeSeconds == 0  || (this.speedPerSec[0] == 0 && this.speedPerSec[1] == 0 && this.speedPerSec[2] == 0))
+			return;
 		cachePosAfterMovement[0] = pos[0] + (speedPerSec[0] * deltaTimeSeconds);
 		cachePosAfterMovement[1] = pos[1] + (speedPerSec[1] * deltaTimeSeconds);
 		cachePosAfterMovement[2] = pos[2] + (speedPerSec[2] * deltaTimeSeconds);
+//		System.out.println("============================> " + Arrays.toString(cachePosAfterMovement));
 		if(this.hitbox != null) {
 			if(CollisionStuff.collides(this, cachePosAfterMovement))			
 				return;
@@ -83,6 +95,10 @@ public class GameObject {
 	}
 	
 	public double[] getHitboxCenterAbsolute() { //TODO use hitbox offset
+		return this.pos;
+	}
+	
+	public double[] getPos(){
 		return this.pos;
 	}
 	

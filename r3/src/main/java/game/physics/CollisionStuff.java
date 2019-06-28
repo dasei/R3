@@ -58,9 +58,16 @@ public class CollisionStuff {
 						)
 				;
 				
+//				System.out.println("-------------------------");
+//				System.out.println(Arrays.toString(gameObject.getPos()));
+//				System.out.println(Arrays.toString(gameObject.getHitboxCenterAbsolute()));
+//				System.out.println(Arrays.toString(hitboxCenterGameObject));
+//				System.out.println("-------------------------");
+				
 				
 				if(Math.abs(lambdaNormal) <= hitboxGameObjectRadius) {
  					System.out.println("collision of: " + gameObject.getClass() + " with lambdaNormal: " + lambdaNormal);
+
 					return true;
 				}
 			}
