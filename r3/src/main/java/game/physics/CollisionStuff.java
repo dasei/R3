@@ -12,10 +12,11 @@ public class CollisionStuff {
 		//LOOP THROUGH EVERYTHING
 		
 		//--krasses cache field of things
-		double[] vecAB = new double[3], vecAC = new double[3], vecTriangleNormal = new double[3],vecInterceptMiddle = new double[3],vecInterceptMiddleUnified = new double[3],pointIntercept = new double[3],pointMiddle = new double[3],pointInterceptHitbox = new double[3];
+		double[] vecAB = new double[3], vecAC = new double[3],vecCB = new double[3], vecTriangleNormal = new double[3],vecInterceptMiddle = new double[3],vecInterceptMiddleUnified = new double[3],pointIntercept = new double[3],pointMiddle = new double[3],pointInterceptHitbox = new double[3];
+		double[] vectorAP = new double[3];
 		double[] hitboxCenterGameObject = gameObjectHitboxCenterPosition;		 
 		double hitboxGameObjectRadius = gameObject.getHitbox().getRadius();
-		double lambdaNormal;
+		double lambdaNormal,lambdaCB,lambdaAP;
 		//--
 		
 		ArrayList<GameObject> gameObjects = Game.getGame().getGameObjects();
@@ -60,6 +61,11 @@ public class CollisionStuff {
 				if(Math.abs(lambdaNormal) > hitboxGameObjectRadius) {
 					continue;
 				}
+				
+				vecCB[0] = gameObjTriangles[triangleI][1][0] - gameObjTriangles[triangleI][2][0];
+				vecCB[1] = gameObjTriangles[triangleI][1][1] - gameObjTriangles[triangleI][2][1];
+				vecCB[2] = gameObjTriangles[triangleI][1][2] - gameObjTriangles[triangleI][2][2];
+				
 				pointIntercept[0] = hitboxCenterGameObject[0] + (vecTriangleNormal[0] * lambdaNormal);
 				pointIntercept[1] = hitboxCenterGameObject[1] + (vecTriangleNormal[1] * lambdaNormal);
 				pointIntercept[2] = hitboxCenterGameObject[2] + (vecTriangleNormal[2] * lambdaNormal);
@@ -74,7 +80,52 @@ public class CollisionStuff {
 				pointInterceptHitbox[1] = vecInterceptMiddle[1] - (vecInterceptMiddleUnified[1] * hitboxGameObjectRadius);
 				pointInterceptHitbox[2] = vecInterceptMiddle[2] - (vecInterceptMiddleUnified[2] * hitboxGameObjectRadius);
 				
+				vectorAP[0] = pointInterceptHitbox[0] - gameObjTriangles[triangleI][0][0];
+				vectorAP[1] = pointInterceptHitbox[1] - gameObjTriangles[triangleI][0][1];
+				vectorAP[2] = pointInterceptHitbox[2] - gameObjTriangles[triangleI][0][2];
 				
+				lambdaCB = 
+				((-vecAC[0]*vectorAP[1])+(vecAC[1]*vectorAP[0]))
+						/
+				((vecCB[0]*vectorAP[1])+(-vecCB[1]*vectorAP[0]));
+				if(Double.isNaN(lambdaCB))
+				{
+					lambdaCB = 
+					((-vecAC[0]*vectorAP[2])+(vecAC[2]*vectorAP[0]))
+							/
+					((vecCB[0]*vectorAP[2])+(-vecCB[2]*vectorAP[0]));
+					if(Double.isNaN(lambdaCB))
+					{
+						lambdaCB = 
+						((-vecAC[1]*vectorAP[2])+(vecAC[2]*vectorAP[1]))
+								/
+						((vecCB[1]*vectorAP[2])+(-vecCB[2]*vectorAP[1]));
+					}
+				}
+//				System.out.println(lambdaCB+">=0,<=1");
+				lambdaAP = 
+				(lambdaCB*vecCB[2]+vecAC[2])
+						/
+				(vectorAP[2]);
+				if(Double.isNaN(lambdaAP))
+				{
+					lambdaAP = 
+					(lambdaCB*vecCB[1]+vecAC[1])
+							/
+					(vectorAP[1]);
+					if(Double.isNaN(lambdaAP))
+					{
+						lambdaAP = 
+						(lambdaCB*vecCB[0]+vecAC[0])
+								/
+						(vectorAP[0]);
+					}
+				}
+//				System.out.println(lambdaAP+">=1");
+				if(lambdaAP>=1&&lambdaCB<=1&&lambdaCB>=0)
+				{
+					return true;
+				}
 //				System.out.println("-------------------------");
 //				System.out.println(Arrays.toString(gameObject.getPos()));
 //				System.out.println(Arrays.toString(gameObject.getHitboxCenterAbsolute()));
@@ -82,10 +133,10 @@ public class CollisionStuff {
 //				System.out.println("-------------------------");
 				
 				
-				if(Math.abs(lambdaNormal) <= hitboxGameObjectRadius) {
-//					System.out.println("collision of: " + gameObject.getClass() + " with lambdaNormal: " + lambdaNormal);
-					return true;
-				}
+//				if(Math.abs(lambdaNormal) <= hitboxGameObjectRadius) {
+////					System.out.println("collision of: " + gameObject.getClass() + " with lambdaNormal: " + lambdaNormal);
+//					return true;
+//				}
 			}
 		}
 		return false;
