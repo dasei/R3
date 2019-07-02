@@ -52,7 +52,6 @@ public class Game {
 	public Game() {
 		this.gameObjects = new ArrayList<GameObject>();
 		
-		ThreadProcessor.startMultithreadingGame(new ArrayList<GameObject>(), 4);
 		
 		//--gameObjects		
 		ArrayList<GameObject> gameObjectsStart = new ArrayList<GameObject>();
@@ -96,6 +95,7 @@ public class Game {
 //		gameObjectsStart.add(testObj);
 		
 		
+		ThreadProcessor.startMultithreadingGame(new ArrayList<GameObject>(), 4);
 		
 		ThreadProcessor.addGameObjects(gameObjectsStart, true);
 		for(GameObject obj : gameObjectsStart)
@@ -122,7 +122,11 @@ public class Game {
 					///--- LOOP
 					
 					for(GameObject gameObject : gameObjects) {
-						gameObject.updatePosition(deltaTimeSeconds);
+						gameObject.move(deltaTimeSeconds);						
+					}
+					
+					for(GameObject gameObject : gameObjects) {
+						gameObject.updatePosition(deltaTimeSeconds);						
 					}
 					
 					

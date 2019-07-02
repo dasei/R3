@@ -15,8 +15,8 @@ import r3.window.Window;
 public class Main {
 	public static boolean WORKING_WITH_GAMEOBJECTS;
 	
-	private final static Camera camera = new Camera();
-	private final static Window window = new Window();;
+	private static Camera camera;
+	private final static Window window = new Window();
 	
 	
 	public static final int FPS_MAX = 60;
@@ -27,6 +27,7 @@ public class Main {
 	public static double[][][] coords = loadCoords(true);
 	
 	public static void main(String[] args) {
+		camera = new Camera();		
 		WORKING_WITH_GAMEOBJECTS = false;
 ////		System.out.println(Arrays.toString(Mathstuff.getInstance().vectorUnify(new double[] {0.5,0.5,0.5}, false)));
 		
@@ -56,7 +57,7 @@ public class Main {
 //		startLoopThread();
 		
 		
-		ThreadProcessor.startMultithreadingRaw(Main.coords.length, 4);
+		ThreadProcessor.startMultithreadingRaw(Main.coords.length, 1);
 	}
 	
 	private static void startLoopThread() {
@@ -441,18 +442,18 @@ public class Main {
 				vertices[2] = new double[] {Double.parseDouble(coordinates[6])*scale, Double.parseDouble(coordinates[7])*scale, Double.parseDouble(coordinates[8])*scale};
 				
 				//store color in forth index
-//				double r = Math.random();
-//				if(r < 0.3){
-////					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.red.getRGB())) : -1};
-////					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.PINK.getRGB())) : -1};
-//				}else if(r < 0.6){
-////					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
-////					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.BLUE.getRGB())) : -1};
-//				}else{
-////					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.blue.getRGB())) : -1};
-////					vertices[3] = new double[] {-1};
-////					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
-//				}
+				double r = Math.random();
+				if(r < 0.3){
+					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.red.getRGB())) : -1};
+//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.PINK.getRGB())) : -1};
+				}else if(r < 0.6){
+					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
+//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.BLUE.getRGB())) : -1};
+				}else{
+					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.blue.getRGB())) : -1};
+//					vertices[3] = new double[] {-1};
+//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
+				}
 //				vertices[3] = new double[] {-1};
 				
 //				vertices[3] = new double[] {(double) Color.PINK.getRGB()};
@@ -549,4 +550,8 @@ public class Main {
 //		}
 //		return colorDefault;
 //	}
+	
+	public static void setCamera(Camera camera) {
+		Main.camera = camera;
+	}
 }

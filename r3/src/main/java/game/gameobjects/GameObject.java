@@ -51,7 +51,7 @@ public class GameObject {
 		this.pos[2] = cachePosAfterMovement[2];
 	}
 	
-	public void move() {}
+	public void move(double deltaTimeSeconds) {}
 	
 	protected void setTriangles(double[][][] triangles) {
 		this.trianglesRelative = triangles;
