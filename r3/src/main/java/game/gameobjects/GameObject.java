@@ -43,7 +43,7 @@ public class GameObject {
 		cachePosAfterMovement[2] = pos[2] + (speedPerSec[2] * deltaTimeSeconds);
 //		System.out.println("============================> " + Arrays.toString(cachePosAfterMovement));
 		if(this.hitbox != null) {
-			if(CollisionStuff.collides(this, cachePosAfterMovement))			
+			if(CollisionStuff.collides(this, cachePosAfterMovement))
 				return;
 		}
 		this.pos[0] = cachePosAfterMovement[0];

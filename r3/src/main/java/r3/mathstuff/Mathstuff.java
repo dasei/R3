@@ -1902,4 +1902,64 @@ public class Mathstuff {
 //		System.out.println("This generated cube hets a hitbox of radius " + halfEdgeLength);
 		return new GameObject(centerPos, triangles, new Hitbox(halfEdgeLength));
 	}
+	private static double lambdaCB,lambdaAP;
+	private static double[] vectorAP = new double[3],vecAC = new double[3],vecCB = new double[3];
+	public static boolean isInsideOfTriangle(double[] pointP,double[][] triangle)
+	{
+		vecAC[0] = triangle[2][0] - triangle[0][0];
+		vecAC[1] = triangle[2][1] - triangle[0][1];
+		vecAC[2] = triangle[2][2] - triangle[0][2];
+		
+		vecCB[0] = triangle[1][0] - triangle[2][0];
+		vecCB[1] = triangle[1][1] - triangle[2][1];
+		vecCB[2] = triangle[1][2] - triangle[2][2];
+		
+		vectorAP[0] = pointP[0] - triangle[0][0];
+		vectorAP[1] = pointP[1] - triangle[0][1];
+		vectorAP[2] = pointP[2] - triangle[0][2];
+		
+		lambdaCB = 
+		((-vecAC[0]*vectorAP[1])+(vecAC[1]*vectorAP[0]))
+				/
+		((vecCB[0]*vectorAP[1])+(-vecCB[1]*vectorAP[0]));
+		if(Double.isNaN(lambdaCB))
+		{
+			lambdaCB = 
+			((-vecAC[0]*vectorAP[2])+(vecAC[2]*vectorAP[0]))
+					/
+			((vecCB[0]*vectorAP[2])+(-vecCB[2]*vectorAP[0]));
+			if(Double.isNaN(lambdaCB))
+			{
+				lambdaCB = 
+				((-vecAC[1]*vectorAP[2])+(vecAC[2]*vectorAP[1]))
+						/
+				((vecCB[1]*vectorAP[2])+(-vecCB[2]*vectorAP[1]));
+			}
+		}
+//		System.out.println(lambdaCB+">=0,<=1");
+		lambdaAP = 
+		(lambdaCB*vecCB[2]+vecAC[2])
+				/
+		(vectorAP[2]);
+		if(Double.isNaN(lambdaAP))
+		{
+			lambdaAP = 
+			(lambdaCB*vecCB[1]+vecAC[1])
+					/
+			(vectorAP[1]);
+			if(Double.isNaN(lambdaAP))
+			{
+				lambdaAP = 
+				(lambdaCB*vecCB[0]+vecAC[0])
+						/
+				(vectorAP[0]);
+			}
+		}
+//		System.out.println(lambdaAP+">=1");
+		if(lambdaAP>=1&&lambdaCB<=1&&lambdaCB>=0)
+		{
+			return true;
+		}
+		return false;
+	}
 }
