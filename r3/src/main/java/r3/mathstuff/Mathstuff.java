@@ -215,10 +215,10 @@ public class Mathstuff {
 																														// point
 		cacheVectorCamToPointLength = Mathstuff.vectorUnify(cacheVectorCamToPoint0);
 
-		lambdaCamToPointEbenenSchnittpunkt = -(forward[0] * (camPos[0] - cacheAnkerEbene[0])
-				+ forward[1] * (camPos[1] - cacheAnkerEbene[1]) + forward[2] * (camPos[2] - cacheAnkerEbene[2]))
-				/ (forward[0] * cacheVectorCamToPoint0[0] + forward[1] * cacheVectorCamToPoint0[1]
-						+ forward[2] * cacheVectorCamToPoint0[2]);
+		lambdaCamToPointEbenenSchnittpunkt = 
+				-(forward[0] * (camPos[0] - cacheAnkerEbene[0]) + forward[1] * (camPos[1] - cacheAnkerEbene[1]) + forward[2] * (camPos[2] - cacheAnkerEbene[2]))
+						/ 
+				(forward[0] * cacheVectorCamToPoint0[0] + forward[1] * cacheVectorCamToPoint0[1] + forward[2] * cacheVectorCamToPoint0[2]);
 		// System.out.println("Lambda: "+lambda);
 		if (lambdaCamToPointEbenenSchnittpunkt < 0) {
 			coordsIntCache[0] = -1;
@@ -932,7 +932,7 @@ public class Mathstuff {
 	
 				// precision = 0.001+Math.pow(1.00146, lengthMiddle)-1;
 				// precision = 0.0058*lengthMiddle+0.001;
-				precision = 0.00138 * lengthMiddle + 0.001;
+				precision = 0.00038 * lengthMiddle + 0.001;
 				// precision = 1;
 	
 				// lambdaAB gibt die Stelle auf der Geraden AB*lambda + A an, bei

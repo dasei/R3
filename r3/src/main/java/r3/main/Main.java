@@ -57,7 +57,7 @@ public class Main {
 //		startLoopThread();
 		
 		
-		ThreadProcessor.startMultithreadingRaw(Main.coords.length, 1);
+		ThreadProcessor.startMultithreadingRaw(Main.coords.length, 8);
 	}
 	
 	private static void startLoopThread() {
@@ -114,7 +114,7 @@ public class Main {
 	}
 	private static double[][] currentlyClosestTriangle;
 	private static double editColor = (double) storeColor(Color.red.getRGB());
-	private static final double MOVEMENT_SPEED_PER_SECOND = 1;
+	private static double MOVEMENT_SPEED_PER_SECOND = 100;
 	public static final double ROTATION_SPEED_PER_SECOND = Math.toRadians(45); //radians	
 	public static final double ROTATION_AMOUNT_PER_MOUSEMOVEMENT_PIXEL = Math.toRadians(0.25); //radians
 	private static long processInputsTimeLastNanos = System.nanoTime();
@@ -168,6 +168,17 @@ public class Main {
 			Main.getCamera().pos[2]+=movementDelta;
 		} else if(!register[KeyEvent.VK_SPACE] && (register[KeyEvent.VK_SHIFT]||register[KeyEvent.VK_E])) {
 			Main.getCamera().pos[2]-=movementDelta;
+		}
+		if(register[KeyEvent.VK_ENTER])
+		{
+			if(MOVEMENT_SPEED_PER_SECOND!=1)
+			{
+				MOVEMENT_SPEED_PER_SECOND = 1;
+			}
+			else
+			{
+				MOVEMENT_SPEED_PER_SECOND = 10;
+			}
 		}
 //		if(register[KeyEvent.VK_ENTER])
 //		{
@@ -444,17 +455,17 @@ public class Main {
 				//store color in forth index
 				double r = Math.random();
 				if(r < 0.3){
-					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.red.getRGB())) : -1};
+//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.red.getRGB())) : -1};
 //					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.PINK.getRGB())) : -1};
 				}else if(r < 0.6){
-					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
+//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
 //					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.BLUE.getRGB())) : -1};
 				}else{
-					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.blue.getRGB())) : -1};
+//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.blue.getRGB())) : -1};
 //					vertices[3] = new double[] {-1};
 //					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
 				}
-//				vertices[3] = new double[] {-1};
+				vertices[3] = new double[] {-1};
 				
 //				vertices[3] = new double[] {(double) Color.PINK.getRGB()};
 					
@@ -477,20 +488,20 @@ public class Main {
 			{
 				double r = Math.random();
 				if(r < 0.3){
-//					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.red.getRGB())) : -1};
+					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.blue.getRGB())) : -1};
 //					fixedColor[i] = useColor ? true : false;
 //					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.PINK.getRGB())) : -1};
 				}else if(r < 0.6){
-//					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
+					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
 //					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.BLUE.getRGB())) : -1};
 //					fixedColor[i] = useColor ? true : false;
 				}else{
-//					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.blue.getRGB())) : -1};
+					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.red.getRGB())) : -1};
 //					cacheTriangles[i][3] = new double[] {-1};
 //					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
 //					fixedColor[i] = useColor ? true : false;
 				}
-				cacheTriangles[i][3] = new double[] {-1};
+//				cacheTriangles[i][3] = new double[] {-1};
 //				fixedColor[i] = false;
 			}
 			return cacheTriangles;		
