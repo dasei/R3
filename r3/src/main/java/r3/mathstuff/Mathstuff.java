@@ -923,9 +923,9 @@ public class Mathstuff {
 																											// depth
 				// lengthMiddle = calcR3Depth(middle, camPos); //TODO validate
 				// TODO change please
-//				if (coordsIntCache[0] < 0 || coordsIntCache[1] < 0 || coordsIntCache[0] > screenWidth
-//						|| coordsIntCache[1] > screenHeight)
-//					continue;
+				if (coordsIntCache[0] < 0 || coordsIntCache[1] < 0 || coordsIntCache[0] > screenWidth
+						|| coordsIntCache[1] > screenHeight)
+					continue;
 	
 				if (lengthMiddle == 0)
 					continue;
