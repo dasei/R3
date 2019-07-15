@@ -29,6 +29,8 @@ public class Main {
 	public static final ArrayList<Color> colors = new ArrayList<Color>();
 	public static double[][][] coords = loadCoords(true);
 	
+	public static int lowMode = 0; 
+	
 	public static void main(String[] args) {
 //		camera = new Camera();		
 		WORKING_WITH_GAMEOBJECTS = false;
@@ -60,7 +62,7 @@ public class Main {
 //		startLoopThread();
 		
 		
-		ThreadProcessor.startMultithreadingRaw(Main.coords.length, 8);
+		ThreadProcessor.startMultithreadingRaw(Main.coords.length, 4);
 	}
 	
 	private static void startLoopThread() {
@@ -121,7 +123,7 @@ public class Main {
 	private static double[][] currentlyClosestTriangle;
 	private static double currentlyClosestTriangleColorOriginal;
 	private static double editColor = (double) storeColor(Color.red.getRGB());
-	public static final double MOVEMENT_SPEED_PER_SECOND = 1;
+	public static final double MOVEMENT_SPEED_PER_SECOND = 10;
 	public static final double ROTATION_SPEED_PER_SECOND = Math.toRadians(45); //radians	
 	public static final double ROTATION_AMOUNT_PER_MOUSEMOVEMENT_PIXEL = Math.toRadians(0.25); //radians
 	private static long processInputsTimeLastNanos = System.nanoTime();
@@ -374,7 +376,7 @@ public class Main {
 //		return;
 //		System.out.println("CONVERTING TRIANGLES");
 		double[] ab0;	// vector ab, unit vector		
-		double lambda;	// ab0 * lambda gives the point, on which the point of C sits in a 90° angle on
+		double lambda;	// ab0 * lambda gives the point, on which the point of C sits in a 90Â° angle on
 		
 		double[] ac0;	// vector ac
 		
@@ -445,8 +447,8 @@ public class Main {
 		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
 		try {
 
+//			BufferedReader br = new BufferedReader(new FileReader(new File("C:/Users/Admin/Documents/ModulR3/testfont.raw")));
 			BufferedReader br = new BufferedReader(new FileReader(new File("res/dragon.raw")));
-
 		
 			int scale = 10;
 			

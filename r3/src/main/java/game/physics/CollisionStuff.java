@@ -30,7 +30,7 @@ public class CollisionStuff {
 			for(int triangleI = 0; triangleI < gameObjTriangles.length; triangleI++) {		
 				
 //				System.out.println(triangleI +Arrays.toString(gameObjTriangles[triangleI][0])+Arrays.toString(gameObjTriangles[triangleI][1])+Arrays.toString(gameObjTriangles[triangleI][2]));
-				System.out.println(Arrays.toString(hitboxCenterGameObject));
+//				System.out.println(Arrays.toString(hitboxCenterGameObject));
 			//Calculate needed vectors
 				vecAB[0] = gameObjTriangles[triangleI][1][0] - gameObjTriangles[triangleI][0][0];
 				vecAB[1] = gameObjTriangles[triangleI][1][1] - gameObjTriangles[triangleI][0][1];

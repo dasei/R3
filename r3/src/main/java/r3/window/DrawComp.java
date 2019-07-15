@@ -71,7 +71,7 @@ public class DrawComp extends JComponent {
 		//Draw FPS (main Loop, Inputs)
 		g.setColor(Color.green);
 		g.setFont(font);
-		g.drawString("main" + Main.fpsCurrent, screenWidth-100, 25);
+//		g.drawString("main" + Main.fpsCurrent, screenWidth-100, 25);
 		
 		//Draw FPS (calc)
 //		g.drawString("calc" + fpsCurrent, 0, 25);
@@ -109,23 +109,42 @@ public class DrawComp extends JComponent {
 			return;
 		
 		//Draw Buffer
-		for(int x = 0;x<buffCache.length;x++){
-			for(int y = 0;y<buffCache[0].length;y++){
-				if(buffCache[x][y][0] == BUFFER_DEPTH_CLEAR_VALUE)
-					continue;
-				if(buffCache[x][y][1] != -1){
-//					System.out.println("HELP HERE IS FIRE IN SE HOOD: " + buffCache[x][y][1]);
-					g.setColor(Main.getColorAt((int) buffCache[x][y][1]));
-				}else
-					g.setColor(Color.BLACK);
-				
-//				g.drawRect(x, y, 1, 0);                                                 
-				g.drawLine(x, y, x-1, y-1);
-//				g.drawRect(x, y, 2, 0);
-//				g.drawRect(x, y, 0, 2);
+		if(Main.lowMode>0)
+		{
+			for(int x = 0;x<buffCache.length;x++){
+				for(int y = 0;y<buffCache[0].length;y++){
+					if(buffCache[x][y][0] == BUFFER_DEPTH_CLEAR_VALUE)
+						continue;
+					if(buffCache[x][y][1] != -1){
+	//					System.out.println("HELP HERE IS FIRE IN SE HOOD: " + buffCache[x][y][1]);
+						g.setColor(Main.getColorAt((int) buffCache[x][y][1]));
+					}else
+						g.setColor(Color.BLACK);
+					
+	//				g.drawRect(x, y, 1, 0);                                                 
+	//				g.drawLine(x, y, x-1, y-1);
+					g.fillRect(x, y, Main.lowMode,Main.lowMode);
+				}
 			}
 		}
-		
+		else
+		{
+			for(int x = 0;x<buffCache.length;x++){
+				for(int y = 0;y<buffCache[0].length;y++){
+					if(buffCache[x][y][0] == BUFFER_DEPTH_CLEAR_VALUE)
+						continue;
+					if(buffCache[x][y][1] != -1){
+	//					System.out.println("HELP HERE IS FIRE IN SE HOOD: " + buffCache[x][y][1]);
+						g.setColor(Main.getColorAt((int) buffCache[x][y][1]));
+					}else
+						g.setColor(Color.BLACK);
+					
+	//				g.drawRect(x, y, 1, 0);                                                 
+					g.drawLine(x, y, x-1, y-1);
+//					g.fillRect(x, y, Main.lowMode,Main.lowMode);
+				}
+			}
+		}
 		//TODO time measurement
 //		System.out.println((System.currentTimeMillis()-timeBeginning));
 		

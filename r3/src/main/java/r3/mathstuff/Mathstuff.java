@@ -932,9 +932,15 @@ public class Mathstuff {
 	
 				// precision = 0.001+Math.pow(1.00146, lengthMiddle)-1;
 				// precision = 0.0058*lengthMiddle+0.001;
-				precision = 0.00038 * lengthMiddle + 0.001;
-				// precision = 1;
-	
+				if(Main.lowMode<0)
+				{
+					precision = 0.00038 * lengthMiddle + 0.001;
+				}
+				else
+				{
+//					precision = 0.09/(1.6*Main.lowMode) * lengthMiddle + 0.001;
+					precision = 0.0035 * lengthMiddle ;
+				}
 				// lambdaAB gibt die Stelle auf der Geraden AB*lambda + A an, bei
 				// der ab senkrecht zu o (o = Stelle auf der Gerade -> C)
 				lambdaAB = (ab0[0] * (coords[triangleI][2][0] - coords[triangleI][0][0])

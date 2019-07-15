@@ -70,9 +70,9 @@ public class Game {
 		
 		gameObjectsStart.add(new Floor(0, 0, 0, Main.storeColor(Color.green.getRGB())));
 		
-		GameObject cube = Mathstuff.generateCube(new double[] {0, 0, 2}, 1, Main.storeColor(Color.blue.getRGB()));
-		cube.setSpeedPerSecond(new double[] {0,0,-0.1});
-		gameObjectsStart.add(cube);
+//		GameObject cube = Mathstuff.generateCube(new double[] {0, 0, 2}, 1, Main.storeColor(Color.blue.getRGB()));
+//		cube.setSpeedPerSecond(new double[] {0,0,-0.1});
+//		gameObjectsStart.add(cube);
 		
 //		double z = 0;
 //		GameObject testObj = new GameObject(
