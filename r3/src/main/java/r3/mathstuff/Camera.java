@@ -21,4 +21,8 @@ public class Camera {
 	
 	public double fov = 60;
 	
+	public void setPos(double[] pos) {
+		this.pos = pos;
+	}
+	
 }

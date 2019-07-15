@@ -6,6 +6,7 @@ import javax.swing.plaf.synth.SynthSpinnerUI;
 
 import game.physics.CollisionStuff;
 import game.physics.Hitbox;
+import r3.main.Main;
 
 public class GameObject {
 	
@@ -22,36 +23,66 @@ public class GameObject {
 	
 	protected double[] pos = new double[3];
 	
-	private double[] speedPerSec = new double[3];	
+	protected double[] speedPerSec = new double[3];	
+	
+	private boolean gravityAffected = false; 
 	
 	public GameObject(double[][][] triangles, Hitbox hitbox) {
 		this.trianglesRelative = triangles;
 		this.hitbox = hitbox;
 	}
 	
-	public GameObject(double[] pos, double[][][] triangles, Hitbox hitbox) {
+	public GameObject(double[] pos, double[][][] triangles, Hitbox hitbox, boolean gravityAffected) {
 		this(triangles, hitbox);
-		this.pos = pos;		
+		this.pos = pos;
+		this.gravityAffected = gravityAffected;
 	}
 
 	private final double[] cachePosAfterMovement = new double[3];
+	private final double[] cachePosAfterMovementCache = new double[3];
 	public final void updatePosition(double deltaTimeSeconds) {
 		if(deltaTimeSeconds == 0  || (this.speedPerSec[0] == 0 && this.speedPerSec[1] == 0 && this.speedPerSec[2] == 0))
 			return;
+		
+		this.speedPerSec[0] *= 0.8;
+		this.speedPerSec[1] *= 0.8;
+		this.speedPerSec[2] *= 0.95;
+		
 		cachePosAfterMovement[0] = pos[0] + (speedPerSec[0] * deltaTimeSeconds);
 		cachePosAfterMovement[1] = pos[1] + (speedPerSec[1] * deltaTimeSeconds);
 		cachePosAfterMovement[2] = pos[2] + (speedPerSec[2] * deltaTimeSeconds);
-//		System.out.println("============================> " + Arrays.toString(cachePosAfterMovement));
-		if(this.hitbox != null) {
-			if(CollisionStuff.collides(this, cachePosAfterMovement))
-				return;
+		
+		if(this.hitbox == null) {
+			this.pos[0] = cachePosAfterMovement[0];
+			this.pos[1] = cachePosAfterMovement[1];
+			this.pos[2] = cachePosAfterMovement[2];
+			return;
 		}
-		this.pos[0] = cachePosAfterMovement[0];
-		this.pos[1] = cachePosAfterMovement[1];
-		this.pos[2] = cachePosAfterMovement[2];
+		
+		cachePosAfterMovementCache[0] = cachePosAfterMovement[0];
+		cachePosAfterMovementCache[1] = pos[1];
+		cachePosAfterMovementCache[2] = pos[2];		
+		if(!CollisionStuff.collides(this, cachePosAfterMovementCache))
+			this.pos[0] = cachePosAfterMovement[0];
+		
+		cachePosAfterMovementCache[1] = cachePosAfterMovement[1];
+		if(!CollisionStuff.collides(this, cachePosAfterMovementCache))
+				this.pos[1] = cachePosAfterMovement[1];				
+		
+		cachePosAfterMovementCache[2] = cachePosAfterMovement[2];		
+		if(!CollisionStuff.collides(this, cachePosAfterMovementCache))
+				this.pos[2] = cachePosAfterMovement[2];
 	}
 	
 	public void move(double deltaTimeSeconds) {}
+	
+	public void induceGravityToSpeeds(double deltaTimeSeconds) {
+		if(!this.gravityAffected)
+			return;
+		this.speedPerSec[0] += deltaTimeSeconds * Main.gravityForce[0];
+		this.speedPerSec[1] += deltaTimeSeconds * Main.gravityForce[1];
+		this.speedPerSec[2] += deltaTimeSeconds * Main.gravityForce[2];
+	}
 	
 	protected void setTriangles(double[][][] triangles) {
 		this.trianglesRelative = triangles;
@@ -62,6 +93,12 @@ public class GameObject {
 	}
 	
 	public double[][][] getTrianglesAbsolute() {
+		if(trianglesRelative.length == 0){
+			if(trianglesAbsolute == null)
+				trianglesAbsolute = new double[0][0][0];
+			return trianglesAbsolute;
+		}
+		
 		if(
 				trianglesAbsolute == null
 			||	trianglesAbsolute.length != trianglesRelative.length
@@ -106,6 +143,10 @@ public class GameObject {
 		if(speedPerSecond == null)
 			return;
 		this.speedPerSec = speedPerSecond;
+	}
+	
+	public boolean isAffectedByGravity() {
+		return this.gravityAffected;
 	}
 	
 //	public int[][][] getTrianglesDrawCoordinates2D() {

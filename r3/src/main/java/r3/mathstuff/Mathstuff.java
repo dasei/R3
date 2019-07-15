@@ -270,11 +270,11 @@ public class Mathstuff {
 		this.updateValues();
 
 		// Extract constants from camera
-		double[] forward = camera.forward;
+		double[] forward = Main.cameraForwardOnIterationStart;
 		double alpha = camera.alpha;
 		double beta = camera.beta;
 		double factor = camera.scaleFactor;
-		double[] camPos = camera.pos;
+		double[] camPos = Main.cameraPosOnIterationStart;
 
 		// System.out.println(Arrays.toString(forward));
 
@@ -829,7 +829,7 @@ public class Mathstuff {
 		double alpha = camera.alpha;
 		double beta = camera.beta;
 		double factor = camera.scaleFactor;
-		double[] camPos = camera.pos;
+		double[] camPos = new double[] {camera.pos[0], camera.pos[1], camera.pos[2]};
 		
 		// System.out.println(Arrays.toString(forward));
 
@@ -923,9 +923,9 @@ public class Mathstuff {
 																											// depth
 				// lengthMiddle = calcR3Depth(middle, camPos); //TODO validate
 				// TODO change please
-				if (coordsIntCache[0] < 0 || coordsIntCache[1] < 0 || coordsIntCache[0] > screenWidth
-						|| coordsIntCache[1] > screenHeight)
-					continue;
+//				if (coordsIntCache[0] < 0 || coordsIntCache[1] < 0 || coordsIntCache[0] > screenWidth
+//						|| coordsIntCache[1] > screenHeight)
+//					continue;
 	
 				if (lengthMiddle == 0)
 					continue;
@@ -1900,7 +1900,7 @@ public class Mathstuff {
 		;
 		
 //		System.out.println("This generated cube hets a hitbox of radius " + halfEdgeLength);
-		return new GameObject(centerPos, triangles, new Hitbox(halfEdgeLength));
+		return new GameObject(centerPos, triangles, new Hitbox(halfEdgeLength), true);
 	}
 	private static double lambdaCB,lambdaAP;
 	private static double[] vectorAP = new double[3],vecAC = new double[3],vecCB = new double[3];
