@@ -141,45 +141,6 @@ public class Main {
 			System.out.println();
 		}
 		
-		if(register[KeyEvent.VK_W] ^ register[KeyEvent.VK_S]) {
-			//normalize subvector of components x1 and x2 => divide x1 or x2 by pythagoras of x1 and x2
-			double normalizationFactor = (1/Math.sqrt((camera.forward[0]*camera.forward[0])+(camera.forward[1]*camera.forward[1])))
-					//and for performance reasons, multiply it with the movementDelta, if we're at it
-					* movementDelta;
-			
-			if(register[KeyEvent.VK_W]) {
-				Main.getCamera().pos[0]+=camera.forward[0]*normalizationFactor;
-				Main.getCamera().pos[1]+=camera.forward[1]*normalizationFactor;
-			} else {
-				Main.getCamera().pos[0]-=camera.forward[0]*normalizationFactor;
-				Main.getCamera().pos[1]-=camera.forward[1]*normalizationFactor;
-			}
-		}
-		
-		if(register[KeyEvent.VK_A] && !register[KeyEvent.VK_D]) {
-			Main.getCamera().pos[0]+=Main.getCamera().left[0]*movementDelta;
-			Main.getCamera().pos[1]+=Main.getCamera().left[1]*movementDelta;
-		} else if(!register[KeyEvent.VK_A] && register[KeyEvent.VK_D]) {
-			Main.getCamera().pos[0]-=Main.getCamera().left[0]*movementDelta;
-			Main.getCamera().pos[1]-=Main.getCamera().left[1]*movementDelta;
-		}
-		
-		if(register[KeyEvent.VK_SPACE] && !(register[KeyEvent.VK_SHIFT]||register[KeyEvent.VK_E])) {
-			Main.getCamera().pos[2]+=movementDelta;
-		} else if(!register[KeyEvent.VK_SPACE] && (register[KeyEvent.VK_SHIFT]||register[KeyEvent.VK_E])) {
-			Main.getCamera().pos[2]-=movementDelta;
-		}
-		if(register[KeyEvent.VK_ENTER])
-		{
-			if(MOVEMENT_SPEED_PER_SECOND!=1)
-			{
-				MOVEMENT_SPEED_PER_SECOND = 1;
-			}
-			else
-			{
-				MOVEMENT_SPEED_PER_SECOND = 10;
-			}
-		}
 //		if(register[KeyEvent.VK_ENTER])
 //		{
 //			if(indexSelected!=-1)
@@ -452,32 +413,6 @@ public class Main {
 				vertices[1] = new double[] {Double.parseDouble(coordinates[3])*scale, Double.parseDouble(coordinates[4])*scale, Double.parseDouble(coordinates[5])*scale};
 				vertices[2] = new double[] {Double.parseDouble(coordinates[6])*scale, Double.parseDouble(coordinates[7])*scale, Double.parseDouble(coordinates[8])*scale};
 				
-				//store color in forth index
-				double r = Math.random();
-				if(r < 0.3){
-//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.red.getRGB())) : -1};
-//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.PINK.getRGB())) : -1};
-				}else if(r < 0.6){
-//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
-//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.BLUE.getRGB())) : -1};
-				}else{
-//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.blue.getRGB())) : -1};
-//					vertices[3] = new double[] {-1};
-//					vertices[3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
-				}
-				vertices[3] = new double[] {-1};
-				
-//				vertices[3] = new double[] {(double) Color.PINK.getRGB()};
-					
-				//System.out.println(vertices[3][0]);
-//				new Color(Color.red.getRGB())
-//				System.out.println((int) ((double) Color.red.getRGB()) + ", " + Color.red.getRGB());
-				
-//				try{
-//					Thread.sleep(1000);
-//				}catch(Exception e){}
-				
-					
 				triangles.add(vertices);
 			}
 			br.close();
@@ -488,21 +423,13 @@ public class Main {
 			{
 				double r = Math.random();
 				if(r < 0.3){
-					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.blue.getRGB())) : -1};
-//					fixedColor[i] = useColor ? true : false;
-//					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.PINK.getRGB())) : -1};
+					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.red.getRGB())) : -1};
 				}else if(r < 0.6){
 					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
-//					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.BLUE.getRGB())) : -1};
-//					fixedColor[i] = useColor ? true : false;
 				}else{
-					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.red.getRGB())) : -1};
-//					cacheTriangles[i][3] = new double[] {-1};
-//					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.green.getRGB())) : -1};
-//					fixedColor[i] = useColor ? true : false;
+					cacheTriangles[i][3] = new double[] {useColor ? ((double) storeColor(Color.blue.getRGB())) : -1};
 				}
 //				cacheTriangles[i][3] = new double[] {-1};
-//				fixedColor[i] = false;
 			}
 			return cacheTriangles;		
 		}catch(Exception e) {

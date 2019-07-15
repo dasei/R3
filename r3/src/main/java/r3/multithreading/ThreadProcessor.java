@@ -320,6 +320,9 @@ public class ThreadProcessor extends Thread {
 				
 				Main.processInputs();
 				
+				Main.cameraPosOnIterationStart = new double[] {Main.getCamera().pos[0], Main.getCamera().pos[1], Main.getCamera().pos[2]};
+				Main.cameraForwardOnIterationStart = new double[] {Main.getCamera().forward[0], Main.getCamera().forward[1], Main.getCamera().forward[2]};
+				
 				//restart all threads
 				threadLock.notifyAll();
 				

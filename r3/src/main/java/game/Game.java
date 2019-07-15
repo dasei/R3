@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import game.gameobjects.Floor;
 import game.gameobjects.GameObject;
-import game.physics.Hitbox;
+import game.gameobjects.Player;
 import r3.main.Main;
 import r3.mathstuff.Mathstuff;
 import r3.multithreading.ThreadProcessor;
@@ -13,6 +13,8 @@ import r3.multithreading.ThreadProcessor;
 public class Game {
 	
 	private static Game game;
+	
+	private Player player;
 	
 	public static void main(String[] args) {
 		Main.WORKING_WITH_GAMEOBJECTS = true;
@@ -27,17 +29,6 @@ public class Game {
 			game = new Game();
 		return game;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	
@@ -73,6 +64,9 @@ public class Game {
 //						},
 //				null
 //		));
+		
+		this.player = new Player();
+		gameObjectsStart.add(player);
 		
 		gameObjectsStart.add(new Floor(0, 0, 0, Main.storeColor(Color.green.getRGB())));
 		
@@ -122,11 +116,12 @@ public class Game {
 					///--- LOOP
 					
 					for(GameObject gameObject : gameObjects) {
-						gameObject.move(deltaTimeSeconds);						
+						gameObject.move(deltaTimeSeconds);
+						gameObject.induceGravityToSpeeds(deltaTimeSeconds);
 					}
 					
 					for(GameObject gameObject : gameObjects) {
-						gameObject.updatePosition(deltaTimeSeconds);						
+						gameObject.updatePosition(deltaTimeSeconds);
 					}
 					
 					
@@ -147,5 +142,12 @@ public class Game {
 	
 	public ArrayList<GameObject> getGameObjects() {
 		return this.gameObjects;
+	}
+	
+	public void syncCameraWithPlayer() {
+		if(this.player == null)
+			return;
+		
+		Main.getCamera().setPos(player.getPos());
 	}
 }
