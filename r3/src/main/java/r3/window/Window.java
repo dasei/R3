@@ -9,8 +9,12 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JFrame;
 
+import game.Game;
+import r3.main.Main;
+
 public class Window extends JFrame implements KeyListener, MouseListener{
 	
+	private static final long serialVersionUID = 1L;
 	private DrawComp dc;
 	
 	public void init() {
@@ -19,7 +23,7 @@ public class Window extends JFrame implements KeyListener, MouseListener{
 		
 		
 		dc = new DrawComp();
-		dc.setPreferredSize(new Dimension(1280,720));		
+		dc.setPreferredSize(new Dimension(1280,720));
 		this.add(dc);
 		
 		
@@ -33,13 +37,6 @@ public class Window extends JFrame implements KeyListener, MouseListener{
 		
 	}
 	
-//	public void draw() {
-//		this.dc.repaint();
-//	}
-	
-	
-	
-	
 	
 	////// INPUTS - KEYBOARD
 	
@@ -47,8 +44,38 @@ public class Window extends JFrame implements KeyListener, MouseListener{
 	
 	public void keyPressed(KeyEvent e) {
 		keyRegister[e.getKeyCode()] = true;
-		//System.out.println("registered key: " + e.getKeyChar());
+		
+		switch(e.getKeyCode()) {
+		case KeyEvent.VK_G:
+			Game.GRAVITY ^= true;
+			System.out.println("GRAVITY: " + (Game.GRAVITY ? "on" : "off"));
+			break;
+		case KeyEvent.VK_P:
+			Main.lowMode++;
+			System.out.println("lowMode: " + Main.lowMode);
+			break;
+		case KeyEvent.VK_L:
+			Main.lowMode--;
+			System.out.println("lowMode: " + Main.lowMode);
+			break;
+		case KeyEvent.VK_F1:
+			Game.SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN ^= true;
+			System.out.println("SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN: " + Game.SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN);
+			break;
+		case KeyEvent.VK_F2:
+			Game.ANTIALIAZING ^= true;
+			System.out.println("ANTIALIAZING: " + (Game.ANTIALIAZING ? "on" : "off"));
+			break;
+		case KeyEvent.VK_I:
+			DrawComp.ANTIALIAZING_RADIUS += 0.5;
+			System.out.println("ANTIALIAZING_RADIUS: " + DrawComp.ANTIALIAZING_RADIUS);
+			break;
+		case KeyEvent.VK_J:
+			DrawComp.ANTIALIAZING_RADIUS -= 0.5;
+			System.out.println("ANTIALIAZING_RADIUS: " + DrawComp.ANTIALIAZING_RADIUS);
+			break;
 		}
+	}
 	
 	public void keyReleased(KeyEvent e) {
 		this.keyRegister[e.getKeyCode()] = false;

@@ -16,10 +16,15 @@ public class Game {
 	
 	private Player player;
 	
+	public static boolean GRAVITY = true;
+	public static boolean SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN = false;
+	public static boolean ANTIALIAZING = true;
+	
 	public static void main(String[] args) {
 		Main.WORKING_WITH_GAMEOBJECTS = true;
 		
-		Main.getWindow().init(); Main.getWindow().setTitle(Main.getWindow().getTitle() + "GAME");	
+		Main.getWindow().init(); 
+		Main.getWindow().setTitle(Main.getWindow().getTitle() + "GAME");	
 		
 		getGame();
 	}
@@ -37,71 +42,48 @@ public class Game {
 	public static final int FPS = 60;
 	public static final boolean fps_cap = true;
 	
-	private ArrayList<GameObject> gameObjects;
+	private ArrayList<GameObject> gameObjects = new ArrayList<GameObject>();
 	
 	
 	public Game() {
-		this.gameObjects = new ArrayList<GameObject>();
-		
-		
-		//--gameObjects		
-		ArrayList<GameObject> gameObjectsStart = new ArrayList<GameObject>();
-		
-		
-//		gameObjectsStart.add(new GameObject(FileLoader.loadTrianglesFromFile(new File("res/Dragon.raw")), null));
-//		gameObjectsStart.add(
-//				new GameObject(
-//						new double[][][] {
-//							{
-////								{-50, -50, -100},
-////								{-50, 50, -100},
-////								{50, -50, -100}
-//								{-0.5, -0.5, 0},
-//								{-0.5, 0.5, 0},
-//								{0.5, -0.5, 0}
-//								
-//							}
-//						},
-//				null
-//		));
-		
+		//PLAYER (without it, camera is not really movable, if the program was started via the main method in class Game)
 		this.player = new Player();
-		gameObjectsStart.add(player);
+		this.gameObjects.add(player);
 		
-		gameObjectsStart.add(new Floor(0, 0, 0, Main.storeColor(Color.green.getRGB())));
+		//FLOOR
+		this.gameObjects.add(new Floor(0, 0, 0, Main.storeColor(Color.green.getRGB())));
 		
-//		GameObject cube = Mathstuff.generateCube(new double[] {0, 0, 2}, 1, Main.storeColor(Color.blue.getRGB()));
-//		cube.setSpeedPerSecond(new double[] {0,0,-0.1});
-//		gameObjectsStart.add(cube);
-		
-//		double z = 0;
-//		GameObject testObj = new GameObject(
-//				new double[][][] {
-//						{
-//								{0, 0, z},
-//								{10, 0, z},
-//								{0, -10, z},
-//								{Main.storeColor(Color.yellow.getRGB())}
-//						}
-//					},
-//				new Hitbox(0.1));
-////		testObj.setSpeedPerSecond(new double[] {0,0,-0.1});
-//		gameObjectsStart.add(testObj);
+		//CUBE
+		GameObject cube = Mathstuff.generateCube(new double[] {0, 0, 2}, 1, Main.storeColor(Color.blue.getRGB()));
+		cube.setSpeedPerSecond(new double[] {0,0,-0.1});
+		this.gameObjects.add(cube);
 		
 		
-		ThreadProcessor.startMultithreadingGame(new ArrayList<GameObject>(), 4);
+//		//DRAGON
+//		this.addGameObject(
+//				FileLoader.colorize(
+//						FileLoader.loadTrianglesFromFile(new File("res/dragon.raw"), true, 1),
+//						Color.red, Color.blue, Color.pink
+//				)
+//		);
 		
-		ThreadProcessor.addGameObjects(gameObjectsStart, true);
-		for(GameObject obj : gameObjectsStart)
-			addGameObject(obj);
-		//--
 		
+		
+		
+		//------------------
+		//##################
+		//------------------
+		ThreadProcessor.startMultithreadingGame(this.gameObjects, 4, true);
 		startGameLoop();
 	}
 	
-	public void addGameObject(GameObject gameObject) {
-		this.gameObjects.add(gameObject);
+	public void addGameObject(double[][][] triangles) {
+		this.gameObjects.add(new GameObject(triangles, null));
 	}
+	
+//	public void addGameObject(GameObject gameObject) {
+//		this.gameObjects.add(gameObject);
+//	}
 	
 	private void startGameLoop() {
 		(new Thread() {
@@ -117,7 +99,8 @@ public class Game {
 					
 					for(GameObject gameObject : gameObjects) {
 						gameObject.move(deltaTimeSeconds);
-						gameObject.induceGravityToSpeeds(deltaTimeSeconds);
+						if(GRAVITY)
+							gameObject.induceGravityToSpeeds(deltaTimeSeconds);
 					}
 					
 					for(GameObject gameObject : gameObjects) {

@@ -6,12 +6,15 @@ import java.awt.Graphics;
 
 import javax.swing.JComponent;
 
+import game.Game;
 import r3.main.Main;
 import r3.multithreading.ThreadProcessor;
 
 public class DrawComp extends JComponent {
 	
 	public static final int BUFFER_DEPTH_CLEAR_VALUE = Integer.MAX_VALUE;
+	
+	public static double ANTIALIAZING_RADIUS = 1;
 	
 	public double[][][] coords  = Main.coords;
 	int r=255;
@@ -109,35 +112,42 @@ public class DrawComp extends JComponent {
 			return;
 		
 		//Draw Buffer
-		if(Main.lowMode>0)
-		{
-			for(int x = 0;x<buffCache.length;x++){
-				for(int y = 0;y<buffCache[0].length;y++){
-					if(buffCache[x][y][0] == BUFFER_DEPTH_CLEAR_VALUE)
+		Color color;
+		if(Main.lowMode > 0) {
+			for(int x = 0; x < buffCache.length; x++){
+				for(int y = 0; y < buffCache[0].length; y++){
+					if(buffCache[x][y][0] == BUFFER_DEPTH_CLEAR_VALUE && !Game.ANTIALIAZING)
 						continue;
-					if(buffCache[x][y][1] != -1){
-	//					System.out.println("HELP HERE IS FIRE IN SE HOOD: " + buffCache[x][y][1]);
-						g.setColor(Main.getColorAt((int) buffCache[x][y][1]));
-					}else
-						g.setColor(Color.BLACK);
+					
+					if(!Game.ANTIALIAZING) {
+						g.setColor(Main.getColorAt((int) buffCache[x][y][1]));						
+					} else {
+						color = getAntialiazingColor(buffCache, x, y);
+						if(color == null)
+							continue;
+						g.setColor(color);
+					}
 					
 	//				g.drawRect(x, y, 1, 0);                                                 
 	//				g.drawLine(x, y, x-1, y-1);
-					g.fillRect(x, y, Main.lowMode,Main.lowMode);
+					g.fillRect(x, y, Main.lowMode,Main.lowMode);					
+					
 				}
 			}
-		}
-		else
-		{
+		} else {
 			for(int x = 0;x<buffCache.length;x++){
 				for(int y = 0;y<buffCache[0].length;y++){
-					if(buffCache[x][y][0] == BUFFER_DEPTH_CLEAR_VALUE)
+					if(buffCache[x][y][0] == BUFFER_DEPTH_CLEAR_VALUE && !Game.ANTIALIAZING)
 						continue;
-					if(buffCache[x][y][1] != -1){
-	//					System.out.println("HELP HERE IS FIRE IN SE HOOD: " + buffCache[x][y][1]);
+					
+					if(!Game.ANTIALIAZING) {
 						g.setColor(Main.getColorAt((int) buffCache[x][y][1]));
-					}else
-						g.setColor(Color.BLACK);
+					} else {
+						color = getAntialiazingColor(buffCache, x, y);
+						if(color == null)
+							continue;
+						g.setColor(color);
+					}
 					
 	//				g.drawRect(x, y, 1, 0);                                                 
 					g.drawLine(x, y, x-1, y-1);
@@ -145,36 +155,52 @@ public class DrawComp extends JComponent {
 				}
 			}
 		}
-		//TODO time measurement
-//		System.out.println((System.currentTimeMillis()-timeBeginning));
+	}
+	
+	private final float[] cacheColorSum = new float[3];
+	private final float[] cacheColorSum2 = new float[3];
+	private Color getAntialiazingColor(double[][][] buffer, int x, int y) {
+		if(ANTIALIAZING_RADIUS < 0) {
+			return Main.getColorAt((int) buffer[x][y][1]);
+		}
 		
+		//clear caches
+		cacheColorSum[0] = 0;
+		cacheColorSum[1] = 0;
+		cacheColorSum[2] = 0;
 		
-//		counter++;
-//		if(counter > 20) {
-//			try {
-//				Thread.sleep(10000);
-//			}catch(Exception e) {}
-//		}
+		cacheColorSum2[0] = 0;
+		cacheColorSum2[1] = 0;
+		cacheColorSum2[2] = 0;
 		
+		int colorAmount = 0;
 		
-		//TODO time measurement => FPS DISPLAY
-//		cycleCounter++;		
-//		timeNow = System.nanoTime();
-//		if(timeNow - timeStartNanos > 1000000000)
-//			cyclesForFPSCalculation = 1;			
-//		else
-//			cyclesForFPSCalculation = 5;		
-//		if(cycleCounter % cyclesForFPSCalculation == 0) {
-//			fpsCurrent =
-//					((int) ((1000000000d*cyclesForFPSCalculation)/(timeNow - timeStartNanos) * 100)) / 100d;
-//			//set new start time for next cycle
-//			timeStartNanos = timeNow;
-//			System.out.println(( 1000000000d/(timeNow - timeStartNanos)) + ", " + timeNow + "/t" + timeStartNanos);
-//		}	
+		//loop through the destinated rectangle
+		for(int xI = (int) (x-ANTIALIAZING_RADIUS); xI < (int) (x+ANTIALIAZING_RADIUS+1); xI++) {
+			if(xI < 0 || xI >= buffer.length)
+				continue;
+			
+			for(int yI = (int) (y-ANTIALIAZING_RADIUS); yI < (int) (y+ANTIALIAZING_RADIUS+1); yI++) {
+				if(yI < 0 || yI >= buffer[0].length)
+					continue;
+				
+				if(buffer[xI][yI][1] == -1)
+					continue;
+				
+				
+				Main.getColorAt((int) buffer[xI][yI][1]).getColorComponents(cacheColorSum2);
+				cacheColorSum[0] += cacheColorSum2[0];
+				cacheColorSum[1] += cacheColorSum2[1];
+				cacheColorSum[2] += cacheColorSum2[2];
+				
+				colorAmount++;
+			}	
+		}
 		
-//		synchronized(ThreadProcessor.getThreadLock()) {
-//			ThreadProcessor.getThreadLock().notifyAll();
-//		}
+		if(colorAmount == 0)
+			return null;
+		else
+			return new Color(cacheColorSum[0] / colorAmount, cacheColorSum[1] / colorAmount, cacheColorSum[2] / colorAmount);
 	}
 	
 	private void drawMesh(Graphics g, int[][][] frameBuffer, int screenCenterX, int screenCenterY) {		
