@@ -1,17 +1,21 @@
 package r3.window;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 import javax.swing.JFrame;
 
 import game.Game;
 import game.gameobjects.GameObject;
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.Player;
 import r3.main.Main;
 import r3.mathstuff.Camera;
 import r3.mathstuff.Mathstuff;
@@ -149,6 +153,7 @@ public class Window extends JFrame implements KeyListener, MouseListener{
 		}
 		else 
 		{
+			Window.playSound1();
 			if(!Game.modification)
 			{
 				GameObject cube = Mathstuff.generateCube(new double[] {Camera.forward[0]+Camera.pos[0],Camera.forward[1]+Camera.pos[1],Camera.forward[2]+Camera.pos[2]}, 0.1, -1,true);
@@ -178,5 +183,64 @@ public class Window extends JFrame implements KeyListener, MouseListener{
 	public DrawComp getDrawComp() {
 		return this.dc;
 	}
-	
+	public static void playSound1()
+	{
+		Thread dt = new Thread()
+		{
+			public void run()
+			{
+				FileInputStream fileInputStream = null;
+				try {
+					fileInputStream = new FileInputStream(new File("res/Nachtigall Sound.mp3"));
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				Player player = null;
+				try {
+					player = new Player(fileInputStream);
+				} catch (JavaLayerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				try {
+					player.play();
+				} catch (JavaLayerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		};
+		dt.start();
+	}
+	public static void playSound2()
+	{
+		Thread dt = new Thread()
+		{
+			public void run()
+			{
+				FileInputStream fileInputStream = null;
+				try {
+					fileInputStream = new FileInputStream(new File("res/Explosion.mp3"));
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				Player player = null;
+				try {
+					player = new Player(fileInputStream);
+				} catch (JavaLayerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				try {
+					player.play();
+				} catch (JavaLayerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		};
+		dt.start();
+	}
 }

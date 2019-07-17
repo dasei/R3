@@ -7,6 +7,7 @@ import javax.swing.plaf.synth.SynthSpinnerUI;
 import game.physics.CollisionStuff;
 import game.physics.Hitbox;
 import r3.main.Main;
+import r3.window.Window;
 
 public class GameObject {
 	
@@ -56,9 +57,9 @@ public class GameObject {
 		cachePosAfterMovement[0] = pos[0] + (speedPerSec[0] * deltaTimeSeconds);
 		cachePosAfterMovement[1] = pos[1] + (speedPerSec[1] * deltaTimeSeconds);
 		cachePosAfterMovement[2] = pos[2] + (speedPerSec[2] * deltaTimeSeconds);
-		if(cachePosAfterMovement[2]<-50)
+		if(cachePosAfterMovement[2]<-20)
 		{
-			this.remove();
+			this.remove(false);
 		}
 		if(this.hitbox == null) {
 			this.pos[0] = cachePosAfterMovement[0];
@@ -163,8 +164,11 @@ public class GameObject {
 	{
 		return !this.visible;
 	}
-	public void remove()
+	public void remove(boolean sound)
 	{
+		if(sound)
+		Window.playSound2();
+		
 		this.visible = false;
 	}
 //	public int[][][] getTrianglesDrawCoordinates2D() {

@@ -25,6 +25,10 @@ public class CollisionStuff {
 			gameObjWorld = gameObjects.get(gameObjectI);
 			if(gameObject == gameObjWorld||gameObjWorld.isRemoved())
 				continue;
+			if(gameObjWorld.getClass().getName().equals("game.gameobjects.Floor")&&!gameObject.getClass().getName().equals("game.gameobjects.Player"))
+			{
+				continue;
+			}
 			gameObjTriangles = gameObjWorld.getTrianglesAbsolute();
 						
 			for(int triangleI = 0; triangleI < gameObjTriangles.length; triangleI++) {		
@@ -78,11 +82,11 @@ public class CollisionStuff {
 				{
 					if(gameObject.isDamageAffected())
 					{
-						gameObject.remove();
+						gameObject.remove(true);
 					}
 					if(gameObjWorld.isDamageAffected())
 					{
-						gameObjWorld.remove();
+						gameObjWorld.remove(true);
 					}
 					return true;
 				}
@@ -107,11 +111,11 @@ public class CollisionStuff {
 						{
 							if(gameObject.isDamageAffected())
 							{
-								gameObject.remove();
+								gameObject.remove(true);
 							}
 							if(gameObjWorld.isDamageAffected())
 							{
-								gameObjWorld.remove();
+								gameObjWorld.remove(true);
 							}
 							return true;
 						}
@@ -122,11 +126,11 @@ public class CollisionStuff {
 						{
 							if(gameObject.isDamageAffected())
 							{
-								gameObject.remove();
+								gameObject.remove(true);
 							}
 							if(gameObjWorld.isDamageAffected())
 							{
-								gameObjWorld.remove();
+								gameObjWorld.remove(true);
 							}
 							return true;
 						}
@@ -153,11 +157,11 @@ public class CollisionStuff {
 						{
 							if(gameObject.isDamageAffected())
 							{
-								gameObject.remove();
+								gameObject.remove(true);
 							}
 							if(gameObjWorld.isDamageAffected())
 							{
-								gameObjWorld.remove();
+								gameObjWorld.remove(true);
 							}
 							return true;
 						}
@@ -168,11 +172,11 @@ public class CollisionStuff {
 						{
 							if(gameObject.isDamageAffected())
 							{
-								gameObject.remove();
+								gameObject.remove(true);
 							}
 							if(gameObjWorld.isDamageAffected())
 							{
-								gameObjWorld.remove();
+								gameObjWorld.remove(true);
 							}
 							return true;
 						}
@@ -199,11 +203,11 @@ public class CollisionStuff {
 						{
 							if(gameObject.isDamageAffected())
 							{
-								gameObject.remove();
+								gameObject.remove(true);
 							}
 							if(gameObjWorld.isDamageAffected())
 							{
-								gameObjWorld.remove();
+								gameObjWorld.remove(true);
 							}
 							return true;
 						}
@@ -214,11 +218,11 @@ public class CollisionStuff {
 						{
 							if(gameObject.isDamageAffected())
 							{
-								gameObject.remove();
+								gameObject.remove(true);
 							}
 							if(gameObjWorld.isDamageAffected())
 							{
-								gameObjWorld.remove();
+								gameObjWorld.remove(true);
 							}
 							return true;
 						}

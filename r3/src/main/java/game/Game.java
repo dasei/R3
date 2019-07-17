@@ -11,6 +11,7 @@ import r3.main.Main;
 import r3.mathstuff.Camera;
 import r3.mathstuff.Mathstuff;
 import r3.multithreading.ThreadProcessor;
+import r3.window.Window;
 
 public class Game {
 	
@@ -54,7 +55,7 @@ public class Game {
 		
 		//FLOOR
 //		this.gameObjects.add(new Floor(0, 0, 0, Main.storeColor(Color.green.getRGB())));
-		this.gameObjects.add(new Floor(0, 0, 0,-1));
+		this.gameObjects.add(new Floor(0, 0, 0, -1));
 		
 		//CUBE
 		GameObject cube = Mathstuff.generateCube(new double[] {0, 0, 5}, 1, Main.storeColor(Color.blue.getRGB()),true);
@@ -116,6 +117,7 @@ public class Game {
 					}
 					if(machineGun)
 					{
+						Window.playSound1();
 						GameObject cube = Mathstuff.generateCube(new double[] {Camera.forward[0]+Camera.pos[0],Camera.forward[1]+Camera.pos[1],Camera.forward[2]+Camera.pos[2]}, 0.1, -1,true );
 						cube.setSpeedPerSecond(new double[] {Camera.forward[0]*100,Camera.forward[1]*100,Camera.forward[2]*100});
 						addGameObject(cube);

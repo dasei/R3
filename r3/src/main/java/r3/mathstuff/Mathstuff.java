@@ -475,6 +475,7 @@ public class Mathstuff {
 //				System.out.println(gameObjects.size());
 //				System.out.println("to remove");
 				gameObjects.remove(gameObjectI);
+//				Game.getGame().gameObjects.remove(gameObjectI);
 //				System.out.println(gameObjects.size());
 //				System.out.println("------");
 				continue;
