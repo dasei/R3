@@ -27,7 +27,7 @@ public class Main {
 //	public static int[][][] coordsDraw;
 //	public static boolean[] fixedColor;
 	public static final ArrayList<Color> colors = new ArrayList<Color>();
-	public static double[][][] coords = Mathstuff.optimizeCoordinates(loadCoords(false));
+	public static double[][][] coords = Mathstuff.optimizeCoordinates(loadCoords(true));
 	
 	public static int lowMode = 0; 
 	

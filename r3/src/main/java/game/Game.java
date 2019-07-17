@@ -54,8 +54,8 @@ public class Game {
 		this.gameObjects.add(player);
 		
 		//FLOOR
-//		this.gameObjects.add(new Floor(0, 0, 0, Main.storeColor(Color.green.getRGB())));
-		this.gameObjects.add(new Floor(0, 0, 0, -1));
+		this.gameObjects.add(new Floor(0, 0, 0, Main.storeColor(Color.green.getRGB())));
+//		this.gameObjects.add(new Floor(0, 0, 0, -1));
 		
 		//CUBE
 		GameObject cube = Mathstuff.generateCube(new double[] {0, 0, 5}, 1, Main.storeColor(Color.blue.getRGB()),true);
