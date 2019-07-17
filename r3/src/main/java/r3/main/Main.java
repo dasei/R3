@@ -93,7 +93,7 @@ public class Main {
 //	}
 	
 	
-	public static final double[] gravityForce = new double[] {0,0,-5};
+	public static final double[] gravityForce = new double[] {0,0,-9.81};
 	private static double[][] currentlyClosestTriangle;
 	private static double currentlyClosestTriangleColorOriginal;
 	private static double editColor = (double) storeColor(Color.red.getRGB());
@@ -237,7 +237,7 @@ public class Main {
 		
 		if((mouseMovement[0]!=0||mouseMovement[1]!=0)&&false) {
 			
-			double[][] closestTriangle;
+			double[][] closestTriangle = null;
 			if(WORKING_WITH_GAMEOBJECTS)
 				closestTriangle = mathstuff.getClosestTriangleGameObjects(Main.camera);
 			else

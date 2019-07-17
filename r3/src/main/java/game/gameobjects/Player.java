@@ -21,7 +21,7 @@ public class Player extends GameObject {
 		Camera camera = Main.getCamera();
 		
 		double movementDelta = MOVEMENT_SPEED_ACCELERATION * deltaTimeSeconds;
-		
+		double movementDeltaX3;
 		//update camera position
 		if(register[KeyEvent.VK_W] ^ register[KeyEvent.VK_S]) {
 			//normalize subvector of components x1 and x2 => divide x1 or x2 by pythagoras of x1 and x2
@@ -47,7 +47,8 @@ public class Player extends GameObject {
 		}
 		
 		if(register[KeyEvent.VK_SPACE] && !(register[KeyEvent.VK_SHIFT]||register[KeyEvent.VK_E])) {
-			this.speedPerSec[2]+=movementDelta;
+			movementDeltaX3 = movementDelta*4;
+			this.speedPerSec[2]+=movementDeltaX3;
 		} else if(!register[KeyEvent.VK_SPACE] && (register[KeyEvent.VK_SHIFT]||register[KeyEvent.VK_E])) {
 			this.speedPerSec[2]-=movementDelta;
 		}

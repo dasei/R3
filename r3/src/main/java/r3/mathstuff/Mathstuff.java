@@ -859,92 +859,94 @@ public class Mathstuff {
 		GameObject gameObjectOfClosestTriangle = null;
 		double[][][] coords;		
 		for(ThreadProcessor thread : ThreadProcessor.threadRegister) {
-			for(GameObject gameObject : thread.getGameObjects()) {
-				coords = gameObject.getTrianglesAbsolute();
-				for(int i = 0; i < coords.length; i++) {
-					vectorAC[0] = coords[i][2][0] - coords[i][0][0];
-					vectorAC[1] = coords[i][2][1] - coords[i][0][1];
-					vectorAC[2] = coords[i][2][2] - coords[i][0][2];
-					
-					vectorAB[0] = coords[i][1][0] - coords[i][0][0];
-					vectorAB[1] = coords[i][1][1] - coords[i][0][1];
-					vectorAB[2] = coords[i][1][2] - coords[i][0][2];
-					
-					vectorCB[0] = coords[i][1][0] - coords[i][2][0];
-					vectorCB[1] = coords[i][1][1] - coords[i][2][1];
-					vectorCB[2] = coords[i][1][2] - coords[i][2][2];
-					
-					lambdaP =
-					-((camPos[0]-coords[i][0][0])*(vectorAC[1]*vectorAB[2]-vectorAC[2]*vectorAB[1])+(camPos[1]-coords[i][0][1])*(vectorAC[2]*vectorAB[0]-vectorAC[0]*vectorAB[2])+(camPos[2]-coords[i][0][2])*(vectorAC[0]*vectorAB[1]-vectorAC[1]*vectorAB[0]))
-							/
- 					(forward[0]*(vectorAC[1]*vectorAB[2]-vectorAC[2]*vectorAB[1]) + forward[1]*(vectorAC[2]*vectorAB[0]-vectorAC[0]*vectorAB[2]) + forward[2]*(vectorAC[0]*vectorAB[1]-vectorAC[1]*vectorAB[0]));
-					
-					if(lambdaP<0)
-					{
-						continue;
-					}
-					
-					pointP[0] = lambdaP * forward[0] + camPos[0]; 
-					pointP[1] = lambdaP * forward[1] + camPos[1];
-					pointP[2] = lambdaP * forward[2] + camPos[2];
-					
-					vectorAP[0] = pointP[0] - coords[i][0][0];
-					vectorAP[1] = pointP[1] - coords[i][0][1];
-					vectorAP[2] = pointP[2] - coords[i][0][2];
-					
-					lambdaCB = 
-					((-vectorAC[0]*vectorAP[1])+(vectorAC[1]*vectorAP[0]))
-							/
-					((vectorCB[0]*vectorAP[1])+(-vectorCB[1]*vectorAP[0]));
-					if(Double.isNaN(lambdaCB))
-					{
-						lambdaCB = 
-						((-vectorAC[0]*vectorAP[2])+(vectorAC[2]*vectorAP[0]))
+			if(!Game.modification)
+			{
+				for(GameObject gameObject : thread.getGameObjects()) {
+					coords = gameObject.getTrianglesAbsolute();
+					for(int i = 0; i < coords.length; i++) {
+						vectorAC[0] = coords[i][2][0] - coords[i][0][0];
+						vectorAC[1] = coords[i][2][1] - coords[i][0][1];
+						vectorAC[2] = coords[i][2][2] - coords[i][0][2];
+						
+						vectorAB[0] = coords[i][1][0] - coords[i][0][0];
+						vectorAB[1] = coords[i][1][1] - coords[i][0][1];
+						vectorAB[2] = coords[i][1][2] - coords[i][0][2];
+						
+						vectorCB[0] = coords[i][1][0] - coords[i][2][0];
+						vectorCB[1] = coords[i][1][1] - coords[i][2][1];
+						vectorCB[2] = coords[i][1][2] - coords[i][2][2];
+						
+						lambdaP =
+						-((camPos[0]-coords[i][0][0])*(vectorAC[1]*vectorAB[2]-vectorAC[2]*vectorAB[1])+(camPos[1]-coords[i][0][1])*(vectorAC[2]*vectorAB[0]-vectorAC[0]*vectorAB[2])+(camPos[2]-coords[i][0][2])*(vectorAC[0]*vectorAB[1]-vectorAC[1]*vectorAB[0]))
 								/
-						((vectorCB[0]*vectorAP[2])+(-vectorCB[2]*vectorAP[0]));
+	 					(forward[0]*(vectorAC[1]*vectorAB[2]-vectorAC[2]*vectorAB[1]) + forward[1]*(vectorAC[2]*vectorAB[0]-vectorAC[0]*vectorAB[2]) + forward[2]*(vectorAC[0]*vectorAB[1]-vectorAC[1]*vectorAB[0]));
+						
+						if(lambdaP<0)
+						{
+							continue;
+						}
+						
+						pointP[0] = lambdaP * forward[0] + camPos[0]; 
+						pointP[1] = lambdaP * forward[1] + camPos[1];
+						pointP[2] = lambdaP * forward[2] + camPos[2];
+						
+						vectorAP[0] = pointP[0] - coords[i][0][0];
+						vectorAP[1] = pointP[1] - coords[i][0][1];
+						vectorAP[2] = pointP[2] - coords[i][0][2];
+						
+						lambdaCB = 
+						((-vectorAC[0]*vectorAP[1])+(vectorAC[1]*vectorAP[0]))
+								/
+						((vectorCB[0]*vectorAP[1])+(-vectorCB[1]*vectorAP[0]));
 						if(Double.isNaN(lambdaCB))
 						{
 							lambdaCB = 
-							((-vectorAC[1]*vectorAP[2])+(vectorAC[2]*vectorAP[1]))
+							((-vectorAC[0]*vectorAP[2])+(vectorAC[2]*vectorAP[0]))
 									/
-							((vectorCB[1]*vectorAP[2])+(-vectorCB[2]*vectorAP[1]));
+							((vectorCB[0]*vectorAP[2])+(-vectorCB[2]*vectorAP[0]));
+							if(Double.isNaN(lambdaCB))
+							{
+								lambdaCB = 
+								((-vectorAC[1]*vectorAP[2])+(vectorAC[2]*vectorAP[1]))
+										/
+								((vectorCB[1]*vectorAP[2])+(-vectorCB[2]*vectorAP[1]));
+							}
 						}
-					}
-//					System.out.println(lambdaCB+">=0,<=1");
-					lambdaAP = 
-					(lambdaCB*vectorCB[2]+vectorAC[2])
-							/
-					(vectorAP[2]);
-					if(Double.isNaN(lambdaAP))
-					{
+	//					System.out.println(lambdaCB+">=0,<=1");
 						lambdaAP = 
-						(lambdaCB*vectorCB[1]+vectorAC[1])
+						(lambdaCB*vectorCB[2]+vectorAC[2])
 								/
-						(vectorAP[1]);
+						(vectorAP[2]);
 						if(Double.isNaN(lambdaAP))
 						{
 							lambdaAP = 
-							(lambdaCB*vectorCB[0]+vectorAC[0])
+							(lambdaCB*vectorCB[1]+vectorAC[1])
 									/
-							(vectorAP[0]);
+							(vectorAP[1]);
+							if(Double.isNaN(lambdaAP))
+							{
+								lambdaAP = 
+								(lambdaCB*vectorCB[0]+vectorAC[0])
+										/
+								(vectorAP[0]);
+							}
 						}
-					}
-//					System.out.println(lambdaAP+">=1");
-					if(lambdaAP>=1&&lambdaCB<=1&&lambdaCB>=0)
-					{
-						System.out.println(i);
-						double distance = calcR3Depth(pointP, camPos);
-						if(distance<lastDistance)
+	//					System.out.println(lambdaAP+">=1");
+						if(lambdaAP>=1&&lambdaCB<=1&&lambdaCB>=0)
 						{
-							lastDistance = distance;
-							closestTriangleIndex = i;
-							gameObjectOfClosestTriangle = gameObject;
+							System.out.println(i);
+							double distance = calcR3Depth(pointP, camPos);
+							if(distance<lastDistance)
+							{
+								lastDistance = distance;
+								closestTriangleIndex = i;
+								gameObjectOfClosestTriangle = gameObject;
+							}
 						}
 					}
 				}
 			}
 		}
-		
 		if(gameObjectOfClosestTriangle == null)
 			return null;
 		

@@ -49,14 +49,14 @@ public class GameObject {
 		if(deltaTimeSeconds == 0  || (this.speedPerSec[0] == 0 && this.speedPerSec[1] == 0 && this.speedPerSec[2] == 0))
 			return;
 		
-		this.speedPerSec[0] *= 0.85;
-		this.speedPerSec[1] *= 0.85;
-		this.speedPerSec[2] *= 0.85;
+		this.speedPerSec[0] *= 0.88;
+		this.speedPerSec[1] *= 0.88;
+		this.speedPerSec[2] *= 0.88;
 		
 		cachePosAfterMovement[0] = pos[0] + (speedPerSec[0] * deltaTimeSeconds);
 		cachePosAfterMovement[1] = pos[1] + (speedPerSec[1] * deltaTimeSeconds);
 		cachePosAfterMovement[2] = pos[2] + (speedPerSec[2] * deltaTimeSeconds);
-		if(cachePosAfterMovement[2]<-10)
+		if(cachePosAfterMovement[2]<-50)
 		{
 			this.remove();
 		}

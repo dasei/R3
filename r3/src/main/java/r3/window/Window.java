@@ -138,6 +138,7 @@ public class Window extends JFrame implements KeyListener, MouseListener{
 	public void mouseEntered(MouseEvent e) {}
 	public void mouseExited(MouseEvent e) {}
 	public void mousePressed(MouseEvent e) {
+//		System.out.println(e.getButton());
 		if(e.getButton()==1)
 		{
 			this.mouseBeingClicked = true;
