@@ -27,9 +27,9 @@ public class Main {
 //	public static int[][][] coordsDraw;
 //	public static boolean[] fixedColor;
 	public static final ArrayList<Color> colors = new ArrayList<Color>();
-	public static double[][][] coords = Mathstuff.optimizeCoordinates(loadCoords(true));
+	public static double[][][] coords = Mathstuff.optimizeCoordinates(loadCoords(false));
 	
-	public static int lowMode = 5; 
+	public static int lowMode = 0; 
 	
 	public static void main(String[] args) {		
 		WORKING_WITH_GAMEOBJECTS = false;
@@ -235,24 +235,24 @@ public class Main {
 			camera.left    = new double[]{Math.cos(camera.beta)*camera.left[0]-Math.sin(camera.beta)*camera.left[1],Math.sin(camera.beta)*camera.left[0] + Math.cos(-camera.beta)*camera.left[1],camera.left[2]};		
 		}
 		
-//		if((mouseMovement[0]!=0||mouseMovement[1]!=0)) {
-//			
-//			double[][] closestTriangle;
-//			if(WORKING_WITH_GAMEOBJECTS)
-//				closestTriangle = mathstuff.getClosestTriangleGameObjects(Main.camera);
-//			else
-//				closestTriangle = mathstuff.getClosestTriangleRaw(Main.camera);
-//			
-//			if(closestTriangle != currentlyClosestTriangle) {
-////				System.out.println("setting");
-//				if(closestTriangle != null)
-//					currentlyClosestTriangleColorOriginal = closestTriangle[3][0];
-//					closestTriangle[3][0] = editColor;
-//				if(currentlyClosestTriangle != null)
-////					currentlyClosestTriangle[3][0] = currentlyClosestTriangleColorOriginal;
-//				currentlyClosestTriangle = closestTriangle;
-//			}
-//		}
+		if((mouseMovement[0]!=0||mouseMovement[1]!=0)&&false) {
+			
+			double[][] closestTriangle;
+			if(WORKING_WITH_GAMEOBJECTS)
+				closestTriangle = mathstuff.getClosestTriangleGameObjects(Main.camera);
+			else
+				closestTriangle = mathstuff.getClosestTriangleRaw(Main.camera);
+			
+			if(closestTriangle != currentlyClosestTriangle) {
+//				System.out.println("setting");
+				if(closestTriangle != null)
+					currentlyClosestTriangleColorOriginal = closestTriangle[3][0];
+					closestTriangle[3][0] = editColor;
+				if(currentlyClosestTriangle != null)
+//					currentlyClosestTriangle[3][0] = currentlyClosestTriangleColorOriginal;
+				currentlyClosestTriangle = closestTriangle;
+			}
+		}
 	}	
 	
 	public static Camera getCamera(){

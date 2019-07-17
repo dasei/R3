@@ -80,6 +80,7 @@ public class ThreadProcessor extends Thread {
 	/**
 	 * this adds passed GameObjects to the Threads equally. Their order can be quite random so please let these methods do everything for you
 	 */
+	static int gameObjectsAmountCurrent = 0;
 	public static void addGameObjects(ArrayList<GameObject> gameObjectsNew, boolean optimizeTriangles) {
 		if(optimizeTriangles)
 			for(GameObject gameObject : gameObjectsNew)
@@ -87,7 +88,7 @@ public class ThreadProcessor extends Thread {
 		
 		
 		//count all currently active GameObjects		
-		int gameObjectsAmountCurrent = 0;
+		
 		for(ThreadProcessor thread : threadRegister)
 			gameObjectsAmountCurrent += thread.getGameObjects().size();
 		
@@ -106,7 +107,10 @@ public class ThreadProcessor extends Thread {
 			}
 		}
 	}
-	
+	public static int amountObjects()
+	{
+		return gameObjectsAmountCurrent;
+	}
 	
 	
 	
@@ -144,6 +148,8 @@ public class ThreadProcessor extends Thread {
 		
 		//main loop
 		while(true) {
+//			System.out.println("-----");
+//			System.out.println(gameObjects.size());
 			
 			if(this.useGameObjectsNotRaw)
 				mathstuff.calcR3ZBuff(this.gameObjects, Main.getCamera(), false);

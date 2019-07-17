@@ -1,5 +1,6 @@
 package r3.window;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -10,7 +11,11 @@ import java.awt.event.MouseListener;
 import javax.swing.JFrame;
 
 import game.Game;
+import game.gameobjects.GameObject;
 import r3.main.Main;
+import r3.mathstuff.Camera;
+import r3.mathstuff.Mathstuff;
+import r3.multithreading.ThreadProcessor;
 
 public class Window extends JFrame implements KeyListener, MouseListener{
 	
@@ -132,11 +137,39 @@ public class Window extends JFrame implements KeyListener, MouseListener{
 	public void mouseClicked(MouseEvent e) {}
 	public void mouseEntered(MouseEvent e) {}
 	public void mouseExited(MouseEvent e) {}
-	public void mousePressed(MouseEvent e) {		
-		this.mouseBeingClicked = true;
+	public void mousePressed(MouseEvent e) {
+		if(e.getButton()==1)
+		{
+			this.mouseBeingClicked = true;
+		}
+		else if(e.getButton()==2)
+		{
+			Game.machineGun ^= true;
+		}
+		else 
+		{
+			if(!Game.modification)
+			{
+				GameObject cube = Mathstuff.generateCube(new double[] {Camera.forward[0]+Camera.pos[0],Camera.forward[1]+Camera.pos[1],Camera.forward[2]+Camera.pos[2]}, 0.1, -1,true);
+	//			GameObject cube = Mathstuff.generateCube(Camera.pos, 0.1, -1);
+				cube.setSpeedPerSecond(new double[] {Camera.forward[0]*100,Camera.forward[1]*100,Camera.forward[2]*100});
+				Game.getGame().addGameObject(cube);
+				Game.getGame().gameObjectsCache.add(cube);
+				ThreadProcessor.addGameObjects(Game.getGame().gameObjectsCache, true);
+				Game.getGame().gameObjectsCache.clear();
+			}
+		}
+		
 	}
 	public void mouseReleased(MouseEvent e) {
-		this.mouseBeingClicked = false;
+		if(e.getButton()==1)
+		{
+			this.mouseBeingClicked = false;
+		}
+//		else if(e.getButton()==2)
+//		{
+//			Game.machineGun = false;
+//		}
 	}
 	
 	//////

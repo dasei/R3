@@ -8,6 +8,7 @@ import javax.swing.JComponent;
 
 import game.Game;
 import r3.main.Main;
+import r3.mathstuff.Camera;
 import r3.multithreading.ThreadProcessor;
 
 public class DrawComp extends JComponent {
@@ -102,7 +103,11 @@ public class DrawComp extends JComponent {
 //		System.out.println("--------------------------------");
 //		Main.cycleCounterDebug++;
 		
+		g.drawString("X1: "+Camera.pos[0], 1, 10);
+		g.drawString("X2: "+Camera.pos[1], 1, 25);
+		g.drawString("X3: "+Camera.pos[2], 1, 40);
 		
+
 		
 		//TODO time measurement
 //		System.out.print((System.currentTimeMillis()-timeBeginning) + "\t");
@@ -150,7 +155,7 @@ public class DrawComp extends JComponent {
 					}
 					
 	//				g.drawRect(x, y, 1, 0);                                                 
-					g.drawLine(x, y, x-1, y-1);
+					g.drawLine(x, y, x, y);
 //					g.fillRect(x, y, Main.lowMode,Main.lowMode);
 				}
 			}

@@ -1,6 +1,8 @@
 package r3.mathstuff;
 
+import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import game.Game;
 import game.gameobjects.GameObject;
@@ -448,6 +450,11 @@ public class Mathstuff {
 		// double lambda3 = 0;
 		double depth = 0;
 		// double bcLength = 0;
+		
+		int insideScreenAmount;
+		
+		double lengthCache = 0;
+		
 		double lengthMiddle = 0;
 		double oLength = 0;
 
@@ -461,9 +468,17 @@ public class Mathstuff {
 		GameObject gameObject;
 		double[][][] coords;
 		for(int gameObjectI = gameObjects.size()-1; gameObjectI >= 0; gameObjectI--) {
+//			System.out.println(gameObjects.size());
 			gameObject = gameObjects.get(gameObjectI);
-			if(gameObject == null)
+			if(gameObject == null||gameObject.isRemoved())
+			{
+//				System.out.println(gameObjects.size());
+//				System.out.println("to remove");
+				gameObjects.remove(gameObjectI);
+//				System.out.println(gameObjects.size());
+//				System.out.println("------");
 				continue;
+			}
 			coords = gameObject.getTrianglesAbsolute();
 			
 			
@@ -518,9 +533,24 @@ public class Mathstuff {
 				if (lengthMiddle == 0)
 					continue;
 	
+
+						//				System.out.println(".");																					
+//				if(!Game.SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN)	 											
+//				{		
+//					insideScreenAmount = 0;
+//					for(int pointsTriangle = 0;pointsTriangle < 3; pointsTriangle++)
+//					{
+//						lengthCache = calcR3Point(coords[triangleI][pointsTriangle], coordsIntCache, forward, camPos, alpha, beta, factor);
+//						
+//						if ((coordsIntCache[0] < 0 || coordsIntCache[1] < 0 || coordsIntCache[0] > screenWidth || coordsIntCache[1] > screenHeight) || lengthCache == 0)
+//							insideScreenAmount--;
+//					}
+//					if(insideScreenAmount==-3)
+//					System.out.println("cont");
+//				}
 				// precision = 0.001+Math.pow(1.00146, lengthMiddle)-1;
 				// precision = 0.0058*lengthMiddle+0.001;
-				if(Main.lowMode<0) {
+				if(Main.lowMode==0) {
 					precision = 0.00038 * lengthMiddle + 0.001;
 				} else {
 //					precision = 0.09/(1.6*Main.lowMode) * lengthMiddle + 0.001;
@@ -724,8 +754,8 @@ public class Mathstuff {
 					bufferDepth[cachePoint2D[0]][cachePoint2D[1]][0] = cacheDepth;
 
 					// set color
-//					bufferDepth[cachePoint2D[0]][cachePoint2D[1]][1] = -1;
-				
+					bufferDepth[cachePoint2D[0]][cachePoint2D[1]][1] = Main.storeColor(Color.black.getRGB());;
+					
 			}
 		}
 		
@@ -741,7 +771,7 @@ public class Mathstuff {
 					bufferDepth[cachePoint2D[0]][cachePoint2D[1]][0] = cacheDepth;
 
 					// set color
-//					bufferDepth[cachePoint2D[0]][cachePoint2D[1]][1] = -1;				
+					bufferDepth[cachePoint2D[0]][cachePoint2D[1]][1] = Main.storeColor(Color.black.getRGB());;			
 				
 			}
 		}
@@ -758,7 +788,7 @@ public class Mathstuff {
 					bufferDepth[cachePoint2D[0]][cachePoint2D[1]][0] = cacheDepth;
 
 					// set color
-//					bufferDepth[cachePoint2D[0]][cachePoint2D[1]][1] = -1;
+					bufferDepth[cachePoint2D[0]][cachePoint2D[1]][1] = Main.storeColor(Color.black.getRGB());
 				
 			}
 		}
@@ -1041,7 +1071,7 @@ public class Mathstuff {
 	/**
 	 * @param colorID colorID as returned by {@link Main#storeColor(int)}
 	 */
-	public static GameObject generateCube(double[] centerPos, double edgeLength, double colorID) {
+	public static GameObject generateCube(double[] centerPos, double edgeLength, double colorID, boolean gravityAffected) {
 		double[][][] triangles = new double[12][4][];
 		double halfEdgeLength = edgeLength/2d;
 		
@@ -1155,7 +1185,7 @@ public class Mathstuff {
 		;
 		
 //		System.out.println("This generated cube hets a hitbox of radius " + halfEdgeLength);
-		return new GameObject(centerPos, triangles, new Hitbox(halfEdgeLength), true);
+		return new GameObject(centerPos, triangles, new Hitbox(halfEdgeLength), gravityAffected, true);
 	}
 	private static double lambdaCB,lambdaAP;
 	private static double[] vectorAP = new double[3],vecAC = new double[3],vecCB = new double[3];

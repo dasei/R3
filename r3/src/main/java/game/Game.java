@@ -1,12 +1,13 @@
 package game;
 
-import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Random;
 
 import game.gameobjects.Floor;
 import game.gameobjects.GameObject;
 import game.gameobjects.Player;
 import r3.main.Main;
+import r3.mathstuff.Camera;
 import r3.mathstuff.Mathstuff;
 import r3.multithreading.ThreadProcessor;
 
@@ -17,8 +18,8 @@ public class Game {
 	private Player player;
 	
 	public static boolean GRAVITY = true;
-	public static boolean SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN = false;
-	public static boolean ANTIALIAZING = true;
+	public static boolean SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN = true;
+	public static boolean ANTIALIAZING = false;
 	
 	public static void main(String[] args) {
 		Main.WORKING_WITH_GAMEOBJECTS = true;
@@ -42,8 +43,8 @@ public class Game {
 	public static final int FPS = 60;
 	public static final boolean fps_cap = true;
 	
-	private ArrayList<GameObject> gameObjects = new ArrayList<GameObject>();
-	
+	public ArrayList<GameObject> gameObjects = new ArrayList<GameObject>();
+	public ArrayList<GameObject> gameObjectsCache = new ArrayList<GameObject>();
 	
 	public Game() {
 		//PLAYER (without it, camera is not really movable, if the program was started via the main method in class Game)
@@ -51,12 +52,13 @@ public class Game {
 		this.gameObjects.add(player);
 		
 		//FLOOR
-		this.gameObjects.add(new Floor(0, 0, 0, Main.storeColor(Color.green.getRGB())));
+//		this.gameObjects.add(new Floor(0, 0, 0, Main.storeColor(Color.green.getRGB())));
+		this.gameObjects.add(new Floor(0, 0, 0,-1));
 		
 		//CUBE
-		GameObject cube = Mathstuff.generateCube(new double[] {0, 0, 2}, 1, Main.storeColor(Color.blue.getRGB()));
+		GameObject cube = Mathstuff.generateCube(new double[] {0, 0, 2}, 1, -1,true);
 		cube.setSpeedPerSecond(new double[] {0,0,-0.1});
-		this.gameObjects.add(cube);
+//		this.gameObjects.add(cube);
 		
 		
 //		//DRAGON
@@ -80,11 +82,16 @@ public class Game {
 	public void addGameObject(double[][][] triangles) {
 		this.gameObjects.add(new GameObject(triangles, null));
 	}
-	
+	public void addGameObject(GameObject gameObject)
+	{
+		this.gameObjects.add(gameObject);
+	}
 //	public void addGameObject(GameObject gameObject) {
 //		this.gameObjects.add(gameObject);
 //	}
-	
+	private Random random = new Random();
+	public static boolean modification = false;
+	public static boolean machineGun = false;
 	private void startGameLoop() {
 		(new Thread() {
 			public void run() {				
@@ -96,7 +103,32 @@ public class Game {
 				while(true) {
 					iterationStart = System.currentTimeMillis();					
 					///--- LOOP
-					
+//					System.out.println(gameObjects.size());
+					if(random.nextInt(400)==1)
+					{
+						GameObject cube = Mathstuff.generateCube(new double[] {random.nextInt(10),random.nextInt(10),5}, 1, -1,true);
+						cube.setSpeedPerSecond(new double[] {0,0,-0.1});
+						addGameObject(cube);
+						gameObjectsCache.add(cube);
+						ThreadProcessor.addGameObjects(gameObjectsCache, true);
+						gameObjectsCache.clear();
+					}
+					if(machineGun)
+					{
+						GameObject cube = Mathstuff.generateCube(new double[] {Camera.forward[0]+Camera.pos[0],Camera.forward[1]+Camera.pos[1],Camera.forward[2]+Camera.pos[2]}, 0.1, -1,true );
+						cube.setSpeedPerSecond(new double[] {Camera.forward[0]*100,Camera.forward[1]*100,Camera.forward[2]*100});
+						addGameObject(cube);
+						gameObjectsCache.add(cube);
+						ThreadProcessor.addGameObjects(gameObjectsCache, true);
+						gameObjectsCache.clear();
+					}
+//					if(gameObjectsToRemove.size()>0)
+//					{
+//						for(GameObject gameObject : gameObjectsToRemove) {
+//							gameObjects.remove(gameObject);
+//						}
+//					}
+					modification = true;
 					for(GameObject gameObject : gameObjects) {
 						gameObject.move(deltaTimeSeconds);
 						if(GRAVITY)
@@ -106,7 +138,7 @@ public class Game {
 					for(GameObject gameObject : gameObjects) {
 						gameObject.updatePosition(deltaTimeSeconds);
 					}
-					
+					modification = false;
 					
 					///--- LOOP
 					duration = System.currentTimeMillis() - iterationStart;
@@ -131,6 +163,6 @@ public class Game {
 		if(this.player == null)
 			return;
 		
-		Main.getCamera().setPos(player.getPos());
+		Main.getCamera().setPos(new double[]{player.getPos()[0],player.getPos()[1],player.getPos()[2]});
 	}
 }

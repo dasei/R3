@@ -23,7 +23,7 @@ public class CollisionStuff {
 		double[][][] gameObjTriangles;
 		for(int gameObjectI = gameObjects.size()-1; gameObjectI >= 0; gameObjectI--){			
 			gameObjWorld = gameObjects.get(gameObjectI);
-			if(gameObject == gameObjWorld)
+			if(gameObject == gameObjWorld||gameObjWorld.isRemoved())
 				continue;
 			gameObjTriangles = gameObjWorld.getTrianglesAbsolute();
 						
@@ -76,6 +76,14 @@ public class CollisionStuff {
 				
 				if(Mathstuff.isInsideOfTriangle(pointIntercept, gameObjTriangles[triangleI]))
 				{
+					if(gameObject.isDamageAffected())
+					{
+						gameObject.remove();
+					}
+					if(gameObjWorld.isDamageAffected())
+					{
+						gameObjWorld.remove();
+					}
 					return true;
 				}
 		//Check if and where VectorAB collides with hitboxCenterGameObject
@@ -97,6 +105,14 @@ public class CollisionStuff {
 					{
 						if(lambdaAB1>=0&&lambdaAB1<=Mathstuff.length(vecAB))
 						{
+							if(gameObject.isDamageAffected())
+							{
+								gameObject.remove();
+							}
+							if(gameObjWorld.isDamageAffected())
+							{
+								gameObjWorld.remove();
+							}
 							return true;
 						}
 					}
@@ -104,6 +120,14 @@ public class CollisionStuff {
 					{
 						if(lambdaAB2>=0&&lambdaAB2<=Mathstuff.length(vecAB))
 						{
+							if(gameObject.isDamageAffected())
+							{
+								gameObject.remove();
+							}
+							if(gameObjWorld.isDamageAffected())
+							{
+								gameObjWorld.remove();
+							}
 							return true;
 						}
 					}
@@ -127,6 +151,14 @@ public class CollisionStuff {
 					{
 						if(lambdaAB1>=0&&lambdaAB1<=Mathstuff.length(vecAB))
 						{
+							if(gameObject.isDamageAffected())
+							{
+								gameObject.remove();
+							}
+							if(gameObjWorld.isDamageAffected())
+							{
+								gameObjWorld.remove();
+							}
 							return true;
 						}
 					}
@@ -134,6 +166,14 @@ public class CollisionStuff {
 					{
 						if(lambdaAB2>=0&&lambdaAB2<=Mathstuff.length(vecAB))
 						{
+							if(gameObject.isDamageAffected())
+							{
+								gameObject.remove();
+							}
+							if(gameObjWorld.isDamageAffected())
+							{
+								gameObjWorld.remove();
+							}
 							return true;
 						}
 					}
@@ -157,6 +197,14 @@ public class CollisionStuff {
 					{
 						if(lambdaAB1>=0&&lambdaAB1<=Mathstuff.length(vecAB))
 						{
+							if(gameObject.isDamageAffected())
+							{
+								gameObject.remove();
+							}
+							if(gameObjWorld.isDamageAffected())
+							{
+								gameObjWorld.remove();
+							}
 							return true;
 						}
 					}
@@ -164,6 +212,14 @@ public class CollisionStuff {
 					{
 						if(lambdaAB2>=0&&lambdaAB2<=Mathstuff.length(vecAB))
 						{
+							if(gameObject.isDamageAffected())
+							{
+								gameObject.remove();
+							}
+							if(gameObjWorld.isDamageAffected())
+							{
+								gameObjWorld.remove();
+							}
 							return true;
 						}
 					}

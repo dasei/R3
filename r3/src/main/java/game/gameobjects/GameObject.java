@@ -27,15 +27,20 @@ public class GameObject {
 	
 	private boolean gravityAffected = false; 
 	
+	private boolean damageAffected = false;
+	
+	private boolean visible = true;
+	
 	public GameObject(double[][][] triangles, Hitbox hitbox) {
 		this.trianglesRelative = triangles;
 		this.hitbox = hitbox;
 	}
 	
-	public GameObject(double[] pos, double[][][] triangles, Hitbox hitbox, boolean gravityAffected) {
+	public GameObject(double[] pos, double[][][] triangles, Hitbox hitbox, boolean gravityAffected, boolean damageAffected) {
 		this(triangles, hitbox);
 		this.pos = pos;
 		this.gravityAffected = gravityAffected;
+		this.damageAffected = damageAffected;
 	}
 
 	private final double[] cachePosAfterMovement = new double[3];
@@ -44,14 +49,17 @@ public class GameObject {
 		if(deltaTimeSeconds == 0  || (this.speedPerSec[0] == 0 && this.speedPerSec[1] == 0 && this.speedPerSec[2] == 0))
 			return;
 		
-		this.speedPerSec[0] *= 0.8;
-		this.speedPerSec[1] *= 0.8;
-		this.speedPerSec[2] *= 0.95;
+		this.speedPerSec[0] *= 0.85;
+		this.speedPerSec[1] *= 0.85;
+		this.speedPerSec[2] *= 0.85;
 		
 		cachePosAfterMovement[0] = pos[0] + (speedPerSec[0] * deltaTimeSeconds);
 		cachePosAfterMovement[1] = pos[1] + (speedPerSec[1] * deltaTimeSeconds);
 		cachePosAfterMovement[2] = pos[2] + (speedPerSec[2] * deltaTimeSeconds);
-		
+		if(cachePosAfterMovement[2]<-10)
+		{
+			this.remove();
+		}
 		if(this.hitbox == null) {
 			this.pos[0] = cachePosAfterMovement[0];
 			this.pos[1] = cachePosAfterMovement[1];
@@ -148,7 +156,17 @@ public class GameObject {
 	public boolean isAffectedByGravity() {
 		return this.gravityAffected;
 	}
-	
+	public boolean isDamageAffected() {
+		return this.damageAffected;
+	}
+	public boolean isRemoved()
+	{
+		return !this.visible;
+	}
+	public void remove()
+	{
+		this.visible = false;
+	}
 //	public int[][][] getTrianglesDrawCoordinates2D() {
 //		return this.trianglesDrawCoordinates2D;
 //	}

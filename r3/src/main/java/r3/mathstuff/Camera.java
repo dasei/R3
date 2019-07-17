@@ -2,7 +2,7 @@ package r3.mathstuff;
 
 public class Camera {
 	
-	public double[] pos = new double[]{0, 0, 0};
+	public static double[] pos = new double[]{0, 0, 0};
 	
 	
 	// cant be changed, used in Mathstuff calulation	
@@ -10,7 +10,7 @@ public class Camera {
 	public static final double[] leftDEFAULT = new double[] {0,-1,0};
 	
 	//look direction
-	public double[] forward = forwardDEFAULT;
+	public static double[] forward = forwardDEFAULT;
 	//move directions
 	public double[] left = leftDEFAULT;
 	//rotation
