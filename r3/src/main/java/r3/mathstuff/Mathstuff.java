@@ -1189,9 +1189,11 @@ public class Mathstuff {
 						/ (ab0[0] * ab0[0] + ab0[1] * ab0[1]);
 				// check boundaries of lambdaAB
 //				System.out.println("lambdaAB: "+lambdaAB);
-				if (abLength > 1350 ||lambdaAB > abLength || lambdaAB < 0)
+				if (abLength > 10000 ||lambdaAB > abLength || lambdaAB < 0)
+				{
+					System.out.println("skipped: "+abLength);
 					continue;
-	
+				}
 				// Vektor O (Einheitsvektor) (steht senkrecht auf AB und geht durch
 				// (bzw. bis) C)
 				o = new double[] { 
