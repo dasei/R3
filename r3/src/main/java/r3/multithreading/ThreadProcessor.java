@@ -152,9 +152,9 @@ public class ThreadProcessor extends Thread {
 //			System.out.println(gameObjects.size());
 			
 			if(this.useGameObjectsNotRaw)
-				mathstuff.calcR3ZBuff(this.gameObjects, Main.getCamera(), false);
+				mathstuff.calcR3ZBuff2DRasterization(this.gameObjects, Main.getCamera(), false);
 			else
-				mathstuff.calcR3ZBuff(Main.coords, Main.getCamera(), triangleOffset, triangleAmount, false);
+				mathstuff.calcR3ZBuff2DRasterization(Main.coords, Main.getCamera(), triangleOffset, triangleAmount, false);
 			
 			
 			onThreadFinish(false);

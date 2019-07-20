@@ -11,6 +11,7 @@ import game.Game;
 import r3.mathstuff.Camera;
 import r3.mathstuff.Mathstuff;
 import r3.multithreading.ThreadProcessor;
+import r3.window.DrawComp;
 import r3.window.Window;
 
 public class Main {
@@ -22,7 +23,7 @@ public class Main {
 	private final static Window window = new Window();
 	
 	
-	public static final int FPS_MAX = 60;
+	public static final int FPS_MAX = 144;
 	public static int fpsCurrent = 0;
 //	public static int[][][] coordsDraw;
 //	public static boolean[] fixedColor;
@@ -36,7 +37,26 @@ public class Main {
 
 		window.init();
 		
-		ThreadProcessor.startMultithreadingRaw(Main.coords.length, 4);
+		Thread dt = new Thread()
+		{
+			public void run()
+			{
+				while(true)
+				{
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					DrawComp.fps = DrawComp.countfps;
+					DrawComp.countfps=0;
+				}
+			}
+		};
+		dt.start();
+		
+		ThreadProcessor.startMultithreadingRaw(Main.coords.length, 6);
 	}
 	
 //	private static void startLoopThread() {

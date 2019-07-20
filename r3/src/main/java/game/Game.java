@@ -11,6 +11,7 @@ import r3.main.Main;
 import r3.mathstuff.Camera;
 import r3.mathstuff.Mathstuff;
 import r3.multithreading.ThreadProcessor;
+import r3.window.DrawComp;
 import r3.window.Window;
 
 public class Game {
@@ -28,7 +29,24 @@ public class Game {
 		
 		Main.getWindow().init(); 
 		Main.getWindow().setTitle(Main.getWindow().getTitle() + "GAME");	
-		
+		Thread dt = new Thread()
+		{
+			public void run()
+			{
+				while(true)
+				{
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					DrawComp.fps = DrawComp.countfps;
+					DrawComp.countfps=0;
+				}
+			}
+		};
+		dt.start();
 		getGame();
 	}
 	

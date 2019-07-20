@@ -677,7 +677,628 @@ public class Mathstuff {
 		}
 		return bufferDepth;
 	}
+	public double[][][] calcR3ZBuff2DRasterization(double[][][] coords, Camera camera, int triangleOffset, int triangleAmount,
+			boolean createNewBuffer) {
+		this.updateValues();
 
+		// Extract constants from camera
+		double[] forward = camera.forward;
+		double alpha = camera.alpha;
+		double beta = camera.beta;
+		double factor = camera.scaleFactor;
+		double[] camPos = new double[] {camera.pos[0], camera.pos[1], camera.pos[2]};
+		
+		// System.out.println(Arrays.toString(forward));
+
+		double[][][] bufferDepth;
+		if (createNewBuffer)
+			bufferDepth = new double[screenWidth][screenHeight][2];
+		else
+			bufferDepth = ThreadProcessor.getBufferToCalculateOn();
+
+		double[] a = new double[3];
+		double[] b = new double[3];
+		double[] c = new double[3];
+		
+		double[][][] coordsCacheABC = new double[1][3][];
+		
+		double[] bc;
+		double[] ab;
+		double[] ac;
+		double[] ab0;
+		double[] o;
+		
+		double abLength;
+		double lambdaAB;
+		
+		//Used for plane(EBENE)
+		double[] vecNormal;
+		double cPlane;
+		double pixelX1Cache;
+		double pixelX2Cache;
+		
+		int pixelX1CacheInt;
+		int pixelX2CacheInt;
+
+		double[] middle;
+		// System.out.println(coords.length);
+		boolean collidingWithAC = true;
+		// Lambda1:Stelle auf der Gerade AB*lambda1 + A
+		double lambda2Max = 0;
+		// double lambda3 = 0;
+		double depth = 0;
+		// double bcLength = 0;
+		
+		int insideScreenAmount;
+		
+		double lengthCache = 0;
+		
+		double lengthMiddle = 0;
+		double oLength = 0;
+
+		int[] coordsIntCache = new int[2];
+
+		double precision = 0.71;
+		// System.out.println("start");
+		double cacheLambda2Divisor;
+		// System.out.println("c " + coords.length);
+		for (int triangleI = 0; triangleI < coords.length; triangleI++) {
+			
+			// check if no color is given
+			if (coords[triangleI].length < 4 || coords[triangleI][3][0] == -1) {
+//				throw new RuntimeException("Diiga");
+				calcR3Mesh(bufferDepth, coords[triangleI], forward, camPos, alpha, beta, factor);
+				continue;
+			}
+			// System.out.println("t " + triangleI);
+			// a = [0], b = [1], c = [2]
+			// Vektor AB
+//			ab0 = new double[] { coords[triangleI][1][0] - coords[triangleI][0][0],
+//					coords[triangleI][1][1] - coords[triangleI][0][1],
+//					coords[triangleI][1][2] - coords[triangleI][0][2] };
+//			double abLength = length(ab0);
+//			double[] ab = ab0;
+//			ab0 = new double[] { ab0[0] / abLength, ab0[1] / abLength, ab0[2] / abLength };
+//			// Vektor AC
+//			ac = new double[] { coords[triangleI][2][0] - coords[triangleI][0][0],
+//					coords[triangleI][2][1] - coords[triangleI][0][1],
+//					coords[triangleI][2][2] - coords[triangleI][0][2] };
+//			double acLength = length(ac);
+//			ac = new double[] { ac[0] / acLength, ac[1] / acLength, ac[2] / acLength };
+//
+//			// Vektor BC
+//			bc = new double[] { coords[triangleI][2][0] - coords[triangleI][1][0],
+//					coords[triangleI][2][1] - coords[triangleI][1][1],
+//					coords[triangleI][2][2] - coords[triangleI][1][2] };
+//			// bcLength = length(bc);
+			
+			middle = new double[] { (coords[triangleI][0][0] + coords[triangleI][1][0] + coords[triangleI][2][0]) / 3,
+					(coords[triangleI][0][1] + coords[triangleI][1][1] + coords[triangleI][2][1]) / 3,
+					(coords[triangleI][0][2] + coords[triangleI][1][2] + coords[triangleI][2][2]) / 3 };
+
+			lengthMiddle = calcR3Point(middle, coordsIntCache, forward, camPos, alpha, beta, factor); // dont
+																										// calculate
+																										// entire
+																										// point
+																										// with
+																										// everything,
+																										// but
+																										// only
+																										// its
+																										// depth
+			
+			if (Game.SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN && (coordsIntCache[0] < 0 || coordsIntCache[1] < 0 || coordsIntCache[0] > screenWidth
+					|| coordsIntCache[1] > screenHeight))
+				continue;
+
+			if (lengthMiddle == 0)
+				continue;
+
+
+					//				System.out.println(".");																					
+//			if(!Game.SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN)	 											
+//			{		
+//				insideScreenAmount = 0;
+//				for(int pointsTriangle = 0;pointsTriangle < 3; pointsTriangle++)
+//				{
+//					lengthCache = calcR3Point(coords[triangleI][pointsTriangle], coordsIntCache, forward, camPos, alpha, beta, factor);
+//					
+//					if ((coordsIntCache[0] < 0 || coordsIntCache[1] < 0 || coordsIntCache[0] > screenWidth || coordsIntCache[1] > screenHeight) || lengthCache == 0)
+//						insideScreenAmount--;
+//				}
+//				if(insideScreenAmount==-3)
+//				System.out.println("cont");
+//			}
+			// precision = 0.001+Math.pow(1.00146, lengthMiddle)-1;
+			// precision = 0.0058*lengthMiddle+0.001;
+//			if(Main.lowMode==0) {
+//				precision = 0.00038 * lengthMiddle + 0.001;
+//			} else {
+////				precision = 0.09/(1.6*Main.lowMode) * lengthMiddle + 0.001;
+//				precision = 0.0035 * lengthMiddle ;
+//			}
+			a[2] = -calcR3Point(coords[triangleI][0], coordsIntCache, forward, camPos, alpha, beta, factor);
+			a[0] = coordsIntCache[0];
+			a[1] = coordsIntCache[1];
+			
+			b[2] = -calcR3Point(coords[triangleI][1], coordsIntCache, forward, camPos, alpha, beta, factor);
+			b[0] = coordsIntCache[0];
+			b[1] = coordsIntCache[1];
+			
+			c[2] = -calcR3Point(coords[triangleI][2], coordsIntCache, forward, camPos, alpha, beta, factor);
+			c[0] = coordsIntCache[0];
+			c[1] = coordsIntCache[1];
+//			System.out.println("triangleI : "+triangleI+" , a: "+Arrays.toString(a)+" , b: "+Arrays.toString(b)+" , c: "+Arrays.toString(c));
+			
+			coordsCacheABC[0][0] = a;
+			coordsCacheABC[0][1] = b;
+			coordsCacheABC[0][2] = c;
+			
+			optimizeCoordinates(coordsCacheABC);
+			
+			a = coordsCacheABC[0][0];
+			b = coordsCacheABC[0][1];
+			c = coordsCacheABC[0][2];
+			
+//			System.out.println("triangleI : "+triangleI+" , a: "+Arrays.toString(a)+" , b: "+Arrays.toString(b)+" , c: "+Arrays.toString(c));
+			
+			bc = new double[]{c[0]-b[0],c[1]-b[1],c[2]-b[2]};
+			ab = new double[]{b[0]-a[0],b[1]-a[1],b[2]-a[2]};
+			ac = new double[]{c[0]-a[0],c[1]-a[1],c[2]-a[2]};
+			
+			vecNormal = new double[]{(bc[1] * ab[2]) - (bc[2] * ab[1]),(bc[2] * ab[0]) - (bc[0] * ab[2]),(bc[0] * ab[1]) - (bc[1] * ab[0])};
+			
+			cPlane = -((a[0]*vecNormal[0])+(a[1]*vecNormal[1])+(a[2]*vecNormal[2]));
+			
+			ab0 = vectorUnify2D(new double[]{b[0]-a[0],b[1]-a[1]},true);
+			
+			abLength = length(ab);
+			
+			// lambdaAB gibt die Stelle auf der Geraden AB*lambda + A an, bei
+			// der ab senkrecht zu o (o = Stelle auf der Gerade -> C)
+			lambdaAB = (ab0[0] * (c[0] - a[0])
+					+ ab0[1] * (c[1] - a[1]))
+					/ (ab0[0] * ab0[0] + ab0[1] * ab0[1]);
+			// check boundaries of lambdaAB
+//			System.out.println("lambdaAB: "+lambdaAB);
+			if (lambdaAB > abLength || lambdaAB < 0)
+				continue;
+
+			// Vektor O (Einheitsvektor) (steht senkrecht auf AB und geht durch
+			// (bzw. bis) C)
+			o = new double[] { 
+					c[0] - (a[0] + ab0[0] * lambdaAB),
+					c[1] - (a[1] + ab0[1] * lambdaAB) 
+					};
+			oLength = vectorUnify2D(o);
+//			System.out.println("o: "+Arrays.toString(o));
+			if(Double.isNaN(o[0]))
+				continue;
+			collidingWithAC = true;
+//			if(triangleI == 0)
+			for (double lambdaABCrawler = 0; lambdaABCrawler < abLength + precision; lambdaABCrawler += precision) {
+
+				// check if lambdaVertical should be calculated by collision
+				// with BC
+				if (collidingWithAC && lambdaABCrawler > lambdaAB)
+					collidingWithAC = false;
+
+				//////////// 1. CALCULATE lambda2Max
+
+				// distinguish between the two different calculation methods for
+				// lambda2Max, depending on if its a collision with AC or CB
+				if (collidingWithAC) {
+
+					// FORMULA:
+					// lambdaVertical =
+					// (lambdaABCrawler*ab0[1]*ac[0]-lambdaABCrawler*ab0[0]*ac[1])
+					// /
+					// (o[0]*ac[1]-o[1]*ac[0]);
+
+					// TODO NOTE: this should be cleaned up, as triangles are
+					// now reprocessed in the main loop
+					// 1.: calculate divisor and check if it is 0. If so,
+					// calculate it with two other points. If it is again 0, set
+					// lambdaVertical to 0
+					cacheLambda2Divisor = (o[0] * ac[1] - o[1] * ac[0]);
+					if (cacheLambda2Divisor == 0) {
+//						System.out.println("cacheLambda2Divisor is 0(ac)");
+						continue;
+					} else {
+						lambda2Max = (lambdaABCrawler * ab0[1] * ac[0] - lambdaABCrawler * ab0[0] * ac[1])
+								/ cacheLambda2Divisor;
+//						System.out.println("lambda2Max: "+lambda2Max);
+					}
+
+				} else {
+
+					cacheLambda2Divisor = (o[1] * bc[0] - o[0] * bc[1]);
+					if (cacheLambda2Divisor == 0) {
+//						System.out.println("cacheLambda2Divisor is 0(bc)");
+						continue;
+					} else {
+						lambda2Max = (lambdaABCrawler * ab0[0] * bc[1] - lambdaABCrawler * ab0[1] * bc[0]
+								- ab[0] * bc[1] + ab[1] * bc[0]) / cacheLambda2Divisor;
+//						System.out.println("lambda2Max: "+lambda2Max);
+					}
+					
+					
+					if (!Double.isFinite(lambda2Max) || lambda2Max > oLength)	
+						break;	
+				}
+
+				//////////// 2. CRAWL THROUGH lambda2
+				for (double lambda2 = 0; lambda2 < lambda2Max + precision; lambda2 += precision) {
+					// calculate the point (=> 2D into coordsIntCache) and
+					// return its depth
+//					depth = calcR3Point(
+//							new double[] { lambda2 * o[0] + coords[triangleI][0][0] + lambdaABCrawler * ab0[0],
+//									lambda2 * o[1] + coords[triangleI][0][1] + lambdaABCrawler * ab0[1],
+//									lambda2 * o[2] + coords[triangleI][0][2] + lambdaABCrawler * ab0[2] },
+//							coordsIntCache, forward, camPos, alpha, beta, factor);
+//
+//					// check if the 2d point is in the screens boundaries and if
+//					// its depth is smaller that the one noted in the buffer
+//					if (coordsIntCache[0] > 0 
+//						&& coordsIntCache[1] > 0 
+//						&& coordsIntCache[0] < screenWidth
+//						&& coordsIntCache[1] < screenHeight
+//						&& (bufferDepth[coordsIntCache[0]][coordsIntCache[1]][0] > depth
+//						|| bufferDepth[coordsIntCache[0]][coordsIntCache[1]][0] == 0)) {
+//						bufferDepth[coordsIntCache[0]][coordsIntCache[1]][0] = depth;
+//
+//						// set color
+//						bufferDepth[coordsIntCache[0]][coordsIntCache[1]][1] = (int) coords[triangleI][3][0];
+//					}
+					pixelX1Cache = ((lambda2 * o[0] + a[0] + lambdaABCrawler * ab0[0]));
+//					System.out.println("pixelX1Cache : "+pixelX1Cache);
+					pixelX2Cache = ((lambda2 * o[1] + a[1] + lambdaABCrawler * ab0[1]));
+//					System.out.println("pixelX2Cache : "+pixelX2Cache);
+					depth = 
+							((pixelX1Cache*vecNormal[0])+(pixelX2Cache*vecNormal[1])+cPlane)
+								/
+							(vecNormal[2]);
+//					System.out.println("depth: "+depth);
+					pixelX1CacheInt = (int) pixelX1Cache;
+					pixelX2CacheInt = (int) pixelX2Cache;
+					
+					if (pixelX1Cache > 0 
+						&& pixelX2Cache > 0 
+						&& pixelX1Cache < screenWidth
+						&& pixelX2Cache < screenHeight
+						&& (bufferDepth[pixelX1CacheInt][pixelX2CacheInt][0] > depth
+						 || bufferDepth[pixelX1CacheInt][pixelX2CacheInt][0] == 0)) {
+							bufferDepth[pixelX1CacheInt][pixelX2CacheInt][0] = depth;
+	
+							// set color
+							bufferDepth[pixelX1CacheInt][pixelX2CacheInt][1] = (int) coords[triangleI][3][0];
+						}
+					
+				}
+			}	
+		
+	}
+	return bufferDepth;  
+}
+	
+	public double[][][] calcR3ZBuff2DRasterization(ArrayList<GameObject> gameObjects, Camera camera, boolean createNewBuffer)
+	{
+		this.updateValues();
+
+		// Extract constants from camera
+		double[] forward = camera.forward;
+		double alpha = camera.alpha;
+		double beta = camera.beta;
+		double factor = camera.scaleFactor;
+		double[] camPos = new double[] {camera.pos[0], camera.pos[1], camera.pos[2]};
+		
+		// System.out.println(Arrays.toString(forward));
+
+		double[][][] bufferDepth;
+		if (createNewBuffer)
+			bufferDepth = new double[screenWidth][screenHeight][2];
+		else
+			bufferDepth = ThreadProcessor.getBufferToCalculateOn();
+
+		double[] a = new double[3];
+		double[] b = new double[3];
+		double[] c = new double[3];
+		
+		double[][][] coordsCacheABC = new double[1][3][3];
+		
+		double[] bc;
+		double[] ab;
+		double[] ac;
+		double[] ab0;
+		double[] o;
+		
+		double abLength;
+		double lambdaAB;
+		
+		//Used for plane(EBENE)
+		double[] vecNormal;
+		double cPlane;
+		double pixelX1Cache;
+		double pixelX2Cache;
+		
+		int pixelX1CacheInt;
+		int pixelX2CacheInt;
+
+		double[] middle;
+		// System.out.println(coords.length);
+		boolean collidingWithAC = true;
+		// Lambda1:Stelle auf der Gerade AB*lambda1 + A
+		double lambda2Max = 0;
+		// double lambda3 = 0;
+		double depth = 0;
+		// double bcLength = 0;
+		
+		double lengthMiddle = 0;
+		double oLength = 0;
+
+		int[] coordsIntCache = new int[2];
+
+		double precision = 0.71;
+		// System.out.println("start");
+		double cacheLambda2Divisor;
+		// System.out.println("c " + coords.length);
+		
+		GameObject gameObject;
+		double[][][] coords;
+		for(int gameObjectI = gameObjects.size()-1; gameObjectI >= 0; gameObjectI--) {
+//			System.out.println(gameObjects.size());
+			gameObject = gameObjects.get(gameObjectI);
+			if(gameObject == null||gameObject.isRemoved())
+			{
+//				System.out.println(gameObjects.size());
+//				System.out.println("to remove");
+				gameObjects.remove(gameObjectI);
+//				Game.getGame().gameObjects.remove(gameObjectI);
+//				System.out.println(gameObjects.size());
+//				System.out.println("------");
+				continue;
+			}
+			coords = gameObject.getTrianglesAbsolute();
+			
+			
+			for (int triangleI = 0; triangleI < coords.length; triangleI++) {
+	
+				// check if no color is given
+				if (coords[triangleI].length < 4 || coords[triangleI][3][0] == -1) {
+	//				throw new RuntimeException("Diiga");
+					calcR3Mesh(bufferDepth, coords[triangleI], forward, camPos, alpha, beta, factor);
+					continue;
+				}
+				// System.out.println("t " + triangleI);
+				// a = [0], b = [1], c = [2]
+				// Vektor AB
+//				ab0 = new double[] { coords[triangleI][1][0] - coords[triangleI][0][0],
+//						coords[triangleI][1][1] - coords[triangleI][0][1],
+//						coords[triangleI][1][2] - coords[triangleI][0][2] };
+//				double abLength = length(ab0);
+//				double[] ab = ab0;
+//				ab0 = new double[] { ab0[0] / abLength, ab0[1] / abLength, ab0[2] / abLength };
+//				// Vektor AC
+//				ac = new double[] { coords[triangleI][2][0] - coords[triangleI][0][0],
+//						coords[triangleI][2][1] - coords[triangleI][0][1],
+//						coords[triangleI][2][2] - coords[triangleI][0][2] };
+//				double acLength = length(ac);
+//				ac = new double[] { ac[0] / acLength, ac[1] / acLength, ac[2] / acLength };
+//	
+//				// Vektor BC
+//				bc = new double[] { coords[triangleI][2][0] - coords[triangleI][1][0],
+//						coords[triangleI][2][1] - coords[triangleI][1][1],
+//						coords[triangleI][2][2] - coords[triangleI][1][2] };
+//				// bcLength = length(bc);
+				
+				middle = new double[] { (coords[triangleI][0][0] + coords[triangleI][1][0] + coords[triangleI][2][0]) / 3,
+						(coords[triangleI][0][1] + coords[triangleI][1][1] + coords[triangleI][2][1]) / 3,
+						(coords[triangleI][0][2] + coords[triangleI][1][2] + coords[triangleI][2][2]) / 3 };
+	
+				lengthMiddle = calcR3Point(middle, coordsIntCache, forward, camPos, alpha, beta, factor); // dont
+																											// calculate
+																											// entire
+																											// point
+																											// with
+																											// everything,
+																											// but
+																											// only
+																											// its
+																											// depth
+				
+				if (Game.SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN && (coordsIntCache[0] < 0 || coordsIntCache[1] < 0 || coordsIntCache[0] > screenWidth
+						|| coordsIntCache[1] > screenHeight))
+					continue;
+	
+				if (lengthMiddle == 0)
+					continue;
+	
+
+						//				System.out.println(".");																					
+//				if(!Game.SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN)	 											
+//				{		
+//					insideScreenAmount = 0;
+//					for(int pointsTriangle = 0;pointsTriangle < 3; pointsTriangle++)
+//					{
+//						lengthCache = calcR3Point(coords[triangleI][pointsTriangle], coordsIntCache, forward, camPos, alpha, beta, factor);
+//						
+//						if ((coordsIntCache[0] < 0 || coordsIntCache[1] < 0 || coordsIntCache[0] > screenWidth || coordsIntCache[1] > screenHeight) || lengthCache == 0)
+//							insideScreenAmount--;
+//					}
+//					if(insideScreenAmount==-3)
+//					System.out.println("cont");
+//				}
+				// precision = 0.001+Math.pow(1.00146, lengthMiddle)-1;
+				// precision = 0.0058*lengthMiddle+0.001;
+//				if(Main.lowMode==0) {
+//					precision = 0.00038 * lengthMiddle + 0.001;
+//				} else {
+////					precision = 0.09/(1.6*Main.lowMode) * lengthMiddle + 0.001;
+//					precision = 0.0035 * lengthMiddle ;
+//				}
+				a[2] = calcR3Point(coords[triangleI][0], coordsIntCache, forward, camPos, alpha, beta, factor);
+				a[0] = coordsIntCache[0];
+				a[1] = coordsIntCache[1];
+				
+				b[2] = calcR3Point(coords[triangleI][1], coordsIntCache, forward, camPos, alpha, beta, factor);
+				b[0] = coordsIntCache[0];
+				b[1] = coordsIntCache[1];
+				
+				c[2] = calcR3Point(coords[triangleI][2], coordsIntCache, forward, camPos, alpha, beta, factor);
+				c[0] = coordsIntCache[0];
+				c[1] = coordsIntCache[1];
+//				System.out.println("triangleI : "+triangleI+" , a: "+Arrays.toString(a)+" , b: "+Arrays.toString(b)+" , c: "+Arrays.toString(c));
+				
+				coordsCacheABC[0][0] = a;
+				coordsCacheABC[0][1] = b;
+				coordsCacheABC[0][2] = c;
+				
+				optimizeCoordinates(coordsCacheABC);
+				
+				a = coordsCacheABC[0][0];
+				b = coordsCacheABC[0][1];
+				c = coordsCacheABC[0][2];
+				
+//				System.out.println("triangleI : "+triangleI+" , a: "+Arrays.toString(a)+" , b: "+Arrays.toString(b)+" , c: "+Arrays.toString(c));
+				
+				bc = new double[]{c[0]-b[0],c[1]-b[1],c[2]-b[2]};
+				ab = new double[]{b[0]-a[0],b[1]-a[1],b[2]-a[2]};
+				ac = new double[]{c[0]-a[0],c[1]-a[1],c[2]-a[2]};
+				
+				vecNormal = new double[]{(bc[1] * ab[2]) - (bc[2] * ab[1]),(bc[2] * ab[0]) - (bc[0] * ab[2]),(bc[0] * ab[1]) - (bc[1] * ab[0])};
+				
+				cPlane = -((a[0]*vecNormal[0])+(a[1]*vecNormal[1])+(a[2]*vecNormal[2]));
+				
+				ab0 = vectorUnify2D(new double[]{b[0]-a[0],b[1]-a[1]},true);
+				
+				abLength = length(ab);
+				
+				// lambdaAB gibt die Stelle auf der Geraden AB*lambda + A an, bei
+				// der ab senkrecht zu o (o = Stelle auf der Gerade -> C)
+				lambdaAB = (ab0[0] * (c[0] - a[0])
+						+ ab0[1] * (c[1] - a[1]))
+						/ (ab0[0] * ab0[0] + ab0[1] * ab0[1]);
+				// check boundaries of lambdaAB
+//				System.out.println("lambdaAB: "+lambdaAB);
+				if (lambdaAB > abLength || lambdaAB < 0)
+					continue;
+	
+				// Vektor O (Einheitsvektor) (steht senkrecht auf AB und geht durch
+				// (bzw. bis) C)
+				o = new double[] { 
+						c[0] - (a[0] + ab0[0] * lambdaAB),
+						c[1] - (a[1] + ab0[1] * lambdaAB) 
+						};
+				oLength = vectorUnify2D(o);
+//				System.out.println("o: "+Arrays.toString(o));
+				if(Double.isNaN(o[0]))
+					continue;
+				collidingWithAC = true;
+//				if(triangleI == 0)
+				for (double lambdaABCrawler = 0; lambdaABCrawler < abLength + precision; lambdaABCrawler += precision) {
+	
+					// check if lambdaVertical should be calculated by collision
+					// with BC
+					if (collidingWithAC && lambdaABCrawler > lambdaAB)
+						collidingWithAC = false;
+	
+					//////////// 1. CALCULATE lambda2Max
+	
+					// distinguish between the two different calculation methods for
+					// lambda2Max, depending on if its a collision with AC or CB
+					if (collidingWithAC) {
+	
+						// FORMULA:
+						// lambdaVertical =
+						// (lambdaABCrawler*ab0[1]*ac[0]-lambdaABCrawler*ab0[0]*ac[1])
+						// /
+						// (o[0]*ac[1]-o[1]*ac[0]);
+	
+						// TODO NOTE: this should be cleaned up, as triangles are
+						// now reprocessed in the main loop
+						// 1.: calculate divisor and check if it is 0. If so,
+						// calculate it with two other points. If it is again 0, set
+						// lambdaVertical to 0
+						cacheLambda2Divisor = (o[0] * ac[1] - o[1] * ac[0]);
+						if (cacheLambda2Divisor == 0) {
+//							System.out.println("cacheLambda2Divisor is 0(ac)");
+							continue;
+						} else {
+							lambda2Max = (lambdaABCrawler * ab0[1] * ac[0] - lambdaABCrawler * ab0[0] * ac[1])
+									/ cacheLambda2Divisor;
+//							System.out.println("lambda2Max: "+lambda2Max);
+						}
+	
+					} else {
+	
+						cacheLambda2Divisor = (o[1] * bc[0] - o[0] * bc[1]);
+						if (cacheLambda2Divisor == 0) {
+//							System.out.println("cacheLambda2Divisor is 0(bc)");
+							continue;
+						} else {
+							lambda2Max = (lambdaABCrawler * ab0[0] * bc[1] - lambdaABCrawler * ab0[1] * bc[0]
+									- ab[0] * bc[1] + ab[1] * bc[0]) / cacheLambda2Divisor;
+//							System.out.println("lambda2Max: "+lambda2Max);
+						}
+						
+						
+						if (!Double.isFinite(lambda2Max) || lambda2Max > oLength)	
+							break;	
+					}
+	
+					//////////// 2. CRAWL THROUGH lambda2
+					for (double lambda2 = 0; lambda2 < lambda2Max + precision; lambda2 += precision) {
+						// calculate the point (=> 2D into coordsIntCache) and
+						// return its depth
+//						depth = calcR3Point(
+//								new double[] { lambda2 * o[0] + coords[triangleI][0][0] + lambdaABCrawler * ab0[0],
+//										lambda2 * o[1] + coords[triangleI][0][1] + lambdaABCrawler * ab0[1],
+//										lambda2 * o[2] + coords[triangleI][0][2] + lambdaABCrawler * ab0[2] },
+//								coordsIntCache, forward, camPos, alpha, beta, factor);
+//	
+//						// check if the 2d point is in the screens boundaries and if
+//						// its depth is smaller that the one noted in the buffer
+//						if (coordsIntCache[0] > 0 
+//							&& coordsIntCache[1] > 0 
+//							&& coordsIntCache[0] < screenWidth
+//							&& coordsIntCache[1] < screenHeight
+//							&& (bufferDepth[coordsIntCache[0]][coordsIntCache[1]][0] > depth
+//							|| bufferDepth[coordsIntCache[0]][coordsIntCache[1]][0] == 0)) {
+//							bufferDepth[coordsIntCache[0]][coordsIntCache[1]][0] = depth;
+//	
+//							// set color
+//							bufferDepth[coordsIntCache[0]][coordsIntCache[1]][1] = (int) coords[triangleI][3][0];
+//						}
+						pixelX1Cache = ((lambda2 * o[0] + a[0] + lambdaABCrawler * ab0[0]));
+//						System.out.println("pixelX1Cache : "+pixelX1Cache);
+						pixelX2Cache = ((lambda2 * o[1] + a[1] + lambdaABCrawler * ab0[1]));
+//						System.out.println("pixelX2Cache : "+pixelX2Cache);
+						depth = 
+								((pixelX1Cache*vecNormal[0])+(pixelX2Cache*vecNormal[1])+cPlane)
+									/
+								(vecNormal[2]);
+						
+						pixelX1CacheInt = (int) pixelX1Cache;
+						pixelX2CacheInt = (int) pixelX2Cache;
+						
+						if (pixelX1Cache > 0 
+							&& pixelX2Cache > 0 
+							&& pixelX1Cache < screenWidth
+							&& pixelX2Cache < screenHeight
+							&& (bufferDepth[pixelX1CacheInt][pixelX2CacheInt][0] > depth
+							 || bufferDepth[pixelX1CacheInt][pixelX2CacheInt][0] == 0)) {
+								bufferDepth[pixelX1CacheInt][pixelX2CacheInt][0] = depth;
+		
+								// set color
+								bufferDepth[pixelX1CacheInt][pixelX2CacheInt][1] = (int) coords[triangleI][3][0];
+							}
+						
+					}
+				}	
+			}
+		}
+		return bufferDepth;  
+	}
 	private double precisionMesh;
 	private double lengthMiddle;
 	private int[] coordsIntCache = new int[2];
@@ -1043,13 +1664,30 @@ public class Mathstuff {
 		else
 			target = vector;
 
-		double len = Math.sqrt((vector[0] * vector[0]) + (vector[1] * vector[1]) + (vector[2] * vector[2]));
+		double len = Math.sqrt(Math.pow(vector[0], 2) + Math.pow(vector[1], 2) + Math.pow(vector[2], 2));
 		target[0] = vector[0] / len;
 		target[1] = vector[1] / len;
 		target[2] = vector[2] / len;
 		return target;
 	}
+	/**
+	 * unifies passed vector; overwrites vector values, if ~createNewVector~ is
+	 * false!
+	 * 
+	 * @return returns unified vector
+	 */
+	public static double[] vectorUnify2D(double[] vector, boolean createNewVector) {
+		double[] target;
+		if (createNewVector)
+			target = new double[vector.length];
+		else
+			target = vector;
 
+		double len = Math.sqrt(Math.pow(vector[0], 2) + Math.pow(vector[1], 2));
+		target[0] = vector[0] / len;
+		target[1] = vector[1] / len;
+		return target;
+	}
 	/**
 	 * unfies passed vector<br>
 	 * NOTE: if overwriting values of this vector is not wanted please refer to
@@ -1058,13 +1696,25 @@ public class Mathstuff {
 	 * @return returns length of initial vector
 	 */
 	public static double vectorUnify(double[] vector) {
-		double len = Math.sqrt((vector[0] * vector[0]) + (vector[1] * vector[1]) + (vector[2] * vector[2]));
+		double len = Math.sqrt(Math.pow(vector[0], 2) + Math.pow(vector[1], 2) + Math.pow(vector[2], 2));
 		vector[0] = vector[0] / len;
 		vector[1] = vector[1] / len;
 		vector[2] = vector[2] / len;
 		return len;
 	}
-
+	/**
+	 * unfies passed vector<br>
+	 * NOTE: if overwriting values of this vector is not wanted please refer to
+	 * {@link #vectorUnify(double[], boolean)}
+	 * 
+	 * @return returns length of initial vector
+	 */
+	public static double vectorUnify2D(double[] vector) {
+		double len = Math.sqrt(Math.pow(vector[0], 2) + Math.pow(vector[1], 2));
+		vector[0] = vector[0] / len;
+		vector[1] = vector[1] / len;
+		return len;
+	}
 	private void printWarningValuesNotInitialized() {
 		System.err.println(
 				"-----WARNING----- Values of Mathstuff Object were not initialized at this point. INFO: Thread: '"

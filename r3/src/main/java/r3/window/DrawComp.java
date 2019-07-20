@@ -17,6 +17,10 @@ public class DrawComp extends JComponent {
 	
 	public static double ANTIALIAZING_RADIUS = 1;
 	
+	public static int fps;
+	
+	public static int countfps;
+	
 	public double[][][] coords  = Main.coords;
 	int r=255;
 	int g=0;
@@ -88,6 +92,7 @@ public class DrawComp extends JComponent {
 //	private int counter = 0;
 	
 	private void draw3DZBuffered(Graphics g) {
+		countfps++;
 //		final Camera camera = Main.getCamera();
 		
 		//TODO time measurement
@@ -106,7 +111,7 @@ public class DrawComp extends JComponent {
 		g.drawString("X1: "+Camera.pos[0], 1, 10);
 		g.drawString("X2: "+Camera.pos[1], 1, 25);
 		g.drawString("X3: "+Camera.pos[2], 1, 40);
-		
+		g.drawString(fps+"", 1250, 12);
 
 		
 		//TODO time measurement
