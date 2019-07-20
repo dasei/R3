@@ -830,6 +830,11 @@ public class Mathstuff {
 			c[1] = coordsIntCache[1];
 //			System.out.println("triangleI : "+triangleI+" , a: "+Arrays.toString(a)+" , b: "+Arrays.toString(b)+" , c: "+Arrays.toString(c));
 			
+			if(a[2]==0||b[2]==0||c[2]==0)
+			{
+				continue;
+			}
+			
 			coordsCacheABC[0][0] = a;
 			coordsCacheABC[0][1] = b;
 			coordsCacheABC[0][2] = c;
@@ -850,7 +855,7 @@ public class Mathstuff {
 			
 			cPlane = -((a[0]*vecNormal[0])+(a[1]*vecNormal[1])+(a[2]*vecNormal[2]));
 			
-			ab0 = vectorUnify2D(new double[]{b[0]-a[0],b[1]-a[1]},true);
+			ab0 = vectorUnify2D(ab,true);
 			
 			abLength = length(ab);
 			
@@ -909,11 +914,15 @@ public class Mathstuff {
 						} else {
 							lambda2Max = (lambdaABCrawler * ab0[0] * ac[0] - lambdaABCrawler * ab0[0] * ac[0])
 									/ cacheLambda2Divisor;
+							if(lambda2Max > 1280)
+								continue;
 						}
 					} else {
 						lambda2Max = (lambdaABCrawler * ab0[1] * ac[0] - lambdaABCrawler * ab0[0] * ac[1])
 								/ cacheLambda2Divisor;
 //						System.out.println("lambda2Max: "+lambda2Max);
+						if(lambda2Max > 1280)
+							continue;
 					}
 
 				} else {
@@ -927,10 +936,14 @@ public class Mathstuff {
 						} else {
 							lambda2Max = (lambdaABCrawler * ab0[0] * bc[0] - lambdaABCrawler * ab0[0] * bc[0]
 									- ab[0] * bc[0] + ab[0] * bc[0]) / cacheLambda2Divisor;
+							if(lambda2Max > 1280)
+								continue;
 						}
 					} else {
 						lambda2Max = (lambdaABCrawler * ab0[0] * bc[1] - lambdaABCrawler * ab0[1] * bc[0]
 								- ab[0] * bc[1] + ab[1] * bc[0]) / cacheLambda2Divisor;
+						if(lambda2Max > 1280)
+							continue;
 //						System.out.println("lambda2Max: "+lambda2Max);
 					}
 					
@@ -1161,6 +1174,11 @@ public class Mathstuff {
 				c[1] = coordsIntCache[1];
 //				System.out.println("triangleI : "+triangleI+" , a: "+Arrays.toString(a)+" , b: "+Arrays.toString(b)+" , c: "+Arrays.toString(c));
 				
+				if(a[2]==0||b[2]==0||c[2]==0)
+				{
+					continue;
+				}
+				
 				coordsCacheABC[0][0] = a;
 				coordsCacheABC[0][1] = b;
 				coordsCacheABC[0][2] = c;
@@ -1234,13 +1252,7 @@ public class Mathstuff {
 						cacheLambda2Divisor = (o[0] * ac[1] - o[1] * ac[0]);
 						if (cacheLambda2Divisor == 0) {
 //							System.out.println("cacheLambda2Divisor is 0(ac)");
-							cacheLambda2Divisor = (o[0] * ac[0] - o[0] * ac[0]);
-							if (cacheLambda2Divisor == 0) {
-								continue;
-							} else {
-								lambda2Max = (lambdaABCrawler * ab0[0] * ac[0] - lambdaABCrawler * ab0[0] * ac[0])
-										/ cacheLambda2Divisor;
-							}
+							continue;
 						} else {
 							lambda2Max = (lambdaABCrawler * ab0[1] * ac[0] - lambdaABCrawler * ab0[0] * ac[1])
 									/ cacheLambda2Divisor;
@@ -1252,13 +1264,7 @@ public class Mathstuff {
 						cacheLambda2Divisor = (o[1] * bc[0] - o[0] * bc[1]);
 						if (cacheLambda2Divisor == 0) {
 //							System.out.println("cacheLambda2Divisor is 0(bc)");
-							cacheLambda2Divisor = (o[0] * bc[0] - o[0] * bc[0]);
-							if (cacheLambda2Divisor == 0) {
-								continue;
-							} else {
-								lambda2Max = (lambdaABCrawler * ab0[0] * bc[0] - lambdaABCrawler * ab0[0] * bc[0]
-										- ab[0] * bc[0] + ab[0] * bc[0]) / cacheLambda2Divisor;
-							}
+							continue;
 						} else {
 							lambda2Max = (lambdaABCrawler * ab0[0] * bc[1] - lambdaABCrawler * ab0[1] * bc[0]
 									- ab[0] * bc[1] + ab[1] * bc[0]) / cacheLambda2Divisor;

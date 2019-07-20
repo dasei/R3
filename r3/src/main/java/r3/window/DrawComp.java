@@ -77,7 +77,7 @@ public class DrawComp extends JComponent {
 		
 				
 		//Draw FPS (main Loop, Inputs)
-		g.setColor(Color.green);
+//		g.setColor(Color.green);
 		g.setFont(font);
 //		g.drawString("main" + Main.fpsCurrent, screenWidth-100, 25);
 		
@@ -108,10 +108,7 @@ public class DrawComp extends JComponent {
 //		System.out.println("--------------------------------");
 //		Main.cycleCounterDebug++;
 		
-		g.drawString("X1: "+Camera.pos[0], 1, 10);
-		g.drawString("X2: "+Camera.pos[1], 1, 25);
-		g.drawString("X3: "+Camera.pos[2], 1, 40);
-		g.drawString(fps+"", 1250, 12);
+	
 
 		
 		//TODO time measurement
@@ -165,6 +162,11 @@ public class DrawComp extends JComponent {
 				}
 			}
 		}
+		g.setColor(Color.BLACK);
+		g.drawString("X1: "+Camera.pos[0], 1, 10);
+		g.drawString("X2: "+Camera.pos[1], 1, 25);
+		g.drawString("X3: "+Camera.pos[2], 1, 40);
+		g.drawString(fps+"", 1250, 12);
 	}
 	
 	private final float[] cacheColorSum = new float[3];
