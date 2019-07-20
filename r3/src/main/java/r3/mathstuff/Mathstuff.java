@@ -866,7 +866,7 @@ public class Mathstuff {
 					/ (ab0[0] * ab0[0] + ab0[1] * ab0[1]);
 			// check boundaries of lambdaAB
 //			System.out.println("lambdaAB: "+lambdaAB);
-			if (lambdaAB > abLength || lambdaAB < 0)
+			if (abLength > 1280 || lambdaAB > abLength || lambdaAB < 0)
 				continue;
 
 			// Vektor O (Einheitsvektor) (steht senkrecht auf AB und geht durch
@@ -907,47 +907,26 @@ public class Mathstuff {
 					// lambdaVertical to 0
 					cacheLambda2Divisor = (o[0] * ac[1] - o[1] * ac[0]);
 					if (cacheLambda2Divisor == 0) {
-						cacheLambda2Divisor = (o[0] * ac[0] - o[0] * ac[0]);
-						if (cacheLambda2Divisor == 0) {
-//							System.out.println("cacheLambda2Divisor is 0(ac)");
-							continue;
-						} else {
-							lambda2Max = (lambdaABCrawler * ab0[0] * ac[0] - lambdaABCrawler * ab0[0] * ac[0])
-									/ cacheLambda2Divisor;
-							if(lambda2Max > 1280)
-								continue;
-						}
+						continue;
 					} else {
 						lambda2Max = (lambdaABCrawler * ab0[1] * ac[0] - lambdaABCrawler * ab0[0] * ac[1])
 								/ cacheLambda2Divisor;
 //						System.out.println("lambda2Max: "+lambda2Max);
-						if(lambda2Max > 1280)
-							continue;
 					}
 
 				} else {
 
 					cacheLambda2Divisor = (o[1] * bc[0] - o[0] * bc[1]);
 					if (cacheLambda2Divisor == 0) {
-						cacheLambda2Divisor = (o[0] * bc[0] - o[0] * bc[0]);
-						if (cacheLambda2Divisor == 0) {
-//							System.out.println("cacheLambda2Divisor is 0(bc)");
-							continue;
-						} else {
-							lambda2Max = (lambdaABCrawler * ab0[0] * bc[0] - lambdaABCrawler * ab0[0] * bc[0]
-									- ab[0] * bc[0] + ab[0] * bc[0]) / cacheLambda2Divisor;
-							if(lambda2Max > 1280)
-								continue;
-						}
+						continue;
 					} else {
 						lambda2Max = (lambdaABCrawler * ab0[0] * bc[1] - lambdaABCrawler * ab0[1] * bc[0]
 								- ab[0] * bc[1] + ab[1] * bc[0]) / cacheLambda2Divisor;
-						if(lambda2Max > 1280)
-							continue;
 //						System.out.println("lambda2Max: "+lambda2Max);
 					}
 					
-					
+					if(lambda2Max > 1280)
+						continue;
 					if (!Double.isFinite(lambda2Max) || lambda2Max > oLength)	
 						break;	
 				}
@@ -1199,7 +1178,7 @@ public class Mathstuff {
 				
 				cPlane = -((a[0]*vecNormal[0])+(a[1]*vecNormal[1])+(a[2]*vecNormal[2]));
 				
-				ab0 = vectorUnify2D(new double[]{b[0]-a[0],b[1]-a[1]},true);
+				ab0 = vectorUnify2D(ab,true);
 				
 				abLength = length(ab);
 				
@@ -1210,7 +1189,7 @@ public class Mathstuff {
 						/ (ab0[0] * ab0[0] + ab0[1] * ab0[1]);
 				// check boundaries of lambdaAB
 //				System.out.println("lambdaAB: "+lambdaAB);
-				if (lambdaAB > abLength || lambdaAB < 0)
+				if (abLength > 1350 ||lambdaAB > abLength || lambdaAB < 0)
 					continue;
 	
 				// Vektor O (Einheitsvektor) (steht senkrecht auf AB und geht durch
@@ -1270,7 +1249,6 @@ public class Mathstuff {
 									- ab[0] * bc[1] + ab[1] * bc[0]) / cacheLambda2Divisor;
 //							System.out.println("lambda2Max: "+lambda2Max);
 						}
-						
 						
 						if (!Double.isFinite(lambda2Max) || lambda2Max > oLength)	
 							break;	
