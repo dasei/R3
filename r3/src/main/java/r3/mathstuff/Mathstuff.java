@@ -902,8 +902,14 @@ public class Mathstuff {
 					// lambdaVertical to 0
 					cacheLambda2Divisor = (o[0] * ac[1] - o[1] * ac[0]);
 					if (cacheLambda2Divisor == 0) {
-//						System.out.println("cacheLambda2Divisor is 0(ac)");
-						continue;
+						cacheLambda2Divisor = (o[0] * ac[0] - o[0] * ac[0]);
+						if (cacheLambda2Divisor == 0) {
+//							System.out.println("cacheLambda2Divisor is 0(ac)");
+							continue;
+						} else {
+							lambda2Max = (lambdaABCrawler * ab0[0] * ac[0] - lambdaABCrawler * ab0[0] * ac[0])
+									/ cacheLambda2Divisor;
+						}
 					} else {
 						lambda2Max = (lambdaABCrawler * ab0[1] * ac[0] - lambdaABCrawler * ab0[0] * ac[1])
 								/ cacheLambda2Divisor;
@@ -914,8 +920,14 @@ public class Mathstuff {
 
 					cacheLambda2Divisor = (o[1] * bc[0] - o[0] * bc[1]);
 					if (cacheLambda2Divisor == 0) {
-//						System.out.println("cacheLambda2Divisor is 0(bc)");
-						continue;
+						cacheLambda2Divisor = (o[0] * bc[0] - o[0] * bc[0]);
+						if (cacheLambda2Divisor == 0) {
+//							System.out.println("cacheLambda2Divisor is 0(bc)");
+							continue;
+						} else {
+							lambda2Max = (lambdaABCrawler * ab0[0] * bc[0] - lambdaABCrawler * ab0[0] * bc[0]
+									- ab[0] * bc[0] + ab[0] * bc[0]) / cacheLambda2Divisor;
+						}
 					} else {
 						lambda2Max = (lambdaABCrawler * ab0[0] * bc[1] - lambdaABCrawler * ab0[1] * bc[0]
 								- ab[0] * bc[1] + ab[1] * bc[0]) / cacheLambda2Divisor;
@@ -1222,7 +1234,13 @@ public class Mathstuff {
 						cacheLambda2Divisor = (o[0] * ac[1] - o[1] * ac[0]);
 						if (cacheLambda2Divisor == 0) {
 //							System.out.println("cacheLambda2Divisor is 0(ac)");
-							continue;
+							cacheLambda2Divisor = (o[0] * ac[0] - o[0] * ac[0]);
+							if (cacheLambda2Divisor == 0) {
+								continue;
+							} else {
+								lambda2Max = (lambdaABCrawler * ab0[0] * ac[0] - lambdaABCrawler * ab0[0] * ac[0])
+										/ cacheLambda2Divisor;
+							}
 						} else {
 							lambda2Max = (lambdaABCrawler * ab0[1] * ac[0] - lambdaABCrawler * ab0[0] * ac[1])
 									/ cacheLambda2Divisor;
@@ -1234,7 +1252,13 @@ public class Mathstuff {
 						cacheLambda2Divisor = (o[1] * bc[0] - o[0] * bc[1]);
 						if (cacheLambda2Divisor == 0) {
 //							System.out.println("cacheLambda2Divisor is 0(bc)");
-							continue;
+							cacheLambda2Divisor = (o[0] * bc[0] - o[0] * bc[0]);
+							if (cacheLambda2Divisor == 0) {
+								continue;
+							} else {
+								lambda2Max = (lambdaABCrawler * ab0[0] * bc[0] - lambdaABCrawler * ab0[0] * bc[0]
+										- ab[0] * bc[0] + ab[0] * bc[0]) / cacheLambda2Divisor;
+							}
 						} else {
 							lambda2Max = (lambdaABCrawler * ab0[0] * bc[1] - lambdaABCrawler * ab0[1] * bc[0]
 									- ab[0] * bc[1] + ab[1] * bc[0]) / cacheLambda2Divisor;
