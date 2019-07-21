@@ -149,7 +149,69 @@ public class Mathstuff {
 			return cacheVectorCamToPointLength;
 		}
 	}
+	private double calcR3PointExact(double[] coords, double[] coordsIntCache, double[] forward, double[] camPos, double alpha,
+			double beta, double factor) {
 
+		// System.out.println("Gegeben:
+		// X1"+coords[0]+",X2"+coords[1]+",X3"+coords[2]+",forwardX1"+forward[0]+",camPosX1"+camPos[0]);
+		cacheAnkerEbene = new double[] { forward[0] + camPos[0], forward[1] + camPos[1], forward[2] + camPos[2] }; // z:"angriffspunkt
+																													// ebene"
+
+		cacheVectorCamToPoint0 = new double[] { coords[0] - camPos[0], coords[1] - camPos[1], coords[2] - camPos[2] }; // b:vector
+																														// camera
+																														// to
+																														// point
+		cacheVectorCamToPointLength = Mathstuff.vectorUnify(cacheVectorCamToPoint0);
+
+		lambdaCamToPointEbenenSchnittpunkt = 
+				-(forward[0] * (camPos[0] - cacheAnkerEbene[0]) + forward[1] * (camPos[1] - cacheAnkerEbene[1]) + forward[2] * (camPos[2] - cacheAnkerEbene[2]))
+						/ 
+				(forward[0] * cacheVectorCamToPoint0[0] + forward[1] * cacheVectorCamToPoint0[1] + forward[2] * cacheVectorCamToPoint0[2]);
+		// System.out.println("Lambda: "+lambda);
+		if (lambdaCamToPointEbenenSchnittpunkt < 0) {
+			coordsIntCache[0] = -1;
+			coordsIntCache[1] = -1;
+			// coordsINTCache = ARRAY_INT_EMPTY_3;
+			return 0;
+		} else {
+			// get vector from camera to Schnittpunkt auf Ebene
+			// vecCamToEbenenSchnittpunkt = new double[]
+			// {lambdaCamToPointEbenenSchnittpunkt *
+			// cacheVectorCamToPoint0[0],lambdaCamToPointEbenenSchnittpunkt *
+			// cacheVectorCamToPoint0[1],lambdaCamToPointEbenenSchnittpunkt *
+			// cacheVectorCamToPoint0[2]}; //jetzt:vektor kamera->schnittpunkt
+			vecCamToEbenenSchnittpunkt[0] = lambdaCamToPointEbenenSchnittpunkt * cacheVectorCamToPoint0[0];
+			vecCamToEbenenSchnittpunkt[1] = lambdaCamToPointEbenenSchnittpunkt * cacheVectorCamToPoint0[1];
+			vecCamToEbenenSchnittpunkt[2] = lambdaCamToPointEbenenSchnittpunkt * cacheVectorCamToPoint0[2];
+
+			// rotate that back around x3 axis
+			vecCamToEbenenSchnittpunktX3[0] = (Math.cos(-beta) * vecCamToEbenenSchnittpunkt[0]
+					- Math.sin(-beta) * vecCamToEbenenSchnittpunkt[1]);
+			vecCamToEbenenSchnittpunktX3[1] = Math.sin(-beta) * vecCamToEbenenSchnittpunkt[0]
+					+ Math.cos(-beta) * vecCamToEbenenSchnittpunkt[1];
+			vecCamToEbenenSchnittpunktX3[2] = vecCamToEbenenSchnittpunkt[2];
+
+			// vecCamToEbenenSchnittpunktX3 = new double[]
+			// {(Math.cos(-beta)*vecCamToEbenenSchnittpunkt[0] -
+			// Math.sin(-beta)*vecCamToEbenenSchnittpunkt[1]),
+			// Math.sin(-beta)*vecCamToEbenenSchnittpunkt[0] +
+			// Math.cos(-beta)*vecCamToEbenenSchnittpunkt[1],
+			// (vecCamToEbenenSchnittpunkt[2])};
+			// rotate that back around x2 axis
+			coordsIntCache[0] = screenCenterX
+					+  (vecCamToEbenenSchnittpunktX3[1] * factor * screenSizeMinimum * fovFactor);
+			coordsIntCache[1] = screenCenterY -  (((-Math.sin(-alpha) * vecCamToEbenenSchnittpunktX3[0]
+					+ Math.cos(-alpha) * vecCamToEbenenSchnittpunktX3[2]) * factor) * screenSizeMinimum * fovFactor);
+					// coordsINTCache = new int[] {0, screenCenterX +
+					// (int)((vecCamToEbenenSchnittpunktX3[1]*factor)*screenSizeMinimum*fovFactor),
+					// screenCenterY-(int)(((-Math.sin(-alpha)*vecCamToEbenenSchnittpunktX3[0]
+					// +
+					// Math.cos(-alpha)*vecCamToEbenenSchnittpunktX3[2])*factor)*screenSizeMinimum*fovFactor)};
+
+			// return depth / distance of point from camera
+			return cacheVectorCamToPointLength;
+		}
+	}
 	public double[][][] calcR3ZBuff(double[][][] coords, Camera camera, int triangleOffset, int triangleAmount,
 			boolean createNewBuffer) {
 		this.updateValues();
@@ -710,6 +772,7 @@ public class Mathstuff {
 		double abLength;
 		double lambdaAB;
 		
+		double[] coordsDoubleCache = new double[2];
 		//Used for plane(EBENE)
 		double[] vecNormal;
 		double cPlane;
@@ -816,17 +879,17 @@ public class Mathstuff {
 ////				precision = 0.09/(1.6*Main.lowMode) * lengthMiddle + 0.001;
 //				precision = 0.0035 * lengthMiddle ;
 //			}
-			a[2] = -calcR3Point(coords[triangleI][0], coordsIntCache, forward, camPos, alpha, beta, factor);
-			a[0] = coordsIntCache[0];
-			a[1] = coordsIntCache[1];
+			a[2] = -calcR3PointExact(coords[triangleI][0], coordsDoubleCache, forward, camPos, alpha, beta, factor);
+			a[0] = coordsDoubleCache[0];
+			a[1] = coordsDoubleCache[1];
 			
-			b[2] = -calcR3Point(coords[triangleI][1], coordsIntCache, forward, camPos, alpha, beta, factor);
-			b[0] = coordsIntCache[0];
-			b[1] = coordsIntCache[1];
+			b[2] = -calcR3PointExact(coords[triangleI][1], coordsDoubleCache, forward, camPos, alpha, beta, factor);
+			b[0] = coordsDoubleCache[0];
+			b[1] = coordsDoubleCache[1];
 			
-			c[2] = -calcR3Point(coords[triangleI][2], coordsIntCache, forward, camPos, alpha, beta, factor);
-			c[0] = coordsIntCache[0];
-			c[1] = coordsIntCache[1];
+			c[2] = -calcR3PointExact(coords[triangleI][2], coordsDoubleCache, forward, camPos, alpha, beta, factor);
+			c[0] = coordsDoubleCache[0];
+			c[1] = coordsDoubleCache[1];
 //			System.out.println("triangleI : "+triangleI+" , a: "+Arrays.toString(a)+" , b: "+Arrays.toString(b)+" , c: "+Arrays.toString(c));
 			
 			if (Game.SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN && ((a[0] < 0 || a[1] < 0 || a[0] > screenWidth
@@ -834,7 +897,6 @@ public class Mathstuff {
 							|| b[1] > screenHeight)&&(c[0] < 0 || c[1] < 0 || c[0] > screenWidth
 									|| c[1] > screenHeight)))
 				continue;
-			
 			if(a[2]==0||b[2]==0||c[2]==0)
 			{
 				continue;
@@ -844,7 +906,7 @@ public class Mathstuff {
 			coordsCacheABC[0][1] = b;
 			coordsCacheABC[0][2] = c;
 			
-			optimizeCoordinates(coordsCacheABC);
+			coordsCacheABC = optimizeCoordinates2D(coordsCacheABC);
 			
 			a = coordsCacheABC[0][0];
 			b = coordsCacheABC[0][1];
@@ -872,9 +934,9 @@ public class Mathstuff {
 					/ (ab0[0] * ab0[0] + ab0[1] * ab0[1]);
 			// check boundaries of lambdaAB
 //			System.out.println("lambdaAB: "+lambdaAB);
-			if (lambdaAB > abLength || (int)lambdaAB < 0)
+			if (lambdaAB > abLength || lambdaAB < 0)
 			{
-//				System.out.println("skipped: "+abLength);sa               assssssssssssssssssssss
+				System.out.println("skipped: lambdaAB: "+lambdaAB+", abLength: "+abLength);
 				continue;
 			}
 			// Vektor O (Einheitsvektor) (steht senkrecht auf AB und geht durch
@@ -1176,7 +1238,7 @@ public class Mathstuff {
 				coordsCacheABC[0][1] = b;
 				coordsCacheABC[0][2] = c;
 				
-				optimizeCoordinates(coordsCacheABC);
+				coordsCacheABC = optimizeCoordinates(coordsCacheABC);
 				
 				a = coordsCacheABC[0][0];
 				b = coordsCacheABC[0][1];
@@ -1203,7 +1265,7 @@ public class Mathstuff {
 						/ (ab0[0] * ab0[0] + ab0[1] * ab0[1]);
 				// check boundaries of lambdaAB
 //				System.out.println("lambdaAB: "+lambdaAB);
-				if (lambdaAB > abLength || (int)lambdaAB < 0)
+				if (abLength > 10000 ||lambdaAB > abLength || (int)lambdaAB < 0)
 				{
 					System.out.println("skipped: "+abLength);
 					continue;
@@ -1265,8 +1327,7 @@ public class Mathstuff {
 									- ab[0] * bc[1] + ab[1] * bc[0]) / cacheLambda2Divisor;
 //							System.out.println("lambda2Max: "+lambda2Max);
 						}
-						if(lambda2Max > 100000)
-							continue;
+						
 						if (!Double.isFinite(lambda2Max) || lambda2Max > oLength)	
 							break;	
 					}
@@ -1488,7 +1549,51 @@ public class Mathstuff {
 		}
 		return coords;
 	}
-	
+	/**
+	 * optimizes the passed coordinates. Overwrites the given and array AND returns it for convenience
+	 * @param coords
+	 * @return
+	 */
+	public static double[][][] optimizeCoordinates2D(double[][][] coords) {
+		
+		double[] ab0;	// vector ab, unit vector		
+		double lambda;	// ab0 * lambda gives the point, on which the point of C sits in a 90° angle on
+		
+//		double[] ac0;	// vector ac
+		
+		
+		double abLength;
+		double[] resortCache;
+		
+		for(int triangleI = 0;triangleI < coords.length;triangleI++) {
+			
+			//calculate AB (unit)
+			ab0 = new double[] {coords[triangleI][1][0]-coords[triangleI][0][0],coords[triangleI][1][1]-coords[triangleI][0][1]};			
+			abLength = Mathstuff.vectorUnify2D(ab0);
+			
+			//Vektor AC
+//			ac0 = Mathstuff.vectorUnify(new double[] {coords[triangleI][2][0]-coords[triangleI][0][0],coords[triangleI][2][1]-coords[triangleI][0][1],coords[triangleI][2][2]-coords[triangleI][0][2]}, false);
+
+			lambda = 
+			(ab0[0]*(coords[triangleI][2][0]-coords[triangleI][0][0])+ab0[1]*(coords[triangleI][2][1]-coords[triangleI][0][1]))
+							/
+			(ab0[0]*ab0[0]+ab0[1]*ab0[1]);
+			
+			if(lambda<0) {
+				
+				resortCache = coords[triangleI][0];
+				coords[triangleI][0] = coords[triangleI][2];
+				coords[triangleI][2] = resortCache;
+				
+			} else if(lambda > abLength) {
+
+				resortCache = coords[triangleI][2];
+				coords[triangleI][2] = coords[triangleI][1];
+				coords[triangleI][1] = resortCache;
+			}
+		}
+		return coords;
+	}
 	public double[][] getClosestTriangleGameObjects(Camera camera) {
 		double lambdaCB;
 		double lambdaAP;
