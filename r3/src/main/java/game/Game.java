@@ -6,6 +6,7 @@ import java.util.Random;
 
 import game.gameobjects.Floor;
 import game.gameobjects.GameObject;
+import game.gameobjects.ObjectFile;
 import game.gameobjects.Player;
 import r3.main.Main;
 import r3.mathstuff.Camera;
@@ -72,12 +73,12 @@ public class Game {
 		this.gameObjects.add(player);
 		
 		//FLOOR
-		this.gameObjects.add(new Floor(0, 0, 0, Main.storeColor(Color.green.getRGB())));
+//		this.gameObjects.add(new Floor(0, 0, 0, Main.storeColor(Color.green.getRGB())));
 //		this.gameObjects.add(new Floor(0, 0, 0, -1));
-		
+		this.gameObjects.add(new ObjectFile("res/mcworld3.raw"));
 		//CUBE
-		GameObject cube = Mathstuff.generateCube(new double[] {0, 0, 5}, 1, Main.storeColor(Color.blue.getRGB()),true);
-		cube.setSpeedPerSecond(new double[] {0,0,-0.1});
+//		GameObject cube = Mathstuff.generateCube(new double[] {0, 0, 5}, 1, Main.storeColor(Color.blue.getRGB()),true);
+//		cube.setSpeedPerSecond(new double[] {0,0,-0.1});
 //		this.gameObjects.add(cube);
 		
 		
@@ -124,9 +125,9 @@ public class Game {
 					iterationStart = System.currentTimeMillis();					
 					///--- LOOP
 //					System.out.println(gameObjects.size());
-					if(random.nextInt(400)==1)
+					if(random.nextInt(200)==1)
 					{
-						GameObject cube = Mathstuff.generateCube(new double[] {random.nextInt(10),random.nextInt(10),5}, 1, -1,true);
+						GameObject cube = Mathstuff.generateCube(new double[] {random.nextInt(2)+2,random.nextInt(10)-9,13}, 1, Main.storeColor(Color.getHSBColor(random.nextInt(254), random.nextInt(254), random.nextInt(254)).getRGB()),true);
 						cube.setSpeedPerSecond(new double[] {0,0,-0.1});
 						addGameObject(cube);
 						gameObjectsCache.add(cube);
@@ -184,6 +185,6 @@ public class Game {
 		if(this.player == null)
 			return;
 		
-		Main.getCamera().setPos(new double[]{player.getPos()[0],player.getPos()[1],player.getPos()[2]+0.1});
+		Main.getCamera().setPos(new double[]{player.getPos()[0],player.getPos()[1],player.getPos()[2]+0.5});
 	}
 }

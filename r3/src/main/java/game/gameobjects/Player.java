@@ -11,7 +11,7 @@ public class Player extends GameObject {
 	public static final double MOVEMENT_SPEED_ACCELERATION = 10;
 	
 	public Player() {
-		super(new double[] {2, 0, 2}, new double[][][] {}, new Hitbox(0.2d), true, false);
+		super(new double[] {2, 0, 2}, new double[][][] {}, new Hitbox(0.1d), true, false);
 //		Main.setCamera(new Camera());
 	}
 	

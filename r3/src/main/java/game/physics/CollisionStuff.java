@@ -25,7 +25,7 @@ public class CollisionStuff {
 			gameObjWorld = gameObjects.get(gameObjectI);
 			if(gameObject == gameObjWorld||gameObjWorld.isRemoved())
 				continue;
-			if(gameObjWorld.getClass().getName().equals("game.gameobjects.Floor")&&!gameObject.getClass().getName().equals("game.gameobjects.Player"))
+			if((gameObjWorld.getClass().getName().equals("game.gameobjects.GameObject")&&!gameObject.getClass().getName().equals("game.gameobjects.GameObject"))||(!gameObjWorld.getClass().getName().equals("game.gameobjects.GameObject")&&gameObject.getClass().getName().equals("game.gameobjects.GameObject")))
 			{
 				continue;
 			}

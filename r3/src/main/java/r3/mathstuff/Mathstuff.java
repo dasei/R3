@@ -690,7 +690,7 @@ public class Mathstuff {
 							if (cacheLambda2Divisor == 0) {
 									cacheLambda2Divisor = (o[2] * bc[1] - o[1] * bc[2]);	
 									if (cacheLambda2Divisor == 0) {
-										System.err.println("cacheLambda2Divisor is equal to 0 (=> Mathstuff.calcR3ZBuff)");
+//										System.err.println("cacheLambda2Divisor is equal to 0 (=> Mathstuff.calcR3ZBuff)");
 										break;
 										
 									} else {
@@ -1072,11 +1072,11 @@ public class Mathstuff {
 	}
 	return bufferDepth;  
 }
-	
+//	private int pointsCalc;
 	public double[][][] calcR3ZBuff2DRasterization(ArrayList<GameObject> gameObjects, Camera camera, boolean createNewBuffer)
 	{
 		this.updateValues();
-
+//		pointsCalc = 0;
 		// Extract constants from camera
 		// Extract constants from camera
 		forward = camera.forward;
@@ -1106,6 +1106,7 @@ public class Mathstuff {
 //				System.out.println(gameObjects.size());
 //				System.out.println("to remove");
 				gameObjects.remove(gameObjectI);
+//				if(!Game.modification)
 //				Game.getGame().gameObjects.remove(gameObjectI);
 //				System.out.println(gameObjects.size());
 //				System.out.println("------");
@@ -1315,7 +1316,10 @@ public class Mathstuff {
 						}
 						
 						if(lambda2Max > 10000)
+						{
+//							System.out.println(lambda2Max+", "+lambdaAB);
 							continue;
+						}
 						if (!Double.isFinite(lambda2Max) || lambda2Max > oLength)	
 							break;	
 					}
@@ -1343,6 +1347,7 @@ public class Mathstuff {
 //							// set color
 //							bufferDepth[coordsIntCache[0]][coordsIntCache[1]][1] = (int) coords[triangleI][3][0];
 //						}
+//						pointsCalc++;
 						pixelX1Cache = ((lambda2 * o[0] + a[0] + lambdaABCrawler * ab0[0]));
 //						System.out.println("pixelX1Cache : "+pixelX1Cache);
 						pixelX2Cache = ((lambda2 * o[1] + a[1] + lambdaABCrawler * ab0[1]));
@@ -1371,6 +1376,7 @@ public class Mathstuff {
 				}	
 			}
 		}
+//		System.out.println("Points calculated: "+pointsCalc);
 		return bufferDepth;  
 	}
 	private double precisionMesh;

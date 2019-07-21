@@ -137,7 +137,7 @@ public class DrawComp extends JComponent {
 					
 	//				g.drawRect(x, y, 1, 0);                                                 
 	//				g.drawLine(x, y, x-1, y-1);
-					g.fillRect(x, y, Main.lowMode,Main.lowMode);					
+					g.drawRect(x, y, 1,0);					
 					
 				}
 			}
