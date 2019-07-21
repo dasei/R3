@@ -738,16 +738,70 @@ public class Mathstuff {
 		}
 		return bufferDepth;
 	}
+	
+	////////////////////////////////////For calcR3ZBuff2DRasterization(both)
+	private double[] forward;
+	private double alpha;
+	private double beta;
+	private double factor;
+	private double[] camPos = new double[3];
+	private double[] a = new double[3];
+	private double[] b = new double[3];
+	private double[] c = new double[3];
+	
+	private double[][][] coordsCacheABC = new double[1][3][];
+	
+	private double[] bc = new double[3];
+	private double[] ab = new double[3];
+	private double[] ac = new double[3];
+	private double[] ab0;
+	private double[] o = new double[2];
+	
+	private double abLength;
+	private double lambdaAB;
+	
+	private double[] coordsDoubleCache = new double[2];
+	//Used for plane(EBENE)
+	private double[] vecNormal = new double[3];
+	private double cPlane;
+	private double pixelX1Cache;
+	private double pixelX2Cache;
+	
+	private int pixelX1CacheInt;
+	private int pixelX2CacheInt;
+
+//	double[] middle;
+	// System.out.println(coords.length);
+	private boolean collidingWithAC = true;
+	// Lambda1:Stelle auf der Gerade AB*lambda1 + A
+	private double lambda2Max = 0;
+	// double lambda3 = 0;
+	private double depth = 0;
+	// double bcLength = 0;
+	
+//	int insideScreenAmount;
+//	
+//	double lengthCache = 0;
+	
+//	double lengthMiddle = 0;
+	private double oLength = 0;
+
+	private double precision = 0.71;
+	// System.out.println("start");
+	private double cacheLambda2Divisor;
+	////////////////////////////////////
 	public double[][][] calcR3ZBuff2DRasterization(double[][][] coords, Camera camera, int triangleOffset, int triangleAmount,
 			boolean createNewBuffer) {
 		this.updateValues();
 
 		// Extract constants from camera
-		double[] forward = camera.forward;
-		double alpha = camera.alpha;
-		double beta = camera.beta;
-		double factor = camera.scaleFactor;
-		double[] camPos = new double[] {camera.pos[0], camera.pos[1], camera.pos[2]};
+		forward = camera.forward;
+		alpha = camera.alpha;
+		beta = camera.beta;
+		factor = camera.scaleFactor;
+		camPos[0] = camera.pos[0];
+		camPos[1] = camera.pos[1];
+		camPos[2] = camera.pos[2];
 		
 		// System.out.println(Arrays.toString(forward));
 
@@ -757,52 +811,7 @@ public class Mathstuff {
 		else
 			bufferDepth = ThreadProcessor.getBufferToCalculateOn();
 
-		double[] a = new double[3];
-		double[] b = new double[3];
-		double[] c = new double[3];
 		
-		double[][][] coordsCacheABC = new double[1][3][];
-		
-		double[] bc;
-		double[] ab;
-		double[] ac;
-		double[] ab0;
-		double[] o;
-		
-		double abLength;
-		double lambdaAB;
-		
-		double[] coordsDoubleCache = new double[2];
-		//Used for plane(EBENE)
-		double[] vecNormal;
-		double cPlane;
-		double pixelX1Cache;
-		double pixelX2Cache;
-		
-		int pixelX1CacheInt;
-		int pixelX2CacheInt;
-
-//		double[] middle;
-		// System.out.println(coords.length);
-		boolean collidingWithAC = true;
-		// Lambda1:Stelle auf der Gerade AB*lambda1 + A
-		double lambda2Max = 0;
-		// double lambda3 = 0;
-		double depth = 0;
-		// double bcLength = 0;
-		
-//		int insideScreenAmount;
-//		
-//		double lengthCache = 0;
-		
-//		double lengthMiddle = 0;
-		double oLength = 0;
-
-		int[] coordsIntCache = new int[2];
-
-		double precision = 0.71;
-		// System.out.println("start");
-		double cacheLambda2Divisor;
 		// System.out.println("c " + coords.length);
 		for (int triangleI = 0; triangleI < coords.length; triangleI++) {
 			
@@ -892,10 +901,10 @@ public class Mathstuff {
 			c[1] = coordsDoubleCache[1];
 //			System.out.println("triangleI : "+triangleI+" , a: "+Arrays.toString(a)+" , b: "+Arrays.toString(b)+" , c: "+Arrays.toString(c));
 			
-			if (Game.SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN && ((a[0] < 0 || a[1] < 0 || a[0] > screenWidth
-					|| a[1] > screenHeight)&&(b[0] < 0 || b[1] < 0 || b[0] > screenWidth
-							|| b[1] > screenHeight)&&(c[0] < 0 || c[1] < 0 || c[0] > screenWidth
-									|| c[1] > screenHeight)))
+			if (Game.SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN && (
+				(a[0] < 0 || a[1] < 0 || a[0] > screenWidth || a[1] > screenHeight)
+			  &&(b[0] < 0 || b[1] < 0 || b[0] > screenWidth || b[1] > screenHeight)
+			  &&(c[0] < 0 || c[1] < 0 || c[0] > screenWidth || c[1] > screenHeight)))
 				continue;
 			if(a[2]==0||b[2]==0||c[2]==0)
 			{
@@ -914,12 +923,22 @@ public class Mathstuff {
 			
 //			System.out.println("triangleI : "+triangleI+" , a: "+Arrays.toString(a)+" , b: "+Arrays.toString(b)+" , c: "+Arrays.toString(c));
 			
-			bc = new double[]{c[0]-b[0],c[1]-b[1],c[2]-b[2]};
-			ab = new double[]{b[0]-a[0],b[1]-a[1],b[2]-a[2]};
-			ac = new double[]{c[0]-a[0],c[1]-a[1],c[2]-a[2]};
+			bc[0] = c[0]-b[0];
+			bc[1] = c[1]-b[1];
+			bc[2] = c[2]-b[2];
+			
+			ab[0] = b[0]-a[0];
+			ab[1] = b[1]-a[1];
+			ab[2] = b[2]-a[2];
+			
+			ac[0] = c[0]-a[0];
+			ac[1] = c[1]-a[1];
+			ac[2] = c[2]-a[2];
 		
 			
-			vecNormal = new double[]{(bc[1] * ab[2]) - (bc[2] * ab[1]),(bc[2] * ab[0]) - (bc[0] * ab[2]),(bc[0] * ab[1]) - (bc[1] * ab[0])};
+			vecNormal[0] = (bc[1] * ab[2]) - (bc[2] * ab[1]);
+			vecNormal[1] = (bc[2] * ab[0]) - (bc[0] * ab[2]);
+			vecNormal[2] = (bc[0] * ab[1]) - (bc[1] * ab[0]);
 			
 			cPlane = -((a[0]*vecNormal[0])+(a[1]*vecNormal[1])+(a[2]*vecNormal[2]));
 			
@@ -930,8 +949,8 @@ public class Mathstuff {
 			// lambdaAB gibt die Stelle auf der Geraden AB*lambda + A an, bei
 			// der ab senkrecht zu o (o = Stelle auf der Gerade -> C)
 			lambdaAB = (ab0[0] * (c[0] - a[0])
-					+ ab0[1] * (c[1] - a[1]))
-					/ (ab0[0] * ab0[0] + ab0[1] * ab0[1]);
+				   	  + ab0[1] * (c[1] - a[1]))
+					/ (Math.pow(ab0[0], 2) + Math.pow(ab0[1], 2));
 			// check boundaries of lambdaAB
 //			System.out.println("lambdaAB: "+lambdaAB);
 			if (lambdaAB > abLength || lambdaAB < 0)
@@ -941,10 +960,9 @@ public class Mathstuff {
 			}
 			// Vektor O (Einheitsvektor) (steht senkrecht auf AB und geht durch
 			// (bzw. bis) C)
-			o = new double[] { 
-					c[0] - (a[0] + ab0[0] * lambdaAB),
-					c[1] - (a[1] + ab0[1] * lambdaAB) 
-					};
+			o[0] = c[0] - (a[0] + ab0[0] * lambdaAB);
+			o[1] = c[1] - (a[1] + ab0[1] * lambdaAB);
+					
 			oLength = vectorUnify2D(o);
 //			System.out.println("o: "+Arrays.toString(o));
 			if(Double.isNaN(o[0]))
@@ -979,7 +997,7 @@ public class Mathstuff {
 					if (cacheLambda2Divisor == 0) {
 						continue;
 					} else {
-						lambda2Max = (lambdaABCrawler * ab0[1] * ac[0] - lambdaABCrawler * ab0[0] * ac[1])
+						lambda2Max = (lambdaABCrawler * ((ab0[1] * ac[0]) - (ab0[0] * ac[1])))
 								/ cacheLambda2Divisor;
 //						System.out.println("lambda2Max: "+lambda2Max);
 					}
@@ -990,12 +1008,12 @@ public class Mathstuff {
 					if (cacheLambda2Divisor == 0) {
 						continue;
 					} else {
-						lambda2Max = (lambdaABCrawler * ab0[0] * bc[1] - lambdaABCrawler * ab0[1] * bc[0]
+						lambda2Max = (lambdaABCrawler * ((ab0[0] * bc[1]) - (ab0[1] * bc[0]))
 								- ab[0] * bc[1] + ab[1] * bc[0]) / cacheLambda2Divisor;
 //						System.out.println("lambda2Max: "+lambda2Max);
 					}
 					
-					if(lambda2Max > 100000)
+					if(lambda2Max > 10000)
 						continue;
 					if (!Double.isFinite(lambda2Max) || lambda2Max > oLength)	
 						break;	
@@ -1060,11 +1078,14 @@ public class Mathstuff {
 		this.updateValues();
 
 		// Extract constants from camera
-		double[] forward = camera.forward;
-		double alpha = camera.alpha;
-		double beta = camera.beta;
-		double factor = camera.scaleFactor;
-		double[] camPos = new double[] {camera.pos[0], camera.pos[1], camera.pos[2]};
+		// Extract constants from camera
+		forward = camera.forward;
+		alpha = camera.alpha;
+		beta = camera.beta;
+		factor = camera.scaleFactor;
+		camPos[0] = camera.pos[0];
+		camPos[1] = camera.pos[1];
+		camPos[2] = camera.pos[2];
 		
 		// System.out.println(Arrays.toString(forward));
 
@@ -1074,48 +1095,6 @@ public class Mathstuff {
 		else
 			bufferDepth = ThreadProcessor.getBufferToCalculateOn();
 
-		double[] a = new double[3];
-		double[] b = new double[3];
-		double[] c = new double[3];
-		
-		double[][][] coordsCacheABC = new double[1][3][3];
-		
-		double[] bc;
-		double[] ab;
-		double[] ac;
-		double[] ab0;
-		double[] o;
-		
-		double abLength;
-		double lambdaAB;
-		
-		//Used for plane(EBENE)
-		double[] vecNormal;
-		double cPlane;
-		double pixelX1Cache;
-		double pixelX2Cache;
-		
-		int pixelX1CacheInt;
-		int pixelX2CacheInt;
-
-//		double[] middle;
-		// System.out.println(coords.length);
-		boolean collidingWithAC = true;
-		// Lambda1:Stelle auf der Gerade AB*lambda1 + A
-		double lambda2Max = 0;
-		// double lambda3 = 0;
-		double depth = 0;
-		// double bcLength = 0;
-		
-//		double lengthMiddle = 0;
-		double oLength = 0;
-
-		int[] coordsIntCache = new int[2];
-
-		double precision = 0.71;
-		// System.out.println("start");
-		double cacheLambda2Divisor;
-		// System.out.println("c " + coords.length);
 		
 		GameObject gameObject;
 		double[][][] coords;
@@ -1136,10 +1115,10 @@ public class Mathstuff {
 			
 			
 			for (int triangleI = 0; triangleI < coords.length; triangleI++) {
-	
+				
 				// check if no color is given
 				if (coords[triangleI].length < 4 || coords[triangleI][3][0] == -1) {
-	//				throw new RuntimeException("Diiga");
+//					throw new RuntimeException("Diiga");
 					calcR3Mesh(bufferDepth, coords[triangleI], forward, camPos, alpha, beta, factor);
 					continue;
 				}
@@ -1158,7 +1137,7 @@ public class Mathstuff {
 //						coords[triangleI][2][2] - coords[triangleI][0][2] };
 //				double acLength = length(ac);
 //				ac = new double[] { ac[0] / acLength, ac[1] / acLength, ac[2] / acLength };
-//	
+	//
 //				// Vektor BC
 //				bc = new double[] { coords[triangleI][2][0] - coords[triangleI][1][0],
 //						coords[triangleI][2][1] - coords[triangleI][1][1],
@@ -1168,7 +1147,7 @@ public class Mathstuff {
 //				middle = new double[] { (coords[triangleI][0][0] + coords[triangleI][1][0] + coords[triangleI][2][0]) / 3,
 //						(coords[triangleI][0][1] + coords[triangleI][1][1] + coords[triangleI][2][1]) / 3,
 //						(coords[triangleI][0][2] + coords[triangleI][1][2] + coords[triangleI][2][2]) / 3 };
-//	
+	//
 //				lengthMiddle = calcR3Point(middle, coordsIntCache, forward, camPos, alpha, beta, factor); // dont
 																											// calculate
 																											// entire
@@ -1183,10 +1162,10 @@ public class Mathstuff {
 //				if (Game.SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN && (coordsIntCache[0] < 0 || coordsIntCache[1] < 0 || coordsIntCache[0] > screenWidth
 //						|| coordsIntCache[1] > screenHeight))
 //					continue;
-//	
-//          				if (lengthMiddle == 0)
+
+//				if (lengthMiddle == 0)
 //					continue;
-//	
+
 
 						//				System.out.println(".");																					
 //				if(!Game.SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN)	 											
@@ -1210,25 +1189,24 @@ public class Mathstuff {
 ////					precision = 0.09/(1.6*Main.lowMode) * lengthMiddle + 0.001;
 //					precision = 0.0035 * lengthMiddle ;
 //				}
-				a[2] = calcR3Point(coords[triangleI][0], coordsIntCache, forward, camPos, alpha, beta, factor);
-				a[0] = coordsIntCache[0];
-				a[1] = coordsIntCache[1];
+				a[2] = -calcR3PointExact(coords[triangleI][0], coordsDoubleCache, forward, camPos, alpha, beta, factor);
+				a[0] = coordsDoubleCache[0];
+				a[1] = coordsDoubleCache[1];
 				
-				b[2] = calcR3Point(coords[triangleI][1], coordsIntCache, forward, camPos, alpha, beta, factor);
-				b[0] = coordsIntCache[0];
-				b[1] = coordsIntCache[1];
+				b[2] = -calcR3PointExact(coords[triangleI][1], coordsDoubleCache, forward, camPos, alpha, beta, factor);
+				b[0] = coordsDoubleCache[0];
+				b[1] = coordsDoubleCache[1];
 				
-				c[2] = calcR3Point(coords[triangleI][2], coordsIntCache, forward, camPos, alpha, beta, factor);
-				c[0] = coordsIntCache[0];
-				c[1] = coordsIntCache[1];
+				c[2] = -calcR3PointExact(coords[triangleI][2], coordsDoubleCache, forward, camPos, alpha, beta, factor);
+				c[0] = coordsDoubleCache[0];
+				c[1] = coordsDoubleCache[1];
 //				System.out.println("triangleI : "+triangleI+" , a: "+Arrays.toString(a)+" , b: "+Arrays.toString(b)+" , c: "+Arrays.toString(c));
 				
-				if (Game.SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN && ((a[0] < 0 || a[1] < 0 || a[0] > screenWidth
-						|| a[1] > screenHeight)&&(b[0] < 0 || b[1] < 0 || b[0] > screenWidth
-								|| b[1] > screenHeight)&&(c[0] < 0 || c[1] < 0 || c[0] > screenWidth
-										|| c[1] > screenHeight)))
+				if (Game.SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN && (
+					(a[0] < 0 || a[1] < 0 || a[0] > screenWidth || a[1] > screenHeight)
+				  &&(b[0] < 0 || b[1] < 0 || b[0] > screenWidth || b[1] > screenHeight)
+				  &&(c[0] < 0 || c[1] < 0 || c[0] > screenWidth || c[1] > screenHeight)))
 					continue;
-				
 				if(a[2]==0||b[2]==0||c[2]==0)
 				{
 					continue;
@@ -1238,7 +1216,7 @@ public class Mathstuff {
 				coordsCacheABC[0][1] = b;
 				coordsCacheABC[0][2] = c;
 				
-				coordsCacheABC = optimizeCoordinates(coordsCacheABC);
+				coordsCacheABC = optimizeCoordinates2D(coordsCacheABC);
 				
 				a = coordsCacheABC[0][0];
 				b = coordsCacheABC[0][1];
@@ -1246,11 +1224,22 @@ public class Mathstuff {
 				
 //				System.out.println("triangleI : "+triangleI+" , a: "+Arrays.toString(a)+" , b: "+Arrays.toString(b)+" , c: "+Arrays.toString(c));
 				
-				bc = new double[]{c[0]-b[0],c[1]-b[1],c[2]-b[2]};
-				ab = new double[]{b[0]-a[0],b[1]-a[1],b[2]-a[2]};
-				ac = new double[]{c[0]-a[0],c[1]-a[1],c[2]-a[2]};
+				bc[0] = c[0]-b[0];
+				bc[1] = c[1]-b[1];
+				bc[2] = c[2]-b[2];
 				
-				vecNormal = new double[]{(bc[1] * ab[2]) - (bc[2] * ab[1]),(bc[2] * ab[0]) - (bc[0] * ab[2]),(bc[0] * ab[1]) - (bc[1] * ab[0])};
+				ab[0] = b[0]-a[0];
+				ab[1] = b[1]-a[1];
+				ab[2] = b[2]-a[2];
+				
+				ac[0] = c[0]-a[0];
+				ac[1] = c[1]-a[1];
+				ac[2] = c[2]-a[2];
+			
+				
+				vecNormal[0] = (bc[1] * ab[2]) - (bc[2] * ab[1]);
+				vecNormal[1] = (bc[2] * ab[0]) - (bc[0] * ab[2]);
+				vecNormal[2] = (bc[0] * ab[1]) - (bc[1] * ab[0]);
 				
 				cPlane = -((a[0]*vecNormal[0])+(a[1]*vecNormal[1])+(a[2]*vecNormal[2]));
 				
@@ -1261,21 +1250,20 @@ public class Mathstuff {
 				// lambdaAB gibt die Stelle auf der Geraden AB*lambda + A an, bei
 				// der ab senkrecht zu o (o = Stelle auf der Gerade -> C)
 				lambdaAB = (ab0[0] * (c[0] - a[0])
-						+ ab0[1] * (c[1] - a[1]))
-						/ (ab0[0] * ab0[0] + ab0[1] * ab0[1]);
+					   	  + ab0[1] * (c[1] - a[1]))
+						/ (Math.pow(ab0[0], 2) + Math.pow(ab0[1], 2));
 				// check boundaries of lambdaAB
 //				System.out.println("lambdaAB: "+lambdaAB);
-				if (abLength > 10000 ||lambdaAB > abLength || (int)lambdaAB < 0)
+				if (lambdaAB > abLength || lambdaAB < 0)
 				{
-					System.out.println("skipped: "+abLength);
+					System.out.println("skipped: lambdaAB: "+lambdaAB+", abLength: "+abLength);
 					continue;
 				}
-				// Vektor O (Einheitsvektor) (steht senkrecht auf AB und gw eht durch
+				// Vektor O (Einheitsvektor) (steht senkrecht auf AB und geht durch
 				// (bzw. bis) C)
-				o = new double[] { 
-						c[0] - (a[0] + ab0[0] * lambdaAB),
-						c[1] - (a[1] + ab0[1] * lambdaAB) 
-						};
+				o[0] = c[0] - (a[0] + ab0[0] * lambdaAB);
+				o[1] = c[1] - (a[1] + ab0[1] * lambdaAB);
+						
 				oLength = vectorUnify2D(o);
 //				System.out.println("o: "+Arrays.toString(o));
 				if(Double.isNaN(o[0]))
@@ -1283,24 +1271,24 @@ public class Mathstuff {
 				collidingWithAC = true;
 //				if(triangleI == 0)
 				for (double lambdaABCrawler = 0; lambdaABCrawler < abLength + precision; lambdaABCrawler += precision) {
-	
+
 					// check if lambdaVertical should be calculated by collision
 					// with BC
 					if (collidingWithAC && lambdaABCrawler >= lambdaAB)
 						collidingWithAC = false;
-	
+
 					//////////// 1. CALCULATE lambda2Max
-	
+
 					// distinguish between the two different calculation methods for
 					// lambda2Max, depending on if its a collision with AC or CB
 					if (collidingWithAC) {
-	
+
 						// FORMULA:
 						// lambdaVertical =
 						// (lambdaABCrawler*ab0[1]*ac[0]-lambdaABCrawler*ab0[0]*ac[1])
 						// /
 						// (o[0]*ac[1]-o[1]*ac[0]);
-	
+
 						// TODO NOTE: this should be cleaned up, as triangles are
 						// now reprocessed in the main loop
 						// 1.: calculate divisor and check if it is 0. If so,
@@ -1308,30 +1296,30 @@ public class Mathstuff {
 						// lambdaVertical to 0
 						cacheLambda2Divisor = (o[0] * ac[1] - o[1] * ac[0]);
 						if (cacheLambda2Divisor == 0) {
-//							System.out.println("cacheLambda2Divisor is 0(ac)");
 							continue;
 						} else {
-							lambda2Max = (lambdaABCrawler * ab0[1] * ac[0] - lambdaABCrawler * ab0[0] * ac[1])
+							lambda2Max = (lambdaABCrawler * ((ab0[1] * ac[0]) - (ab0[0] * ac[1])))
 									/ cacheLambda2Divisor;
 //							System.out.println("lambda2Max: "+lambda2Max);
 						}
-	
+
 					} else {
-	
+
 						cacheLambda2Divisor = (o[1] * bc[0] - o[0] * bc[1]);
 						if (cacheLambda2Divisor == 0) {
-//							System.out.println("cacheLambda2Divisor is 0(bc)");
 							continue;
 						} else {
-							lambda2Max = (lambdaABCrawler * ab0[0] * bc[1] - lambdaABCrawler * ab0[1] * bc[0]
+							lambda2Max = (lambdaABCrawler * ((ab0[0] * bc[1]) - (ab0[1] * bc[0]))
 									- ab[0] * bc[1] + ab[1] * bc[0]) / cacheLambda2Divisor;
 //							System.out.println("lambda2Max: "+lambda2Max);
 						}
 						
+						if(lambda2Max > 10000)
+							continue;
 						if (!Double.isFinite(lambda2Max) || lambda2Max > oLength)	
 							break;	
 					}
-	
+
 					//////////// 2. CRAWL THROUGH lambda2
 					for (double lambda2 = 0; lambda2 < lambda2Max + precision; lambda2 += precision) {
 						// calculate the point (=> 2D into coordsIntCache) and
@@ -1341,7 +1329,7 @@ public class Mathstuff {
 //										lambda2 * o[1] + coords[triangleI][0][1] + lambdaABCrawler * ab0[1],
 //										lambda2 * o[2] + coords[triangleI][0][2] + lambdaABCrawler * ab0[2] },
 //								coordsIntCache, forward, camPos, alpha, beta, factor);
-//	
+	//
 //						// check if the 2d point is in the screens boundaries and if
 //						// its depth is smaller that the one noted in the buffer
 //						if (coordsIntCache[0] > 0 
@@ -1351,7 +1339,7 @@ public class Mathstuff {
 //							&& (bufferDepth[coordsIntCache[0]][coordsIntCache[1]][0] > depth
 //							|| bufferDepth[coordsIntCache[0]][coordsIntCache[1]][0] == 0)) {
 //							bufferDepth[coordsIntCache[0]][coordsIntCache[1]][0] = depth;
-//	
+	//
 //							// set color
 //							bufferDepth[coordsIntCache[0]][coordsIntCache[1]][1] = (int) coords[triangleI][3][0];
 //						}
@@ -1363,7 +1351,7 @@ public class Mathstuff {
 								((pixelX1Cache*vecNormal[0])+(pixelX2Cache*vecNormal[1])+cPlane)
 									/
 								(vecNormal[2]);
-						
+//						System.out.println("depth: "+depth);
 						pixelX1CacheInt = (int) pixelX1Cache;
 						pixelX2CacheInt = (int) pixelX2Cache;
 						
@@ -1504,6 +1492,7 @@ public class Mathstuff {
 //		throw new RuntimeException("Ay");
 	}
 	
+	private static double[] ab0OptimizeCoordinates = new double[3];
 	/**
 	 * optimizes the passed coordinates. Overwrites the given and array AND returns it for convenience
 	 * @param coords
@@ -1511,7 +1500,7 @@ public class Mathstuff {
 	 */
 	public static double[][][] optimizeCoordinates(double[][][] coords) {
 		
-		double[] ab0;	// vector ab, unit vector		
+//		double[] ab0;	// vector ab, unit vector		
 		double lambda;	// ab0 * lambda gives the point, on which the point of C sits in a 90° angle on
 		
 //		double[] ac0;	// vector ac
@@ -1523,16 +1512,18 @@ public class Mathstuff {
 		for(int triangleI = 0;triangleI < coords.length;triangleI++) {
 			
 			//calculate AB (unit)
-			ab0 = new double[] {coords[triangleI][1][0]-coords[triangleI][0][0],coords[triangleI][1][1]-coords[triangleI][0][1],coords[triangleI][1][2]-coords[triangleI][0][2]};			
-			abLength = Mathstuff.vectorUnify(ab0);
+			ab0OptimizeCoordinates [0] = coords[triangleI][1][0]-coords[triangleI][0][0];
+			ab0OptimizeCoordinates [1]	= coords[triangleI][1][1]-coords[triangleI][0][1];
+			ab0OptimizeCoordinates [2]	= coords[triangleI][1][2]-coords[triangleI][0][2];			
+			abLength = Mathstuff.vectorUnify(ab0OptimizeCoordinates);
 			
 			//Vektor AC
 //			ac0 = Mathstuff.vectorUnify(new double[] {coords[triangleI][2][0]-coords[triangleI][0][0],coords[triangleI][2][1]-coords[triangleI][0][1],coords[triangleI][2][2]-coords[triangleI][0][2]}, false);
 
 			lambda = 
-			(ab0[0]*(coords[triangleI][2][0]-coords[triangleI][0][0])+ab0[1]*(coords[triangleI][2][1]-coords[triangleI][0][1])+ab0[2]*(coords[triangleI][2][2]-coords[triangleI][0][2]))
+			(ab0OptimizeCoordinates[0]*(coords[triangleI][2][0]-coords[triangleI][0][0])+ab0OptimizeCoordinates[1]*(coords[triangleI][2][1]-coords[triangleI][0][1])+ab0OptimizeCoordinates[2]*(coords[triangleI][2][2]-coords[triangleI][0][2]))
 							/
-			(ab0[0]*ab0[0]+ab0[1]*ab0[1]+ab0[2]*ab0[2]);
+			(Math.pow(ab0OptimizeCoordinates[0], 2)+Math.pow(ab0OptimizeCoordinates[1], 2)+Math.pow(ab0OptimizeCoordinates[2], 2));
 			
 			if(lambda<0) {
 				
@@ -1556,7 +1547,7 @@ public class Mathstuff {
 	 */
 	public static double[][][] optimizeCoordinates2D(double[][][] coords) {
 		
-		double[] ab0;	// vector ab, unit vector		
+//		double[] ab0;	// vector ab, unit vector		
 		double lambda;	// ab0 * lambda gives the point, on which the point of C sits in a 90° angle on
 		
 //		double[] ac0;	// vector ac
@@ -1568,16 +1559,17 @@ public class Mathstuff {
 		for(int triangleI = 0;triangleI < coords.length;triangleI++) {
 			
 			//calculate AB (unit)
-			ab0 = new double[] {coords[triangleI][1][0]-coords[triangleI][0][0],coords[triangleI][1][1]-coords[triangleI][0][1]};			
-			abLength = Mathstuff.vectorUnify2D(ab0);
+			ab0OptimizeCoordinates [0] = coords[triangleI][1][0]-coords[triangleI][0][0];
+			ab0OptimizeCoordinates [1]	= coords[triangleI][1][1]-coords[triangleI][0][1];		
+			abLength = Mathstuff.vectorUnify2D(ab0OptimizeCoordinates);
 			
 			//Vektor AC
 //			ac0 = Mathstuff.vectorUnify(new double[] {coords[triangleI][2][0]-coords[triangleI][0][0],coords[triangleI][2][1]-coords[triangleI][0][1],coords[triangleI][2][2]-coords[triangleI][0][2]}, false);
 
 			lambda = 
-			(ab0[0]*(coords[triangleI][2][0]-coords[triangleI][0][0])+ab0[1]*(coords[triangleI][2][1]-coords[triangleI][0][1]))
+			(ab0OptimizeCoordinates[0]*(coords[triangleI][2][0]-coords[triangleI][0][0])+ab0OptimizeCoordinates[1]*(coords[triangleI][2][1]-coords[triangleI][0][1]))
 							/
-			(ab0[0]*ab0[0]+ab0[1]*ab0[1]);
+			(Math.pow(ab0OptimizeCoordinates[0], 2)+Math.pow(ab0OptimizeCoordinates[1], 2));
 			
 			if(lambda<0) {
 				
