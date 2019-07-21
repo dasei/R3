@@ -2,7 +2,6 @@ package r3.mathstuff;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import game.Game;
 import game.gameobjects.GameObject;
@@ -720,7 +719,7 @@ public class Mathstuff {
 		int pixelX1CacheInt;
 		int pixelX2CacheInt;
 
-		double[] middle;
+//		double[] middle;
 		// System.out.println(coords.length);
 		boolean collidingWithAC = true;
 		// Lambda1:Stelle auf der Gerade AB*lambda1 + A
@@ -729,11 +728,11 @@ public class Mathstuff {
 		double depth = 0;
 		// double bcLength = 0;
 		
-		int insideScreenAmount;
+//		int insideScreenAmount;
+//		
+//		double lengthCache = 0;
 		
-		double lengthCache = 0;
-		
-		double lengthMiddle = 0;
+//		double lengthMiddle = 0;
 		double oLength = 0;
 
 		int[] coordsIntCache = new int[2];
@@ -772,11 +771,11 @@ public class Mathstuff {
 //					coords[triangleI][2][2] - coords[triangleI][1][2] };
 //			// bcLength = length(bc);
 			
-			middle = new double[] { (coords[triangleI][0][0] + coords[triangleI][1][0] + coords[triangleI][2][0]) / 3,
-					(coords[triangleI][0][1] + coords[triangleI][1][1] + coords[triangleI][2][1]) / 3,
-					(coords[triangleI][0][2] + coords[triangleI][1][2] + coords[triangleI][2][2]) / 3 };
-
-			lengthMiddle = calcR3Point(middle, coordsIntCache, forward, camPos, alpha, beta, factor); // dont
+//			middle = new double[] { (coords[triangleI][0][0] + coords[triangleI][1][0] + coords[triangleI][2][0]) / 3,
+//					(coords[triangleI][0][1] + coords[triangleI][1][1] + coords[triangleI][2][1]) / 3,
+//					(coords[triangleI][0][2] + coords[triangleI][1][2] + coords[triangleI][2][2]) / 3 };
+//
+//			lengthMiddle = calcR3Point(middle, coordsIntCache, forward, camPos, alpha, beta, factor); // dont
 																										// calculate
 																										// entire
 																										// point
@@ -787,12 +786,12 @@ public class Mathstuff {
 																										// its
 																										// depth
 			
-			if (Game.SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN && (coordsIntCache[0] < 0 || coordsIntCache[1] < 0 || coordsIntCache[0] > screenWidth
-					|| coordsIntCache[1] > screenHeight))
-				continue;
+//			if (Game.SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN && (coordsIntCache[0] < 0 || coordsIntCache[1] < 0 || coordsIntCache[0] > screenWidth
+//					|| coordsIntCache[1] > screenHeight))
+//				continue;
 
-			if (lengthMiddle == 0)
-				continue;
+//			if (lengthMiddle == 0)
+//				continue;
 
 
 					//				System.out.println(".");																					
@@ -830,6 +829,12 @@ public class Mathstuff {
 			c[1] = coordsIntCache[1];
 //			System.out.println("triangleI : "+triangleI+" , a: "+Arrays.toString(a)+" , b: "+Arrays.toString(b)+" , c: "+Arrays.toString(c));
 			
+			if (Game.SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN && ((a[0] < 0 || a[1] < 0 || a[0] > screenWidth
+					|| a[1] > screenHeight)&&(b[0] < 0 || b[1] < 0 || b[0] > screenWidth
+							|| b[1] > screenHeight)&&(c[0] < 0 || c[1] < 0 || c[0] > screenWidth
+									|| c[1] > screenHeight)))
+				continue;
+			
 			if(a[2]==0||b[2]==0||c[2]==0)
 			{
 				continue;
@@ -850,6 +855,7 @@ public class Mathstuff {
 			bc = new double[]{c[0]-b[0],c[1]-b[1],c[2]-b[2]};
 			ab = new double[]{b[0]-a[0],b[1]-a[1],b[2]-a[2]};
 			ac = new double[]{c[0]-a[0],c[1]-a[1],c[2]-a[2]};
+		
 			
 			vecNormal = new double[]{(bc[1] * ab[2]) - (bc[2] * ab[1]),(bc[2] * ab[0]) - (bc[0] * ab[2]),(bc[0] * ab[1]) - (bc[1] * ab[0])};
 			
@@ -866,9 +872,11 @@ public class Mathstuff {
 					/ (ab0[0] * ab0[0] + ab0[1] * ab0[1]);
 			// check boundaries of lambdaAB
 //			System.out.println("lambdaAB: "+lambdaAB);
-			if (abLength > 1280 || lambdaAB > abLength || lambdaAB < 0)
+			if (lambdaAB > abLength || (int)lambdaAB < 0)
+			{
+//				System.out.println("skipped: "+abLength);sa               assssssssssssssssssssss
 				continue;
-
+			}
 			// Vektor O (Einheitsvektor) (steht senkrecht auf AB und geht durch
 			// (bzw. bis) C)
 			o = new double[] { 
@@ -885,7 +893,7 @@ public class Mathstuff {
 
 				// check if lambdaVertical should be calculated by collision
 				// with BC
-				if (collidingWithAC && lambdaABCrawler > lambdaAB)
+				if (collidingWithAC && lambdaABCrawler >= lambdaAB)
 					collidingWithAC = false;
 
 				//////////// 1. CALCULATE lambda2Max
@@ -925,7 +933,7 @@ public class Mathstuff {
 //						System.out.println("lambda2Max: "+lambda2Max);
 					}
 					
-					if(lambda2Max > 1280)
+					if(lambda2Max > 100000)
 						continue;
 					if (!Double.isFinite(lambda2Max) || lambda2Max > oLength)	
 						break;	
@@ -1028,7 +1036,7 @@ public class Mathstuff {
 		int pixelX1CacheInt;
 		int pixelX2CacheInt;
 
-		double[] middle;
+//		double[] middle;
 		// System.out.println(coords.length);
 		boolean collidingWithAC = true;
 		// Lambda1:Stelle auf der Gerade AB*lambda1 + A
@@ -1037,7 +1045,7 @@ public class Mathstuff {
 		double depth = 0;
 		// double bcLength = 0;
 		
-		double lengthMiddle = 0;
+//		double lengthMiddle = 0;
 		double oLength = 0;
 
 		int[] coordsIntCache = new int[2];
@@ -1095,11 +1103,11 @@ public class Mathstuff {
 //						coords[triangleI][2][2] - coords[triangleI][1][2] };
 //				// bcLength = length(bc);
 				
-				middle = new double[] { (coords[triangleI][0][0] + coords[triangleI][1][0] + coords[triangleI][2][0]) / 3,
-						(coords[triangleI][0][1] + coords[triangleI][1][1] + coords[triangleI][2][1]) / 3,
-						(coords[triangleI][0][2] + coords[triangleI][1][2] + coords[triangleI][2][2]) / 3 };
-	
-				lengthMiddle = calcR3Point(middle, coordsIntCache, forward, camPos, alpha, beta, factor); // dont
+//				middle = new double[] { (coords[triangleI][0][0] + coords[triangleI][1][0] + coords[triangleI][2][0]) / 3,
+//						(coords[triangleI][0][1] + coords[triangleI][1][1] + coords[triangleI][2][1]) / 3,
+//						(coords[triangleI][0][2] + coords[triangleI][1][2] + coords[triangleI][2][2]) / 3 };
+//	
+//				lengthMiddle = calcR3Point(middle, coordsIntCache, forward, camPos, alpha, beta, factor); // dont
 																											// calculate
 																											// entire
 																											// point
@@ -1110,13 +1118,13 @@ public class Mathstuff {
 																											// its
 																											// depth
 				
-				if (Game.SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN && (coordsIntCache[0] < 0 || coordsIntCache[1] < 0 || coordsIntCache[0] > screenWidth
-						|| coordsIntCache[1] > screenHeight))
-					continue;
-	
-				if (lengthMiddle == 0)
-					continue;
-	
+//				if (Game.SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN && (coordsIntCache[0] < 0 || coordsIntCache[1] < 0 || coordsIntCache[0] > screenWidth
+//						|| coordsIntCache[1] > screenHeight))
+//					continue;
+//	
+//          				if (lengthMiddle == 0)
+//					continue;
+//	
 
 						//				System.out.println(".");																					
 //				if(!Game.SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN)	 											
@@ -1152,6 +1160,12 @@ public class Mathstuff {
 				c[0] = coordsIntCache[0];
 				c[1] = coordsIntCache[1];
 //				System.out.println("triangleI : "+triangleI+" , a: "+Arrays.toString(a)+" , b: "+Arrays.toString(b)+" , c: "+Arrays.toString(c));
+				
+				if (Game.SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN && ((a[0] < 0 || a[1] < 0 || a[0] > screenWidth
+						|| a[1] > screenHeight)&&(b[0] < 0 || b[1] < 0 || b[0] > screenWidth
+								|| b[1] > screenHeight)&&(c[0] < 0 || c[1] < 0 || c[0] > screenWidth
+										|| c[1] > screenHeight)))
+					continue;
 				
 				if(a[2]==0||b[2]==0||c[2]==0)
 				{
@@ -1189,12 +1203,12 @@ public class Mathstuff {
 						/ (ab0[0] * ab0[0] + ab0[1] * ab0[1]);
 				// check boundaries of lambdaAB
 //				System.out.println("lambdaAB: "+lambdaAB);
-				if (abLength > 10000 ||lambdaAB > abLength || lambdaAB < 0)
+				if (lambdaAB > abLength || (int)lambdaAB < 0)
 				{
 					System.out.println("skipped: "+abLength);
 					continue;
 				}
-				// Vektor O (Einheitsvektor) (steht senkrecht auf AB und geht durch
+				// Vektor O (Einheitsvektor) (steht senkrecht auf AB und gw eht durch
 				// (bzw. bis) C)
 				o = new double[] { 
 						c[0] - (a[0] + ab0[0] * lambdaAB),
@@ -1210,7 +1224,7 @@ public class Mathstuff {
 	
 					// check if lambdaVertical should be calculated by collision
 					// with BC
-					if (collidingWithAC && lambdaABCrawler > lambdaAB)
+					if (collidingWithAC && lambdaABCrawler >= lambdaAB)
 						collidingWithAC = false;
 	
 					//////////// 1. CALCULATE lambda2Max
@@ -1251,7 +1265,8 @@ public class Mathstuff {
 									- ab[0] * bc[1] + ab[1] * bc[0]) / cacheLambda2Divisor;
 //							System.out.println("lambda2Max: "+lambda2Max);
 						}
-						
+						if(lambda2Max > 100000)
+							continue;
 						if (!Double.isFinite(lambda2Max) || lambda2Max > oLength)	
 							break;	
 					}

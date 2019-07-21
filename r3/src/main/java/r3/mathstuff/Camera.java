@@ -19,7 +19,7 @@ public class Camera {
 	
 	public final double scaleFactor = 1;
 	
-	public double fov = 60;
+	public double fov = 70;
 	
 	public void setPos(double[] pos) {
 		this.pos = pos;

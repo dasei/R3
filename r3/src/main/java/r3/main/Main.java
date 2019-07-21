@@ -325,8 +325,8 @@ public class Main {
 		ArrayList<double[][]> triangles = new ArrayList<double[][]>();
 		try {
 
-//			BufferedReader br = new BufferedReader(new FileReader(new File("C:/Users/Admin/Documents/ModulR3/testfont.raw")));
-			BufferedReader br = new BufferedReader(new FileReader(new File("res/dragon.raw")));
+			BufferedReader br = new BufferedReader(new FileReader(new File("E:/Admin/Desktop/Trash/mineways/mcworld.raw")));
+//			BufferedReader br = new BufferedReader(new FileReader(new File("res/dragon.raw")));
 		
 			int scale = 10;
 			
