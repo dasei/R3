@@ -20,7 +20,7 @@ public class GameObject {
 	
 //	private int[][][] trianglesDrawCoordinates2D; //needed? => check drawCoords2D int[][][] in main
 	
-	private Hitbox hitbox;
+	protected Hitbox hitbox;
 	
 	protected double[] pos = new double[3];
 	
@@ -44,9 +44,9 @@ public class GameObject {
 		this.damageAffected = damageAffected;
 	}
 
-	private final double[] cachePosAfterMovement = new double[3];
-	private final double[] cachePosAfterMovementCache = new double[3];
-	public final void updatePosition(double deltaTimeSeconds) {
+	protected final double[] cachePosAfterMovement = new double[3];
+	protected final double[] cachePosAfterMovementCache = new double[3];
+	public void updatePosition(double deltaTimeSeconds) {
 		if(deltaTimeSeconds == 0  || (this.speedPerSec[0] == 0 && this.speedPerSec[1] == 0 && this.speedPerSec[2] == 0))
 			return;
 		

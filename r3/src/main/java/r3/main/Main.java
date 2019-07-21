@@ -326,7 +326,7 @@ public class Main {
 		try {
 
 //			BufferedReader br = new BufferedReader(new FileReader(new File("E:/Admin/Desktop/Trash/mineways/mcworld3.raw")));
-			BufferedReader br = new BufferedReader(new FileReader(new File("res/dragon.raw")));
+			BufferedReader br = new BufferedReader(new FileReader(new File("res/MCWORLD3.raw")));
 			int scale = 10;
 			
 			while(br.ready()) {

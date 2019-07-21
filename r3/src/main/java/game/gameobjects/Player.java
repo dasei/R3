@@ -2,13 +2,14 @@ package game.gameobjects;
 
 import java.awt.event.KeyEvent;
 
+import game.physics.CollisionStuff;
 import game.physics.Hitbox;
 import r3.main.Main;
 import r3.mathstuff.Camera;
 
 public class Player extends GameObject {
 	
-	public static final double MOVEMENT_SPEED_ACCELERATION = 10;
+	public static final double MOVEMENT_SPEED_ACCELERATION = 20;
 	
 	public Player() {
 		super(new double[] {2, 0, 2}, new double[][][] {}, new Hitbox(0.1d), true, false);
@@ -47,7 +48,7 @@ public class Player extends GameObject {
 		}
 		
 		if(register[KeyEvent.VK_SPACE] && !(register[KeyEvent.VK_SHIFT]||register[KeyEvent.VK_E])) {
-			movementDeltaX3 = movementDelta*4;
+			movementDeltaX3 = movementDelta*2;
 			this.speedPerSec[2]+=movementDeltaX3;
 		} else if(!register[KeyEvent.VK_SPACE] && (register[KeyEvent.VK_SHIFT]||register[KeyEvent.VK_E])) {
 			this.speedPerSec[2]-=movementDelta;
@@ -58,7 +59,42 @@ public class Player extends GameObject {
 //		Main.getCamera().setPos(this.pos);
 		
 	}
-	
+	public void updatePosition(double deltaTimeSeconds) {
+		if(deltaTimeSeconds == 0  || (this.speedPerSec[0] == 0 && this.speedPerSec[1] == 0 && this.speedPerSec[2] == 0))
+			return;
+		
+		this.speedPerSec[0] *= 0.88;
+		this.speedPerSec[1] *= 0.88;
+		this.speedPerSec[2] *= 0.95;
+		
+		cachePosAfterMovement[0] = pos[0] + (speedPerSec[0] * deltaTimeSeconds);
+		cachePosAfterMovement[1] = pos[1] + (speedPerSec[1] * deltaTimeSeconds);
+		cachePosAfterMovement[2] = pos[2] + (speedPerSec[2] * deltaTimeSeconds);
+		if(cachePosAfterMovement[2]<-20)
+		{
+			this.remove(false);
+		}
+		if(this.hitbox == null) {
+			this.pos[0] = cachePosAfterMovement[0];
+			this.pos[1] = cachePosAfterMovement[1];
+			this.pos[2] = cachePosAfterMovement[2];
+			return;
+		}
+		
+		cachePosAfterMovementCache[0] = cachePosAfterMovement[0];
+		cachePosAfterMovementCache[1] = pos[1];
+		cachePosAfterMovementCache[2] = pos[2];		
+		if(!CollisionStuff.collides(this, cachePosAfterMovementCache))
+			this.pos[0] = cachePosAfterMovement[0];
+		
+		cachePosAfterMovementCache[1] = cachePosAfterMovement[1];
+		if(!CollisionStuff.collides(this, cachePosAfterMovementCache))
+				this.pos[1] = cachePosAfterMovement[1];				
+		
+		cachePosAfterMovementCache[2] = cachePosAfterMovement[2];		
+		if(!CollisionStuff.collides(this, cachePosAfterMovementCache))
+				this.pos[2] = cachePosAfterMovement[2];
+	}
 //	public Camera getCamera(){
 //		return this.camera;
 //	}

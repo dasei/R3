@@ -756,6 +756,7 @@ public class Mathstuff {
 	private double[] ac = new double[3];
 	private double[] ab0;
 	private double[] o = new double[2];
+	private double[] middle = new double[2];
 	
 	private double abLength;
 	private double lambdaAB;
@@ -771,7 +772,7 @@ public class Mathstuff {
 	private int pixelX2CacheInt;
 
 //	double[] middle;
-	// System.out.println(coords.length);
+
 	private boolean collidingWithAC = true;
 	// Lambda1:Stelle auf der Gerade AB*lambda1 + A
 	private double lambda2Max = 0;
@@ -787,8 +788,10 @@ public class Mathstuff {
 	private double oLength = 0;
 
 	private double precision = 0.71;
-	// System.out.println("start");
+
 	private double cacheLambda2Divisor;
+	
+	private int pointsCalc;
 	////////////////////////////////////
 	public double[][][] calcR3ZBuff2DRasterization(double[][][] coords, Camera camera, int triangleOffset, int triangleAmount,
 			boolean createNewBuffer) {
@@ -814,7 +817,7 @@ public class Mathstuff {
 		
 		// System.out.println("c " + coords.length);
 		for (int triangleI = 0; triangleI < coords.length; triangleI++) {
-			
+			pointsCalc=0;
 			// check if no color is given
 			if (coords[triangleI].length < 4 || coords[triangleI][3][0] == -1) {
 //				throw new RuntimeException("Diiga");
@@ -900,11 +903,15 @@ public class Mathstuff {
 			c[0] = coordsDoubleCache[0];
 			c[1] = coordsDoubleCache[1];
 //			System.out.println("triangleI : "+triangleI+" , a: "+Arrays.toString(a)+" , b: "+Arrays.toString(b)+" , c: "+Arrays.toString(c));
+
+			middle[0] = (a[0] + b[0] + c[0]) / 3;
+			middle[1] = (a[1] + b[1] + c[1]) / 3;
 			
 			if (Game.SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN && (
 				(a[0] < 0 || a[1] < 0 || a[0] > screenWidth || a[1] > screenHeight)
 			  &&(b[0] < 0 || b[1] < 0 || b[0] > screenWidth || b[1] > screenHeight)
-			  &&(c[0] < 0 || c[1] < 0 || c[0] > screenWidth || c[1] > screenHeight)))
+			  &&(c[0] < 0 || c[1] < 0 || c[0] > screenWidth || c[1] > screenHeight)
+			  &&(middle[0] < 0 || middle[1] < 0 || middle[0] > screenWidth || middle[1] > screenHeight)))
 				continue;
 			if(a[2]==0||b[2]==0||c[2]==0)
 			{
@@ -971,6 +978,11 @@ public class Mathstuff {
 //			if(triangleI == 0)
 			for (double lambdaABCrawler = 0; lambdaABCrawler < abLength + precision; lambdaABCrawler += precision) {
 
+				if(pointsCalc>1000000)
+				{
+					break;
+				}
+				
 				// check if lambdaVertical should be calculated by collision
 				// with BC
 				if (collidingWithAC && lambdaABCrawler >= lambdaAB)
@@ -1042,6 +1054,7 @@ public class Mathstuff {
 //						// set color
 //						bufferDepth[coordsIntCache[0]][coordsIntCache[1]][1] = (int) coords[triangleI][3][0];
 //					}
+					pointsCalc++;
 					pixelX1Cache = ((lambda2 * o[0] + a[0] + lambdaABCrawler * ab0[0]));
 //					System.out.println("pixelX1Cache : "+pixelX1Cache);
 					pixelX2Cache = ((lambda2 * o[1] + a[1] + lambdaABCrawler * ab0[1]));
@@ -1072,11 +1085,10 @@ public class Mathstuff {
 	}
 	return bufferDepth;  
 }
-//	private int pointsCalc;
 	public double[][][] calcR3ZBuff2DRasterization(ArrayList<GameObject> gameObjects, Camera camera, boolean createNewBuffer)
 	{
 		this.updateValues();
-//		pointsCalc = 0;
+		pointsCalc = 0;
 		// Extract constants from camera
 		// Extract constants from camera
 		forward = camera.forward;
@@ -1116,7 +1128,9 @@ public class Mathstuff {
 			
 			
 			for (int triangleI = 0; triangleI < coords.length; triangleI++) {
-				
+//				if(pointsCalc>1000000)
+//				System.out.println("Points calculated: "+pointsCalc);
+				pointsCalc=0;
 				// check if no color is given
 				if (coords[triangleI].length < 4 || coords[triangleI][3][0] == -1) {
 //					throw new RuntimeException("Diiga");
@@ -1148,7 +1162,7 @@ public class Mathstuff {
 //				middle = new double[] { (coords[triangleI][0][0] + coords[triangleI][1][0] + coords[triangleI][2][0]) / 3,
 //						(coords[triangleI][0][1] + coords[triangleI][1][1] + coords[triangleI][2][1]) / 3,
 //						(coords[triangleI][0][2] + coords[triangleI][1][2] + coords[triangleI][2][2]) / 3 };
-	//
+//	
 //				lengthMiddle = calcR3Point(middle, coordsIntCache, forward, camPos, alpha, beta, factor); // dont
 																											// calculate
 																											// entire
@@ -1163,7 +1177,7 @@ public class Mathstuff {
 //				if (Game.SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN && (coordsIntCache[0] < 0 || coordsIntCache[1] < 0 || coordsIntCache[0] > screenWidth
 //						|| coordsIntCache[1] > screenHeight))
 //					continue;
-
+//
 //				if (lengthMiddle == 0)
 //					continue;
 
@@ -1201,12 +1215,17 @@ public class Mathstuff {
 				c[2] = -calcR3PointExact(coords[triangleI][2], coordsDoubleCache, forward, camPos, alpha, beta, factor);
 				c[0] = coordsDoubleCache[0];
 				c[1] = coordsDoubleCache[1];
+				
 //				System.out.println("triangleI : "+triangleI+" , a: "+Arrays.toString(a)+" , b: "+Arrays.toString(b)+" , c: "+Arrays.toString(c));
+				
+				middle[0] = (a[0] + b[0] + c[0]) / 3;
+				middle[1] = (a[1] + b[1] + c[1]) / 3;
 				
 				if (Game.SKIP_TRIANGLE_IF_MIDDLE_IS_OFFSCREEN && (
 					(a[0] < 0 || a[1] < 0 || a[0] > screenWidth || a[1] > screenHeight)
 				  &&(b[0] < 0 || b[1] < 0 || b[0] > screenWidth || b[1] > screenHeight)
-				  &&(c[0] < 0 || c[1] < 0 || c[0] > screenWidth || c[1] > screenHeight)))
+				  &&(c[0] < 0 || c[1] < 0 || c[0] > screenWidth || c[1] > screenHeight)
+				  &&(middle[0] < 0 || middle[1] < 0 || middle[0] > screenWidth || middle[1] > screenHeight)))
 					continue;
 				if(a[2]==0||b[2]==0||c[2]==0)
 				{
@@ -1273,6 +1292,10 @@ public class Mathstuff {
 //				if(triangleI == 0)
 				for (double lambdaABCrawler = 0; lambdaABCrawler < abLength + precision; lambdaABCrawler += precision) {
 
+					if(pointsCalc>1000000)
+					{
+						break;
+					}
 					// check if lambdaVertical should be calculated by collision
 					// with BC
 					if (collidingWithAC && lambdaABCrawler >= lambdaAB)
@@ -1347,7 +1370,7 @@ public class Mathstuff {
 //							// set color
 //							bufferDepth[coordsIntCache[0]][coordsIntCache[1]][1] = (int) coords[triangleI][3][0];
 //						}
-//						pointsCalc++;
+						pointsCalc++;
 						pixelX1Cache = ((lambda2 * o[0] + a[0] + lambdaABCrawler * ab0[0]));
 //						System.out.println("pixelX1Cache : "+pixelX1Cache);
 						pixelX2Cache = ((lambda2 * o[1] + a[1] + lambdaABCrawler * ab0[1]));
@@ -1376,7 +1399,6 @@ public class Mathstuff {
 				}	
 			}
 		}
-//		System.out.println("Points calculated: "+pointsCalc);
 		return bufferDepth;  
 	}
 	private double precisionMesh;

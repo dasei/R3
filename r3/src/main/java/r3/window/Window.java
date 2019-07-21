@@ -1,5 +1,6 @@
 package r3.window;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -82,6 +83,8 @@ public class Window extends JFrame implements KeyListener, MouseListener{
 		case KeyEvent.VK_J:
 			DrawComp.ANTIALIAZING_RADIUS -= 0.5;
 			System.out.println("ANTIALIAZING_RADIUS: " + DrawComp.ANTIALIAZING_RADIUS);
+		case KeyEvent.VK_F3:
+			DrawComp.rgbMode ^=true;
 			break;
 		}
 	}
@@ -156,7 +159,7 @@ public class Window extends JFrame implements KeyListener, MouseListener{
 			Window.playSound1();
 			if(!Game.modification)
 			{
-				GameObject cube = Mathstuff.generateCube(new double[] {Camera.forward[0]+Camera.pos[0],Camera.forward[1]+Camera.pos[1],Camera.forward[2]+Camera.pos[2]}, 0.1, -1,true);
+				GameObject cube = Mathstuff.generateCube(new double[] {Camera.forward[0]+Camera.pos[0],Camera.forward[1]+Camera.pos[1],Camera.forward[2]+Camera.pos[2]}, 0.1, Main.storeColor(Color.BLACK.getRGB()),true);
 	//			GameObject cube = Mathstuff.generateCube(Camera.pos, 0.1, -1);
 				cube.setSpeedPerSecond(new double[] {Camera.forward[0]*100,Camera.forward[1]*100,Camera.forward[2]*100});
 				Game.getGame().addGameObject(cube);

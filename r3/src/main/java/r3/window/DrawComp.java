@@ -20,6 +20,11 @@ public class DrawComp extends JComponent {
 	public static int fps;
 	
 	public static int countfps;
+
+	public static boolean rgbMode = false;
+	public static boolean threadRunning = false;
+	
+	public Color currentColor = Color.BLACK;
 	
 	public double[][][] coords  = Main.coords;
 	int r=255;
@@ -62,10 +67,54 @@ public class DrawComp extends JComponent {
 //		}
 //		g2.setColor(new Color(r,g,b));
 		
-
-		
-		draw3DZBuffered(g);
-		
+		if(rgbMode&&!threadRunning)
+		{
+			Thread dt = new Thread()
+			{
+				public void run()
+				{
+					threadRunning=true;
+					int r=255;
+					int g=0;
+					int b=0;
+					while(rgbMode)
+					{
+						if(r > 0 && b == 0){
+							r--;
+						    g++;
+						}
+						else if(g > 0 && r == 0){
+							g--;
+							b++;
+						}
+						else if(b > 0 && g == 0){
+							r++;
+							b--;
+						}
+						currentColor = new Color(r,g,b);
+						
+						try {
+							//System.out.println("repaint");
+							Thread.sleep(1);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					threadRunning=false;
+				}
+				
+			};
+			dt.start();
+		}
+		if(!rgbMode)
+		{
+			draw3DZBuffered(g);
+		}
+		else
+		{
+			draw3DZBuffered2(g);
+		}
 		
 		
 		
@@ -166,9 +215,65 @@ public class DrawComp extends JComponent {
 		g.drawString("X1: "+Camera.pos[0], 1, 10);
 		g.drawString("X2: "+Camera.pos[1], 1, 25);
 		g.drawString("X3: "+Camera.pos[2], 1, 40);
+		g.drawString(fps+"", this.getWidth()-30, 12);
+	}
+	private void draw3DZBuffered2(Graphics g) {
+		countfps++;
+//		final Camera camera = Main.getCamera();
+		
+		//TODO time measurement
+//		long timeBeginning = System.currentTimeMillis();
+		
+		
+//		System.out.println(Main.ThreadProcessor.th);
+		
+		//Calculate Buffer
+//		double[][] buffCache = new Mathstuff(true).calcR3ZBuff(coords, camera, 0, Main.coords.length);
+		double[][][] buffCache = ThreadProcessor.getBufferToDraw();
+		
+//		System.out.println("--------------------------------");
+//		Main.cycleCounterDebug++;
+		
+	
+
+		
+		//TODO time measurement
+//		System.out.print((System.currentTimeMillis()-timeBeginning) + "\t");
+//		timeBeginning = System.currentTimeMillis();
+		//
+		if(buffCache == null)
+			return;
+		
+		//Draw Buffer
+		g.setColor(currentColor);
+		if(Main.lowMode > 0) {
+			for(int x = 0; x < buffCache.length; x++){
+				for(int y = 0; y < buffCache[0].length; y++){
+					if(buffCache[x][y][0] == BUFFER_DEPTH_CLEAR_VALUE && !Game.ANTIALIAZING)
+						continue;
+	//				g.drawRect(x, y, 1, 0);                                                 
+	//				g.drawLine(x, y, x-1, y-1);
+					g.drawRect(x, y, 1,0);					
+					
+				}
+			}
+		} else {
+			for(int x = 0;x<buffCache.length;x++){
+				for(int y = 0;y<buffCache[0].length;y++){
+					if(buffCache[x][y][0] == BUFFER_DEPTH_CLEAR_VALUE && !Game.ANTIALIAZING)
+						continue;
+	//				g.drawRect(x, y, 1, 0);                                                 
+					g.drawLine(x, y, x, y);
+//					g.fillRect(x, y, Main.lowMode,Main.lowMode);
+				}
+			}
+		}
+		g.setColor(Color.BLACK);
+		g.drawString("X1: "+Camera.pos[0], 1, 10);
+		g.drawString("X2: "+Camera.pos[1], 1, 25);
+		g.drawString("X3: "+Camera.pos[2], 1, 40);
 		g.drawString(fps+"", 1250, 12);
 	}
-	
 	private final float[] cacheColorSum = new float[3];
 	private final float[] cacheColorSum2 = new float[3];
 	private Color getAntialiazingColor(double[][][] buffer, int x, int y) {

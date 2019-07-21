@@ -137,7 +137,7 @@ public class Game {
 					if(machineGun)
 					{
 						Window.playSound1();
-						GameObject cube = Mathstuff.generateCube(new double[] {Camera.forward[0]+Camera.pos[0],Camera.forward[1]+Camera.pos[1],Camera.forward[2]+Camera.pos[2]}, 0.1, -1,true );
+						GameObject cube = Mathstuff.generateCube(new double[] {Camera.forward[0]+Camera.pos[0],Camera.forward[1]+Camera.pos[1],Camera.forward[2]+Camera.pos[2]}, 0.1, Main.storeColor(Color.BLACK.getRGB()),true );
 						cube.setSpeedPerSecond(new double[] {Camera.forward[0]*100,Camera.forward[1]*100,Camera.forward[2]*100});
 						addGameObject(cube);
 						gameObjectsCache.add(cube);
