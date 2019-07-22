@@ -1,9 +1,5 @@
 package game.gameobjects;
 
-import java.util.Arrays;
-
-import javax.swing.plaf.synth.SynthSpinnerUI;
-
 import game.physics.CollisionStuff;
 import game.physics.Hitbox;
 import r3.main.Main;
@@ -170,6 +166,10 @@ public class GameObject {
 		Window.playSound2();
 		
 		this.visible = false;
+	}
+	
+	public void setPos(double[] position) {
+		this.pos = position;
 	}
 //	public int[][][] getTrianglesDrawCoordinates2D() {
 //		return this.trianglesDrawCoordinates2D;

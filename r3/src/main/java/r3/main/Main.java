@@ -32,6 +32,10 @@ public class Main {
 	
 	public static int lowMode = 0; 
 	
+	public static File MULTIPLAYER_DIRECTORY = new File("multiplayer_directory/");
+	public static boolean MULTIPLAYER_ACTIVE = false;
+	public static File MULTIPLAYER_FILE_OWN = null;
+	
 	public static void main(String[] args) {		
 		WORKING_WITH_GAMEOBJECTS = false;
 

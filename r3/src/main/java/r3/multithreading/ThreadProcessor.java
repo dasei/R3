@@ -112,7 +112,10 @@ public class ThreadProcessor extends Thread {
 		return gameObjectsAmountCurrent;
 	}
 	
-	
+	private static ArrayList<GameObject> gameObjectsToAddOnNextCycle = new ArrayList<GameObject>();
+	public static void addGameObjectOnNextCycle(GameObject gameObject) {
+		gameObjectsToAddOnNextCycle.add(gameObject);
+	}
 	
 	
 	
@@ -228,11 +231,16 @@ public class ThreadProcessor extends Thread {
 				bufferToDraw = bufferCalculation;
 				bufferCalculation = bufferCache;
 				
-				
 				Main.processInputs();
 				
 				Main.cameraPosOnIterationStart = new double[] {Main.getCamera().pos[0], Main.getCamera().pos[1], Main.getCamera().pos[2]};
 				Main.cameraForwardOnIterationStart = new double[] {Main.getCamera().forward[0], Main.getCamera().forward[1], Main.getCamera().forward[2]};
+				
+				//add game objects, that were added to the cache during the last cycle
+				if(gameObjectsToAddOnNextCycle.size() > 0) {
+					addGameObjects(gameObjectsToAddOnNextCycle, true);
+					gameObjectsToAddOnNextCycle.clear();
+				}
 				
 				//restart all threads
 				threadLock.notifyAll();

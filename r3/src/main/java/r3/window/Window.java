@@ -86,6 +86,12 @@ public class Window extends JFrame implements KeyListener, MouseListener{
 		case KeyEvent.VK_F3:
 			DrawComp.rgbMode ^=true;
 			break;
+		case KeyEvent.VK_M:
+			Main.MULTIPLAYER_ACTIVE ^= true;
+			System.out.println("MULTIPLAYER_ACTIVE: " + Main.MULTIPLAYER_ACTIVE);
+			if(Main.MULTIPLAYER_ACTIVE)
+				Game.getGame().startMultiplayer();
+			break;
 		}
 	}
 	

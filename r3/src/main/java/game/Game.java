@@ -1,10 +1,16 @@
 package game;
 
 import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
+import java.util.UUID;
 
-import game.gameobjects.Floor;
 import game.gameobjects.GameObject;
 import game.gameobjects.ObjectFile;
 import game.gameobjects.Player;
@@ -103,8 +109,8 @@ public class Game {
 	public void addGameObject(double[][][] triangles) {
 		this.gameObjects.add(new GameObject(triangles, null));
 	}
-	public void addGameObject(GameObject gameObject)
-	{
+	
+	public void addGameObject(GameObject gameObject){
 		this.gameObjects.add(gameObject);
 	}
 //	public void addGameObject(GameObject gameObject) {
@@ -162,6 +168,13 @@ public class Game {
 					}
 					modification = false;
 					
+					
+					//add gameObjects that should be added 'on next cycle'
+					if(gameObjectsToAddOnNextCycle.size() > 0) {
+						gameObjects.addAll(gameObjectsToAddOnNextCycle);
+						gameObjectsToAddOnNextCycle.clear();
+					}
+					
 					///--- LOOP
 					duration = System.currentTimeMillis() - iterationStart;
 					
@@ -175,6 +188,83 @@ public class Game {
 				}				
 			}
 		}).start();
+	}
+	
+	private ArrayList<GameObject> gameObjectsToAddOnNextCycle = new ArrayList<GameObject>();
+	private void addGameObjectOnNextCycle(GameObject gameObject) {
+		this.gameObjectsToAddOnNextCycle.add(gameObject);
+	}
+	
+	private HashMap<String, GameObject> playersMultiplayer;
+	private boolean multiplayerRunning = Main.MULTIPLAYER_ACTIVE;
+	public void startMultiplayer() {
+		(new Thread() {
+			public void run() {
+				if(multiplayerRunning)
+					return;
+				multiplayerRunning = true;				
+				
+				if(Main.MULTIPLAYER_FILE_OWN == null) {
+					Main.MULTIPLAYER_FILE_OWN = new File(Main.MULTIPLAYER_DIRECTORY + "/" + UUID.randomUUID().toString().replace("-", ""));
+					playersMultiplayer = new HashMap<String, GameObject>();
+				}
+				
+				File[] files;
+				String[] lineSplit;
+				GameObject playerOther;
+				while(Main.MULTIPLAYER_ACTIVE) {
+					//update own file
+					try {
+						PrintWriter writer = new PrintWriter(Main.MULTIPLAYER_FILE_OWN);
+						
+						writer.println(player.getPos()[0] + ";" + player.getPos()[1] + ";" + player.getPos()[2]);
+						writer.close();
+					} catch (FileNotFoundException exc) {
+						exc.printStackTrace();
+					}
+					//read all other files
+					try {
+						files = Main.MULTIPLAYER_DIRECTORY.listFiles();
+						for(File file : files) {
+							if(file.getAbsolutePath().equals(Main.MULTIPLAYER_FILE_OWN.getAbsolutePath())) {
+								continue;
+							}
+							//get GameObject of other player
+							playerOther = playersMultiplayer.get(file.getName());
+							if(playerOther == null) {
+								playersMultiplayer.put(file.getName(), generateNewMultiplayerPlayer());
+								System.out.println("generated new player: " + file.getName());
+							}
+							playerOther = playersMultiplayer.get(file.getName());
+							
+							//read coordinates from file
+							BufferedReader reader = new BufferedReader(new FileReader(file));
+							lineSplit = reader.readLine().split(";");							
+							reader.close();
+							
+							playerOther.setPos(new double[] {Double.parseDouble(lineSplit[0]), Double.parseDouble(lineSplit[1]), Double.parseDouble(lineSplit[2])});
+						}
+					} catch(Exception exc) {
+						exc.printStackTrace();
+					}
+					
+					try {
+						Thread.sleep(500);
+					}catch(Exception e) {
+						e.printStackTrace();
+					}
+					
+				}				
+				multiplayerRunning = false;
+			}
+		}).start();
+	}
+	
+	private GameObject generateNewMultiplayerPlayer() {
+		GameObject newPlayer = Mathstuff.generateCube(new double[] {0, 0, 0}, 2, Main.storeColor(Color.red.getRGB()), false);
+		addGameObjectOnNextCycle(newPlayer);
+		ThreadProcessor.addGameObjectOnNextCycle(newPlayer);
+		return newPlayer;
 	}
 	
 	public ArrayList<GameObject> getGameObjects() {
