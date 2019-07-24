@@ -8,14 +8,14 @@ import game.gameobjects.GameObject;
 import r3.mathstuff.Mathstuff;
 
 public class CollisionStuff {
-	public static boolean collides(GameObject gameObject, double[] gameObjectHitboxCenterPosition) {
+	public static boolean collides(GameObject gameObject, double[] gameObjectHitboxCenterPosition, double[] pos) {
 		//LOOP THROUGH EVERYTHING
 		//--krasses cache field of things
-		double[] vecAB = new double[3], vecAC = new double[3],vecCB = new double[3], vecTriangleNormal = new double[3],vecMiddleIntercept = new double[3],vecInterceptMiddleUnified = new double[3],pointIntercept = new double[3],pointInterceptHitbox = new double[3];
+		double[] vecAB = new double[3], vecAC = new double[3],vecCB = new double[3], vecTriangleNormal = new double[3],vecMiddleIntercept = new double[3],vecInterceptMiddleUnified = new double[3],pointIntercept = new double[3],pointInterceptHitbox = new double[3], vecOldPosNewPos = new double[3],pointP = new double[3];
 		double[] vectorAP = new double[3];
 		double[] hitboxCenterGameObject = gameObjectHitboxCenterPosition;		 
 		double hitboxGameObjectRadius = gameObject.getHitbox().getRadius();
-		double lambdaNormal,lambdaCB,lambdaAP,a,b,c,lambdaAB,lambdaAB1,lambdaAB2,discriminantCache;
+		double lambdaNormal,lambdaCB,lambdaAP,a,b,c,lambdaAB,lambdaAB1,lambdaAB2,discriminantCache,lambdaP;
 		//--
 		
 		ArrayList<GameObject> gameObjects = Game.getGame().getGameObjects();
@@ -56,6 +56,79 @@ public class CollisionStuff {
 //				pointMiddle[0]=(gameObjTriangles[triangleI][0][1] + gameObjTriangles[triangleI][1][1] + gameObjTriangles[triangleI][2][1]) / 3;
 //				pointMiddle[0]=(gameObjTriangles[triangleI][0][2] + gameObjTriangles[triangleI][1][2] + gameObjTriangles[triangleI][2][2]) / 3;
 				
+				vecOldPosNewPos[0] = gameObjectHitboxCenterPosition[0] - pos[0];
+				vecOldPosNewPos[1] = gameObjectHitboxCenterPosition[1] - pos[1];
+				vecOldPosNewPos[2] = gameObjectHitboxCenterPosition[2] - pos[2];
+				
+				lambdaP =
+				-((pos[0]-gameObjTriangles[triangleI][0][0])*vecTriangleNormal[0]+(pos[1]-gameObjTriangles[triangleI][0][1])*vecTriangleNormal[1]+(pos[2]-gameObjTriangles[triangleI][0][2])*vecTriangleNormal[2])
+							/
+	 			(vecOldPosNewPos[0]*vecTriangleNormal[0] + vecOldPosNewPos[1]*vecTriangleNormal[0] + vecOldPosNewPos[2]*vecTriangleNormal[0]);
+						
+				if(lambdaP>=0&&lambdaP<=1)
+				{
+						
+						
+					pointP[0] = lambdaP * vecOldPosNewPos[0] + pos[0]; 
+					pointP[1] = lambdaP * vecOldPosNewPos[1] + pos[1];
+					pointP[2] = lambdaP * vecOldPosNewPos[2] + pos[2];
+					
+					vectorAP[0] = pointP[0] - gameObjTriangles[triangleI][0][0];
+					vectorAP[1] = pointP[1] - gameObjTriangles[triangleI][0][1];
+					vectorAP[2] = pointP[2] - gameObjTriangles[triangleI][0][2];
+					
+					lambdaCB = 
+					((-vecAC[0]*vectorAP[1])+(vecAC[1]*vectorAP[0]))
+							/
+					((vecCB[0]*vectorAP[1])+(-vecCB[1]*vectorAP[0]));
+					if(Double.isNaN(lambdaCB))
+					{
+						lambdaCB = 
+						((-vecAC[0]*vectorAP[2])+(vecAC[2]*vectorAP[0]))
+								/
+						((vecCB[0]*vectorAP[2])+(-vecCB[2]*vectorAP[0]));
+						if(Double.isNaN(lambdaCB))
+						{
+							lambdaCB = 
+							((-vecAC[1]*vectorAP[2])+(vecAC[2]*vectorAP[1]))
+									/
+							((vecCB[1]*vectorAP[2])+(-vecCB[2]*vectorAP[1]));
+						}
+					}
+//					System.out.println(lambdaCB+">=0,<=1");
+					lambdaAP = 
+					(lambdaCB*vecCB[2]+vecAC[2])
+							/
+					(vectorAP[2]);
+					if(Double.isNaN(lambdaAP))
+					{
+						lambdaAP = 
+						(lambdaCB*vecCB[1]+vecAC[1])
+								/
+						(vectorAP[1]);
+						if(Double.isNaN(lambdaAP))
+						{
+							lambdaAP = 
+							(lambdaCB*vecCB[0]+vecAC[0])
+									/
+							(vectorAP[0]);
+						}
+					}
+//					System.out.println(lambdaAP+">=1");
+					if(lambdaAP>=1&&lambdaCB<=1&&lambdaCB>=0)
+					{
+						System.out.println("lambdaAP: "+lambdaAP+", lambdaCB: "+lambdaCB);
+						if(gameObject.isDamageAffected())
+						{
+							gameObject.remove(true);
+						}
+						if(gameObjWorld.isDamageAffected())
+						{
+							gameObjWorld.remove(true);
+						}
+						return true;
+					}
+				}
 				lambdaNormal = 
 						-(
 								((hitboxCenterGameObject[0] - gameObjTriangles[triangleI][0][0]) * (vecTriangleNormal[0]))

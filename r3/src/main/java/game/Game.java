@@ -131,15 +131,15 @@ public class Game {
 					iterationStart = System.currentTimeMillis();					
 					///--- LOOP
 //					System.out.println(gameObjects.size());
-					if(random.nextInt(200)==1)
-					{
-						GameObject cube = Mathstuff.generateCube(new double[] {random.nextInt(2)+2,random.nextInt(10)-9,13}, 1, Main.storeColor(Color.getHSBColor(random.nextInt(254), random.nextInt(254), random.nextInt(254)).getRGB()),true);
-						cube.setSpeedPerSecond(new double[] {0,0,-0.1});
-						addGameObject(cube);
-						gameObjectsCache.add(cube);
-						ThreadProcessor.addGameObjects(gameObjectsCache, true);
-						gameObjectsCache.clear();
-					}
+//					if(random.nextInt(200)==1)
+//					{
+//						GameObject cube = Mathstuff.generateCube(new double[] {random.nextInt(2)+2,random.nextInt(10)-9,13}, 1, Main.storeColor(Color.getHSBColor(random.nextInt(254), random.nextInt(254), random.nextInt(254)).getRGB()),true);
+//						cube.setSpeedPerSecond(new double[] {0,0,-0.1});
+//						addGameObject(cube);
+//						gameObjectsCache.add(cube);
+//						ThreadProcessor.addGameObjects(gameObjectsCache, true);
+//						gameObjectsCache.clear();
+//					}
 					if(machineGun)
 					{
 						Window.playSound1();
@@ -239,6 +239,8 @@ public class Game {
 							
 							//read coordinates from file
 							BufferedReader reader = new BufferedReader(new FileReader(file));
+							if(reader == null)
+								continue;
 							lineSplit = reader.readLine().split(";");							
 							reader.close();
 							
@@ -249,7 +251,7 @@ public class Game {
 					}
 					
 					try {
-						Thread.sleep(500);
+						Thread.sleep(40);
 					}catch(Exception e) {
 						e.printStackTrace();
 					}

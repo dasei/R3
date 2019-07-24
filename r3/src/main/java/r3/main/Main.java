@@ -32,7 +32,7 @@ public class Main {
 	
 	public static int lowMode = 0; 
 	
-	public static File MULTIPLAYER_DIRECTORY = new File("multiplayer_directory/");
+	public static File MULTIPLAYER_DIRECTORY = new File("C:/Temp/ModulR3Temp/");
 	public static boolean MULTIPLAYER_ACTIVE = false;
 	public static File MULTIPLAYER_FILE_OWN = null;
 	

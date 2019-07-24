@@ -67,15 +67,15 @@ public class GameObject {
 		cachePosAfterMovementCache[0] = cachePosAfterMovement[0];
 		cachePosAfterMovementCache[1] = pos[1];
 		cachePosAfterMovementCache[2] = pos[2];		
-		if(!CollisionStuff.collides(this, cachePosAfterMovementCache))
+		if(!CollisionStuff.collides(this, cachePosAfterMovementCache,pos))
 			this.pos[0] = cachePosAfterMovement[0];
 		
 		cachePosAfterMovementCache[1] = cachePosAfterMovement[1];
-		if(!CollisionStuff.collides(this, cachePosAfterMovementCache))
+		if(!CollisionStuff.collides(this, cachePosAfterMovementCache,pos))
 				this.pos[1] = cachePosAfterMovement[1];				
 		
 		cachePosAfterMovementCache[2] = cachePosAfterMovement[2];		
-		if(!CollisionStuff.collides(this, cachePosAfterMovementCache))
+		if(!CollisionStuff.collides(this, cachePosAfterMovementCache,pos))
 				this.pos[2] = cachePosAfterMovement[2];
 	}
 	

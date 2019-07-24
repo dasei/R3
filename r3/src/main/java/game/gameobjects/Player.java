@@ -65,7 +65,7 @@ public class Player extends GameObject {
 		
 		this.speedPerSec[0] *= 0.88;
 		this.speedPerSec[1] *= 0.88;
-		this.speedPerSec[2] *= 0.95;
+		this.speedPerSec[2] *= 1;
 		
 		cachePosAfterMovement[0] = pos[0] + (speedPerSec[0] * deltaTimeSeconds);
 		cachePosAfterMovement[1] = pos[1] + (speedPerSec[1] * deltaTimeSeconds);
@@ -84,15 +84,15 @@ public class Player extends GameObject {
 		cachePosAfterMovementCache[0] = cachePosAfterMovement[0];
 		cachePosAfterMovementCache[1] = pos[1];
 		cachePosAfterMovementCache[2] = pos[2];		
-		if(!CollisionStuff.collides(this, cachePosAfterMovementCache))
+		if(!CollisionStuff.collides(this, cachePosAfterMovementCache,pos))
 			this.pos[0] = cachePosAfterMovement[0];
 		
 		cachePosAfterMovementCache[1] = cachePosAfterMovement[1];
-		if(!CollisionStuff.collides(this, cachePosAfterMovementCache))
+		if(!CollisionStuff.collides(this, cachePosAfterMovementCache,pos))
 				this.pos[1] = cachePosAfterMovement[1];				
 		
 		cachePosAfterMovementCache[2] = cachePosAfterMovement[2];		
-		if(!CollisionStuff.collides(this, cachePosAfterMovementCache))
+		if(!CollisionStuff.collides(this, cachePosAfterMovementCache,pos))
 				this.pos[2] = cachePosAfterMovement[2];
 	}
 //	public Camera getCamera(){

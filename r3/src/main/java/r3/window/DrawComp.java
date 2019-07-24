@@ -44,7 +44,7 @@ public class DrawComp extends JComponent {
 		
 		if(ThreadProcessor.threadRegister == null)
 			return;
-		
+
 		//TODO
 //		if(cycleCounter == 0)
 //			timeStartNanos = System.nanoTime();
