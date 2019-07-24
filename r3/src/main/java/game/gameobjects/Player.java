@@ -65,7 +65,7 @@ public class Player extends GameObject {
 		
 		this.speedPerSec[0] *= 0.88;
 		this.speedPerSec[1] *= 0.88;
-		this.speedPerSec[2] *= 1;
+		this.speedPerSec[2] *= 0.95;
 		
 		cachePosAfterMovement[0] = pos[0] + (speedPerSec[0] * deltaTimeSeconds);
 		cachePosAfterMovement[1] = pos[1] + (speedPerSec[1] * deltaTimeSeconds);
