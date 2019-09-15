@@ -117,7 +117,7 @@ public class CollisionStuff {
 //					System.out.println(lambdaAP+">=1");
 					if(lambdaAP>=1&&lambdaCB<=1&&lambdaCB>=0)
 					{
-						System.out.println("lambdaAP: "+lambdaAP+", lambdaCB: "+lambdaCB);
+//						System.out.println("lambdaAP: "+lambdaAP+", lambdaCB: "+lambdaCB);
 						if(gameObject.isDamageAffected())
 						{
 							gameObject.remove(true);

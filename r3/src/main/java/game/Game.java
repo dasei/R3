@@ -81,7 +81,9 @@ public class Game {
 		//FLOOR
 //		this.gameObjects.add(new Floor(0, 0, 0, Main.storeColor(Color.green.getRGB())));
 //		this.gameObjects.add(new Floor(0, 0, 0, -1));
-		this.gameObjects.add(new ObjectFile("res/mcworld3.raw"));
+//		this.gameObjects.add(new ObjectFile("res/mcworld3.raw",false));
+		this.gameObjects.add(new ObjectFile("E:/Bibliotheken/Downloads/world.json",true));
+//		this.gameObjects.add(new ObjectFile("E:\Admin\Desktop\Trash\mineways\mcworld.raw"));
 		//CUBE
 //		GameObject cube = Mathstuff.generateCube(new double[] {0, 0, 5}, 1, Main.storeColor(Color.blue.getRGB()),true);
 //		cube.setSpeedPerSecond(new double[] {0,0,-0.1});

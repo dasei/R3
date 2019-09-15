@@ -34,8 +34,8 @@ public class DrawComp extends JComponent {
 	private final Font font = new Font("arial", Font.BOLD, 20);
 	
 	//FPS counting => initialization
-//	private long timeStartNanos;
-//	private long timeNow;
+	private long timeStartNanos;
+	private long timeNow;
 //	private int cyclesForFPSCalculation = 10;	
 //	private int cycleCounter = 0;
 //	private double fpsCurrent = 0;
@@ -44,7 +44,16 @@ public class DrawComp extends JComponent {
 		
 		if(ThreadProcessor.threadRegister == null)
 			return;
-
+		
+//		timeStartNanos = System.currentTimeMillis();
+//		
+//		for(int i = 0;i<100;i++)
+//		{
+//			g.fillPolygon(new int[]{100,5,500,700}, new int[]{100,300,600,200}, 4);
+//		}
+//		
+//		timeNow = System.currentTimeMillis();
+//		System.out.println("Time: "+(timeNow-timeStartNanos));
 		//TODO
 //		if(cycleCounter == 0)
 //			timeStartNanos = System.nanoTime();

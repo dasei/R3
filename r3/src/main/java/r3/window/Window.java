@@ -2,6 +2,7 @@ package r3.window;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -44,7 +45,6 @@ public class Window extends JFrame implements KeyListener, MouseListener{
 		this.pack();
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
-		
 	}
 	
 	
